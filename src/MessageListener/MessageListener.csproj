@@ -29,6 +29,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Adapter\Adapter.csproj" />
+    <ProjectReference Include="..\Adapter\Adapter.csproj" />
   </ItemGroup>
 </Project>
