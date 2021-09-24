@@ -1,27 +1,35 @@
 using System.Threading.Tasks;
+using Adapter;
 using Amazon.Lambda.Core;
+using Domain.Services;
+using Evento;
 using MessageListener.Base;
 using MessageListener.Settings;
 using Microsoft.Extensions.Logging;
 
 namespace MessageListener.Handlers
 {
-    public class CloudEventHandler : IMessageHandler<CloudEventMessage>
+    public class CloudEventHandler : IMessageHandler<CloudEvent>
     {
         private readonly AppSettings _appSettings;
+        private readonly Worker _worker;
         private readonly ILogger<CloudEventHandler> _logger;
+        
 
-        public CloudEventHandler(AppSettings appSettings, ILogger<CloudEventHandler> logger)
+        public CloudEventHandler(AppSettings appSettings, Worker worker, ILogger<CloudEventHandler> logger)
         {
             _appSettings = appSettings;
+            _worker = worker;
             _logger = logger;
         }
         
-        public async Task HandleAsync(CloudEventMessage message, ILambdaContext context)
+        public async Task HandleAsync(CloudEvent message, ILambdaContext context)
         {
             string eventId = message.Data.ToString();
             _logger.LogInformation(eventId);
             _logger.LogInformation($"App setting: {_appSettings.SomeAppSetting}");
+            
+            _worker.Process(message);
             
             await Task.CompletedTask;
         }

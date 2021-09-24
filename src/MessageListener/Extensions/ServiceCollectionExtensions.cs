@@ -1,4 +1,8 @@
+using Adapter;
+using Adapter.Fakes;
 using Amazon.Lambda.SQSEvents;
+using Domain.Services;
+using Evento;
 using MessageListener.Base;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,6 +33,8 @@ namespace MessageListener.Extensions
             }
 
             services.AddTransient<IMessageHandler<TMessage>, THandler>();
+            services.AddTransient<IDomainRepository, InMemoryDomainRepository>();
+            services.AddTransient<IStudyService, FakeStudyService>();
 
             return services;
         }

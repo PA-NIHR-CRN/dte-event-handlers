@@ -1,4 +1,5 @@
 using System.IO;
+using Adapter;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
 using MessageListener.Base;
@@ -35,7 +36,7 @@ namespace MessageListener
             services.AddSingleton(Configuration.GetSection(AppSettings.SectionName).Get<AppSettings>());
             
             // Handlers
-            services.UseSqsHandler<CloudEventMessage, CloudEventHandler>();
+            services.UseSqsHandler<CloudEvent, CloudEventHandler>();
         }
     }
 }

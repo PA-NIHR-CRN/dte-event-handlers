@@ -28,4 +28,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Adapter\Adapter.csproj" />
+  </ItemGroup>
 </Project>

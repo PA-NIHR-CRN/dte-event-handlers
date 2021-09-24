@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace MessageListener
+namespace Adapter
 {
-    public class CloudEventMessage
+    public class CloudEvent
     {
         /// <summary>
         /// This attribute contains a value describing the type of event related to the originating occurrence. Often this attribute is used for routing, observability, policy enforcement, etc. The format of this is producer defined and might include information such as the version of the type - see Versioning of Attributes in the Primer for more information.
