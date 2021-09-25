@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MessageListener.Base
 {
-    public abstract class EventFunction<TInput> : Function
+    public abstract class EventFunctionBase<TInput> : FunctionBase
     {
         public async Task FunctionHandlerAsync(TInput input, ILambdaContext context)
         {

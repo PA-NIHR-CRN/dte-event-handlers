@@ -6,27 +6,33 @@ using Evento;
 
 namespace Adapter.Mappers
 {
-    public class SubmitStudyForApprovalMapper
+    public class SubmitStudyForApprovalMapper : ICloudEventMapper
     {
         public Uri Schema => new Uri("submitstudyforapproval/1.0", UriKind.RelativeOrAbsolute);
-        public Uri Source => new Uri("dte-web", UriKind.RelativeOrAbsolute);
         
+        private readonly Uri _source = new Uri("dte-web", UriKind.RelativeOrAbsolute);
         private readonly List<string> _dataContentTypes = new List<string> { "application/json", "application/cloudevents+json" };
 
         public Command Map(CloudEvent request)
         {
             Ensure.NotNull(request, nameof(request));
+            
             if (!_dataContentTypes.Contains(request.DataContentType))
+            {
                 throw new ArgumentException($"While running Map in '{nameof(SubmitStudyForApprovalMapper)}' I can't recognize the DataContentType:{request.DataContentType} (DataSchema:{request.DataSchema};Source:{request.Source})");
-            if (Source.ToString() != "*" && !request.Source.Equals(Source))
-                throw new ArgumentException(
-                    $"While running Map in '{nameof(SubmitStudyForApprovalMapper)}' I can't recognize the Source:{request.Source} (DataSchema:{request.DataSchema})");
-            if (!request.DataSchema.Equals(Schema))
-                throw new ArgumentException(
-                    $"While running Map in '{nameof(SubmitStudyForApprovalMapper)}' I can't recognize the DataSchema:{request.DataSchema} (Source:{request.Source})");
+            }
 
-            var ciccio = request.Data.ToString();
-            SubmitStudyForApproval cmd = JsonSerializer.Deserialize<SubmitStudyForApproval>(request.Data.ToString(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            if (_source.ToString() != "*" && !request.Source.Equals(_source))
+            {
+                throw new ArgumentException($"While running Map in '{nameof(SubmitStudyForApprovalMapper)}' I can't recognize the Source:{request.Source} (DataSchema:{request.DataSchema})");
+            }
+
+            if (!request.DataSchema.Equals(Schema))
+            {
+                throw new ArgumentException($"While running Map in '{nameof(SubmitStudyForApprovalMapper)}' I can't recognize the DataSchema:{request.DataSchema} (Source:{request.Source})");
+            }
+
+            SubmitStudyForApprovalCommand cmd = JsonSerializer.Deserialize<SubmitStudyForApprovalCommand>(request.Data.ToString(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             
             cmd.Metadata = new Dictionary<string, string>
             {
@@ -37,6 +43,7 @@ namespace Adapter.Mappers
                 {"schema", request.DataSchema.ToString()},
                 {"content-type", request.DataContentType}
             };
+            
             return cmd;
         }
     }
