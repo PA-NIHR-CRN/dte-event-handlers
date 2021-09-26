@@ -23,7 +23,7 @@ namespace Tests
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             var mappers = new List<ICloudEventMapper>{new CompleteStepMapper(), new SubmitStudyForApprovalMapper()};
             
-            var sut = new Worker(domainRepo, new FakeStudyService(), mappers, new Logger<Worker>(new LoggerFactory()));
+            var sut = new Worker(domainRepo, new FakeStudyService(new Logger<FakeStudyService>(new LoggerFactory())), mappers, new Logger<Worker>(new LoggerFactory()));
 
             // Act
             sut.Process(cloudRequest);

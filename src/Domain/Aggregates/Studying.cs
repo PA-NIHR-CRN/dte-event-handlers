@@ -37,6 +37,7 @@ namespace Domain.Aggregates
                 return;
             }
             
+            // TODO - inject fluent validator
             Ensure.NotNull(cmd, nameof(cmd));
             Ensure.NotNullOrWhiteSpace(cmd.StudyId, nameof(cmd.StudyId));
             Ensure.NotNullOrWhiteSpace(cmd.ResearcherId, nameof(cmd.ResearcherId));
