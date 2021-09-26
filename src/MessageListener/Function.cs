@@ -1,5 +1,6 @@
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using Adapter;
 using Adapter.Fakes;
 using Adapter.Mappers;
@@ -54,6 +55,12 @@ namespace MessageListener
                 .AddClasses(c => c.AssignableTo(typeof(ICloudEventMapper)))
                 .AsImplementedInterfaces()
                 .WithTransientLifetime());
+        }
+
+        // Needed to be able to run
+        public async Task FunctionHandler(SQSEvent input, ILambdaContext context)
+        {
+            await FunctionHandlerAsync(input, context);
         }
     }
 }

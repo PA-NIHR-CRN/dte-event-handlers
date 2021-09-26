@@ -24,25 +24,28 @@ namespace Adapter
         {
             _domainRepository = domainRepository;
             _studyService = studyService;
-            _deserializers = mappers.ToDictionary<ICloudEventMapper, string, Func<CloudEvent, Command>>(x => x.Schema.ToString(), x => x.Map);
+            _deserializers = mappers.ToDictionary<ICloudEventMapper, string, Func<CloudEvent, Command>>(x => x.Schema.ToString().ToLower(), x => x.Map);
             _logger = logger;
         }
 
         public void Process(CloudEvent cloudRequest)
         {
-            if (!_deserializers.ContainsKey(cloudRequest.DataSchema.ToString()) &&
-                !_deserializers.ContainsKey($"{cloudRequest.DataSchema}{cloudRequest.Source}"))
+            var requestDataScheme = cloudRequest.DataSchema.ToString().ToLower();
+            var cloudRequestSource = cloudRequest.Source.ToString().ToLower();
+            
+            if (!_deserializers.ContainsKey(requestDataScheme) &&
+                !_deserializers.ContainsKey($"{requestDataScheme}{cloudRequestSource}"))
             {
-                throw new Exception($"I can't find a mapper for schema:'{cloudRequest.DataSchema}' source:''{cloudRequest.Source}''");
+                throw new Exception($"I can't find a mapper for schema:'{requestDataScheme}' source:''{cloudRequestSource}''");
             }
 
-            var command = _deserializers.ContainsKey(cloudRequest.DataSchema.ToString())
-                ? _deserializers[cloudRequest.DataSchema.ToString()](cloudRequest)
-                : _deserializers[$"{cloudRequest.DataSchema}{cloudRequest.Source}"](cloudRequest);
+            var command = _deserializers.ContainsKey(requestDataScheme)
+                ? _deserializers[requestDataScheme](cloudRequest)
+                : _deserializers[$"{requestDataScheme}{cloudRequestSource}"](cloudRequest);
 
             if (command == null)
             {
-                throw new Exception($"I received CloudRequest Type:'{cloudRequest.Type}' Source:'{cloudRequest.Source}' Schema:'{cloudRequest.DataSchema}' but I was unable to deserialize a Command out of it");
+                throw new Exception($"I received CloudRequest Type:'{cloudRequest.Type}' Source:'{cloudRequestSource}' Schema:'{requestDataScheme}' but I was unable to deserialize a Command out of it");
             }
 
             IAggregate aggregate = null;
@@ -52,7 +55,7 @@ namespace Adapter
                 {
                     SubmitStudyForApprovalCommand submitStudyForApproval => Handle(submitStudyForApproval),
                     CompleteStepCommand completeStep => Handle(completeStep),
-                    _ => throw new Exception($"Received CloudRequest Type:'{cloudRequest.Type}' Source:'{cloudRequest.Source}' Schema:'{cloudRequest.DataSchema}' but I can't find an available handler for it")
+                    _ => throw new Exception($"Received CloudRequest Type:'{cloudRequest.Type}' Source:'{cloudRequestSource}' Schema:'{requestDataScheme}' but I can't find an available handler for it")
                 };
             }
             finally
@@ -80,7 +83,7 @@ namespace Adapter
                 }
                 else
                     _logger.LogInformation(
-                        $"Handled CloudRequest Type:'{cloudRequest.Type}' Source:'{cloudRequest.Source}' Schema:'{cloudRequest.DataSchema}' with no events to save");
+                        $"Handled CloudRequest Type:'{cloudRequest.Type}' Source:'{cloudRequestSource}' Schema:'{requestDataScheme}' with no events to save");
             }
         }
 
@@ -134,7 +137,7 @@ namespace Adapter
             return err;
         }
         
-        private string TruncateFieldIfNecessary(string field)
+        private static string TruncateFieldIfNecessary(string field)
         {
             return field.Length > MaxLengthForLogs ? field[..MaxLengthForLogs] : field;
         }
