@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using Adapter;
 using Adapter.Fakes;
+using Adapter.Mappers;
 using Domain.Events;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
@@ -19,7 +21,9 @@ namespace Tests
             var domainRepo = new InMemoryDomainRepository();
             var cloudRequest = JsonSerializer.Deserialize<CloudEvent>(File.ReadAllText("./PayloadSamples/submitStudyForApproval.json"),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            var sut = new Worker(domainRepo, new FakeStudyService(), new Logger<Worker>(new LoggerFactory()));
+            var mappers = new List<ICloudEventMapper>{new CompleteStepMapper(), new SubmitStudyForApprovalMapper()};
+            
+            var sut = new Worker(domainRepo, new FakeStudyService(new Logger<FakeStudyService>(new LoggerFactory())), mappers, new Logger<Worker>(new LoggerFactory()));
 
             // Act
             sut.Process(cloudRequest);

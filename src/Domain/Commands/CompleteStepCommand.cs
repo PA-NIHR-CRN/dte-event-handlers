@@ -3,9 +3,9 @@ using Evento;
 
 namespace Domain.Commands
 {
-    public class CompleteStep : Command
+    public class CompleteStepCommand : Command
     {
-        public CompleteStep(string studyId, string stepId, string question, string answer)
+        public CompleteStepCommand(string studyId, string stepId, string question, string answer)
         {
             StudyId = studyId;
             StepId = stepId;

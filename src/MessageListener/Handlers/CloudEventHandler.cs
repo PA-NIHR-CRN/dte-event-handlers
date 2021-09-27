@@ -1,8 +1,6 @@
 using System.Threading.Tasks;
 using Adapter;
 using Amazon.Lambda.Core;
-using Domain.Services;
-using Evento;
 using MessageListener.Base;
 using MessageListener.Settings;
 using Microsoft.Extensions.Logging;
@@ -12,11 +10,11 @@ namespace MessageListener.Handlers
     public class CloudEventHandler : IMessageHandler<CloudEvent>
     {
         private readonly AppSettings _appSettings;
-        private readonly Worker _worker;
+        private readonly IWorker _worker;
         private readonly ILogger<CloudEventHandler> _logger;
         
 
-        public CloudEventHandler(AppSettings appSettings, Worker worker, ILogger<CloudEventHandler> logger)
+        public CloudEventHandler(AppSettings appSettings, IWorker worker, ILogger<CloudEventHandler> logger)
         {
             _appSettings = appSettings;
             _worker = worker;

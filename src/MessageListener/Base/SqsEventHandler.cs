@@ -26,7 +26,6 @@ namespace MessageListener.Base
                 using var scope = _serviceProvider.CreateScope();
                 var sqsMessage = record.Body;
                 var message = JsonConvert.DeserializeObject<TMessage>(sqsMessage);
-                // TODO - add factory to get the type and deserialize dynamic .Data to that type and handler
                 var handler = scope.ServiceProvider.GetService<IMessageHandler<TMessage>>();
 
                 if (handler == null)

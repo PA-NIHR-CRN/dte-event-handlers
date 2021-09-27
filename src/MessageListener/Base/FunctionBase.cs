@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 
 namespace MessageListener.Base
 {
-    public abstract class Function
+    public abstract class FunctionBase
     {
-        protected Function()
+        protected FunctionBase()
         {
             var services = new ServiceCollection();
 
@@ -33,7 +33,7 @@ namespace MessageListener.Base
 
             ServiceProvider = services.BuildServiceProvider();
 
-            Logger = ServiceProvider.GetRequiredService<ILogger<Function>>();
+            Logger = ServiceProvider.GetRequiredService<ILogger<FunctionBase>>();
         }
 
         protected virtual void Configure(IConfigurationBuilder builder) { }

@@ -1,7 +1,13 @@
 using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
 using Adapter;
+using Adapter.Fakes;
+using Adapter.Mappers;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
+using Domain.Services;
+using Evento;
 using MessageListener.Base;
 using MessageListener.Extensions;
 using MessageListener.Handlers;
@@ -15,7 +21,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MessageListener
 {
-    public class Function : EventFunction<SQSEvent>
+    public class Function : EventFunctionBase<SQSEvent>
     {
         protected override void Configure(IConfigurationBuilder builder)
         {
@@ -37,6 +43,24 @@ namespace MessageListener
             
             // Handlers
             services.UseSqsHandler<CloudEvent, CloudEventHandler>();
+            
+            // Others
+            services.AddTransient<IDomainRepository, InMemoryDomainRepository>();
+            services.AddTransient<IStudyService, FakeStudyService>();
+            services.AddTransient<IWorker, Worker>();
+            
+            // Mappers
+            services.Scan(s => s
+                .FromAssemblies(Assembly.Load("Adapter"))
+                .AddClasses(c => c.AssignableTo(typeof(ICloudEventMapper)))
+                .AsImplementedInterfaces()
+                .WithTransientLifetime());
+        }
+
+        // Needed to be able to run
+        public async Task FunctionHandler(SQSEvent input, ILambdaContext context)
+        {
+            await FunctionHandlerAsync(input, context);
         }
     }
 }
