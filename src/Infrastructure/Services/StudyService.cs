@@ -33,7 +33,8 @@ namespace Infrastructure.Services
                 ShortName = study.ShortName,
                 ApprovedAtUtc = study.StudyRegistrationStatus == StudyRegistrationStatus.Approved ? _clock.UtcNow() : (DateTime?)null,
                 StudyRegistrationStatus = study.StudyRegistrationStatus,
-                SubmissionResearcherId = study.SubmissionResearcherId
+                SubmissionResearcherId = study.SubmissionResearcherId,
+                SubmittedAt = study.SubmittedAt
             };
 
             await _studyRepository.SaveStudyRegistration(model);

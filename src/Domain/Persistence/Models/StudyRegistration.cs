@@ -15,5 +15,6 @@ namespace Domain.Persistence.Models
         [DynamoDBProperty] public string SubmissionResearcherId { get; set;}
         [DynamoDBProperty] public StudyRegistrationStatus StudyRegistrationStatus { get; set; }
         [DynamoDBProperty] public DateTime? ApprovedAtUtc { get; set; }
+        [DynamoDBProperty] public DateTime SubmittedAt { get; set; }
     }
 }
