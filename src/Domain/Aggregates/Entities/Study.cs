@@ -3,14 +3,15 @@ using System.Collections.Generic;
 
 namespace Domain.Aggregates.Entities
 {
-    public class Study
+    public class Study : AuditableEntity
     {
-        public Study(string id, string title, DateTime submittedAt, DateTime? approvedAt, string submissionResearcherId, List<string> researchers, StudyStatus studyStatus)
+        public Study(string id, string title, string shortName, DateTime submittedAt, DateTime? approvedAtUtc, string submissionResearcherId, List<string> researchers, StudyStatus studyStatus)
         {
             Id = id;
             Title = title;
+            ShortName = shortName;
             SubmittedAt = submittedAt;
-            ApprovedAt = approvedAt;
+            ApprovedAtUtc = approvedAtUtc;
             SubmissionResearcherId = submissionResearcherId;
             Researchers = researchers;
             StudyStatus = studyStatus;
@@ -18,17 +19,11 @@ namespace Domain.Aggregates.Entities
 
         public string Id { get; }
         public string Title { get; }
+        public string ShortName { get; }
         public DateTime SubmittedAt { get; }
-        public DateTime? ApprovedAt { get; }
+        public DateTime? ApprovedAtUtc { get; }
         public string SubmissionResearcherId { get; }
         public List<string> Researchers { get; }
         public StudyStatus StudyStatus { get; }
-    }
-
-    public enum StudyStatus
-    {
-        Open,
-        Closed,
-        WaitingForApproval
     }
 }

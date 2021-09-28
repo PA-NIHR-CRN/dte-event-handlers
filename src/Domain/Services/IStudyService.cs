@@ -5,7 +5,7 @@ namespace Domain.Services
 {
     public interface IStudyService
     {
-        Task<Study> Get(string id);
-        Task Set(Study study);
+        Task<Study> GetStudyRegistration(string studyId);
+        Task SaveStudyRegistration(Study study);
     }
 }

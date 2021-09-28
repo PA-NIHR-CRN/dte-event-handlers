@@ -100,7 +100,8 @@ namespace Adapter
                 aggregate = Studying.Create();
             }
             
-            aggregate.SubmitForApproval(command, _studyService);
+            aggregate.SubmitForApproval(command, _studyService).Wait();
+            
             return aggregate;
         }
 
