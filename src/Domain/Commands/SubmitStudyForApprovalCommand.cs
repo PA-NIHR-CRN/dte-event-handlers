@@ -14,6 +14,7 @@ namespace Domain.Commands
         {
             StudyId = studyId;
             Title = title;
+            ShortName = shortName;
             ResearcherId = researcherId;
             Metadata = metadata;
         }
