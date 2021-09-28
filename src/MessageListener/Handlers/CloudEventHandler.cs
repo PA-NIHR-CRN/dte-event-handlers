@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Adapter;
+using Adapter.Contracts;
 using Amazon.Lambda.Core;
 using MessageListener.Base;
 using MessageListener.Settings;

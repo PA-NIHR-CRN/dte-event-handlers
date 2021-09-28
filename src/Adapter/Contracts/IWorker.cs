@@ -1,4 +1,4 @@
-namespace Adapter
+namespace Adapter.Contracts
 {
     public interface IWorker
     {

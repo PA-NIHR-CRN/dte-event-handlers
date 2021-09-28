@@ -1,6 +1,6 @@
 namespace Domain.Aggregates.Entities
 {
-    public enum StudyStatus
+    public enum StudyRegistrationStatus
     {
         Unknown, WaitingForApproval, Approved, Closed, Delayed, Rejected, Cancelled
     }

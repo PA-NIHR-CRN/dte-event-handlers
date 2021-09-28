@@ -2,12 +2,18 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Adapter;
-using Adapter.Fakes;
-using Adapter.Mappers;
+using Adapter.Contracts;
+using Amazon.DynamoDBv2;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
-using Domain.Services;
+using Common;
+using Common.Interfaces;
+using Domain.Contracts;
 using Evento;
+using Infrastructure.Repositories;
+using Infrastructure.Services;
+using Infrastructure.Services.Fakes;
+using Infrastructure.Services.Stubs;
 using MessageListener.Base;
 using MessageListener.Extensions;
 using MessageListener.Handlers;
@@ -45,10 +51,14 @@ namespace MessageListener
             services.UseSqsHandler<CloudEvent, CloudEventHandler>();
             
             // Others
+            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+            services.AddAWSService<IAmazonDynamoDB>(ServiceLifetime.Scoped);
+            services.AddTransient<IClock, Clock>();
             services.AddTransient<IDomainRepository, InMemoryDomainRepository>();
-            services.AddTransient<IStudyService, FakeStudyService>();
+            services.AddTransient<IStudyRepository, StudyDynamoDbRepository>();
+            services.AddTransient<IStudyService, StudyService>();
             services.AddTransient<IWorker, Worker>();
-            
+
             // Mappers
             services.Scan(s => s
                 .FromAssemblies(Assembly.Load("Adapter"))

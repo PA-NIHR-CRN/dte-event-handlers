@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Evento;
 
-namespace Adapter.Fakes
+namespace Infrastructure.Services.Stubs
 {
     public class InMemoryDomainRepository : IDomainRepository
     {

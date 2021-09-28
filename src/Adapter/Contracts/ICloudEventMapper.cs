@@ -1,7 +1,7 @@
 using System;
 using Evento;
 
-namespace Adapter.Mappers
+namespace Adapter.Contracts
 {
     public interface ICloudEventMapper
     {

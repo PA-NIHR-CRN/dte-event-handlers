@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using Adapter.Contracts;
 using Domain.Commands;
 using Evento;
 

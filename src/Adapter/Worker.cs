@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Adapter.Contracts;
 using Adapter.Mappers;
 using Domain.Aggregates;
 using Domain.Commands;
-using Domain.Services;
+using Domain.Contracts;
 using Evento;
 using Microsoft.Extensions.Logging;
 

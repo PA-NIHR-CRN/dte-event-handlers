@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Domain.Aggregates.Entities;
-using Domain.Services;
+using Domain.Contracts;
 using Microsoft.Extensions.Logging;
 
-namespace Adapter.Fakes
+namespace Infrastructure.Services.Fakes
 {
     public class FakeStudyService : IStudyService
     {

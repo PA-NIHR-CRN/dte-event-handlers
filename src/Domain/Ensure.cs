@@ -106,5 +106,15 @@ namespace Domain
                 throw new ArgumentException($"{argumentName} expected value: {expected}, actual value: {actual}");
             }
         }
+        
+        public static void IsPositiveLong(string actual, string argumentName)
+        {
+            if (!long.TryParse(actual, out var result))
+            {
+                throw new ArgumentException(argumentName, argumentName + " should be convertable to a long.");
+            }
+            
+            Positive(result, argumentName);
+        }
     }
 }

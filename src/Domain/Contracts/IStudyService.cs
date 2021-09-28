@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Domain.Aggregates.Entities;
 
-namespace Domain.Services
+namespace Domain.Contracts
 {
     public interface IStudyService
     {
