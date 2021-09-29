@@ -5,30 +5,32 @@ namespace Domain.Aggregates.Entities
 {
     public class Study
     {
-        public Study(string id, string title, DateTime submittedAt, DateTime? approvedAt, string submissionResearcherId, List<string> researchers, StudyStatus studyStatus)
+        public Study(string id,
+            string title,
+            string shortName,
+            DateTime submittedAt,
+            DateTime? approvedAtUtc,
+            string submissionResearcherId,
+            List<string> researchers,
+            StudyRegistrationStatus studyRegistrationStatus)
         {
             Id = id;
             Title = title;
+            ShortName = shortName;
             SubmittedAt = submittedAt;
-            ApprovedAt = approvedAt;
+            ApprovedAtUtc = approvedAtUtc;
             SubmissionResearcherId = submissionResearcherId;
             Researchers = researchers;
-            StudyStatus = studyStatus;
+            StudyRegistrationStatus = studyRegistrationStatus;
         }
 
         public string Id { get; }
         public string Title { get; }
+        public string ShortName { get; }
         public DateTime SubmittedAt { get; }
-        public DateTime? ApprovedAt { get; }
+        public DateTime? ApprovedAtUtc { get; }
         public string SubmissionResearcherId { get; }
         public List<string> Researchers { get; }
-        public StudyStatus StudyStatus { get; }
-    }
-
-    public enum StudyStatus
-    {
-        Open,
-        Closed,
-        WaitingForApproval
+        public StudyRegistrationStatus StudyRegistrationStatus { get; }
     }
 }

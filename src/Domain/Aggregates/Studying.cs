@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Domain.Aggregates.Entities;
 using Domain.Commands;
+using Domain.Contracts;
 using Domain.Events;
-using Domain.Services;
 using Evento;
 
 namespace Domain.Aggregates
@@ -21,7 +22,7 @@ namespace Domain.Aggregates
         private void Apply(StudyWaitingForApprovalSubmittedV1 obj)
         {
             CorrelationId = obj.Metadata["$correlationId"];
-            _study = new Study(obj.StudyId, obj.Title, DateTime.Parse(obj.Metadata["$applies"]).ToUniversalTime(), null, obj.ResearcherId, null, StudyStatus.WaitingForApproval);
+            _study = new Study(obj.StudyId, obj.Title, obj.ShortName, DateTime.Parse(obj.Metadata["$applies"]).ToUniversalTime(), null, obj.ResearcherId, null, StudyRegistrationStatus.WaitingForApproval);
         }
 
         public static Studying Create()
@@ -29,7 +30,7 @@ namespace Domain.Aggregates
             return new Studying();
         }
 
-        public void SubmitForApproval(SubmitStudyForApprovalCommand cmd, IStudyService studyService)
+        public async Task SubmitForApproval(SubmitStudyForApprovalCommand cmd, IStudyService studyService)
         {
             // Idempotency
             if (_study != null)
@@ -37,17 +38,17 @@ namespace Domain.Aggregates
                 return;
             }
             
-            // TODO - inject fluent validator
             Ensure.NotNull(cmd, nameof(cmd));
-            Ensure.NotNullOrWhiteSpace(cmd.StudyId, nameof(cmd.StudyId));
-            Ensure.NotNullOrWhiteSpace(cmd.ResearcherId, nameof(cmd.ResearcherId));
+            Ensure.IsPositiveLong(cmd.StudyId, nameof(cmd.StudyId));
             Ensure.NotNullOrWhiteSpace(cmd.Title, nameof(cmd.Title));
+            Ensure.NotNullOrWhiteSpace(cmd.ShortName, nameof(cmd.ShortName));
+            Ensure.NotNullOrWhiteSpace(cmd.ResearcherId, nameof(cmd.ResearcherId));
+
+            var study = new Study(cmd.StudyId, cmd.Title, cmd.ShortName, DateTime.Parse(cmd.Metadata["$applies"]), null, cmd.ResearcherId, null, StudyRegistrationStatus.WaitingForApproval);
             
-            var study = new Study(cmd.StudyId, cmd.Title, DateTime.Parse(cmd.Metadata["$applies"]), null, cmd.ResearcherId, null, StudyStatus.WaitingForApproval);
+            await studyService.SaveStudyRegistration(study);
             
-            studyService.Set(study).Wait();
-            
-            RaiseEvent(new StudyWaitingForApprovalSubmittedV1(study.Id, study.Title, study.SubmissionResearcherId, cmd.Metadata));
+            RaiseEvent(new StudyWaitingForApprovalSubmittedV1(study.Id, study.Title, study.ShortName, study.SubmissionResearcherId, cmd.Metadata));
         }
     }
 }

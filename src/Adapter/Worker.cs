@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Adapter.Mappers;
+using Adapter.Contracts;
 using Domain.Aggregates;
 using Domain.Commands;
-using Domain.Services;
+using Domain.Contracts;
 using Evento;
 using Microsoft.Extensions.Logging;
 
@@ -100,7 +100,8 @@ namespace Adapter
                 aggregate = Studying.Create();
             }
             
-            aggregate.SubmitForApproval(command, _studyService);
+            aggregate.SubmitForApproval(command, _studyService).Wait();
+            
             return aggregate;
         }
 

@@ -7,6 +7,7 @@
   "data": {
     "StudyId": "1",
     "Title": "health for everyone",
+    "ShortName": "Some short name",
     "ResearcherId": "123"
   }
 }

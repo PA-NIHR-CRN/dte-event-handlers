@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Evento;
 
-namespace Adapter.Fakes
+namespace Infrastructure.Services.Stubs
 {
     public class InMemoryDomainRepository : IDomainRepository
     {
@@ -24,9 +24,10 @@ namespace Adapter.Fakes
             return uncommittedEvents;
         }
 
-        public Task<IEnumerable<Event>> SaveAsync<TAggregate>(TAggregate aggregate) where TAggregate : IAggregate
+        public async Task<IEnumerable<Event>> SaveAsync<TAggregate>(TAggregate aggregate) where TAggregate : IAggregate
         {
             var uncommittedEvents = aggregate.UncommitedEvents().ToList();
+            
             if (!_eventStore.ContainsKey(aggregate.AggregateId))
             {
                 _eventStore.Add(aggregate.AggregateId, aggregate.UncommitedEvents().ToList());
@@ -35,8 +36,10 @@ namespace Adapter.Fakes
             {
                 _eventStore[aggregate.AggregateId].AddRange(aggregate.UncommitedEvents().ToList());
             }
+            
             aggregate.ClearUncommitedEvents();
-            return new Task<IEnumerable<Event>>(uncommittedEvents.AsEnumerable);
+            
+            return await Task.FromResult(uncommittedEvents.AsEnumerable());
         }
 
         public TResult GetById<TResult>(string correlationId) where TResult : IAggregate, new()
