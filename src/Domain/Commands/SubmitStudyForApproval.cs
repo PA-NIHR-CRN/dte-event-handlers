@@ -3,14 +3,14 @@ using Evento;
 
 namespace Domain.Commands
 {
-    public class SubmitStudyForApprovalCommand : Command
+    public class SubmitStudyForApproval : Command
     {
-        public SubmitStudyForApprovalCommand()
+        public SubmitStudyForApproval()
         {
             
         }
         
-        public SubmitStudyForApprovalCommand(string studyId, string title, string shortName, string researcherId, IDictionary<string, string> metadata)
+        public SubmitStudyForApproval(string studyId, string title, string shortName, string researcherId, IDictionary<string, string> metadata)
         {
             StudyId = studyId;
             Title = title;

@@ -30,7 +30,7 @@ namespace Domain.Aggregates
             return new Studying();
         }
 
-        public async Task SubmitForApproval(SubmitStudyForApprovalCommand cmd, IStudyService studyService)
+        public async Task SubmitForApproval(SubmitStudyForApproval cmd, IStudyService studyService)
         {
             // Idempotency
             if (_study != null)

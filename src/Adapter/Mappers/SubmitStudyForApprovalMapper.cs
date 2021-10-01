@@ -33,7 +33,7 @@ namespace Adapter.Mappers
                 throw new ArgumentException($"While running Map in '{nameof(SubmitStudyForApprovalMapper)}' I can't recognize the DataSchema:{request.DataSchema} (Source:{request.Source})");
             }
 
-            SubmitStudyForApprovalCommand cmd = JsonSerializer.Deserialize<SubmitStudyForApprovalCommand>(request.Data.ToString(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            SubmitStudyForApproval cmd = JsonSerializer.Deserialize<SubmitStudyForApproval>(request.Data.ToString(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             
             cmd.Metadata = new Dictionary<string, string>
             {

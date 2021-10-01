@@ -17,6 +17,9 @@
       <None Update="PayloadSamples\submitStudyForApproval.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="PayloadSamples\dte-web-expressinterest.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>

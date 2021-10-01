@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Adapter.Contracts;
+using Adapter.Mappers;
 using Domain.Aggregates;
 using Domain.Commands;
 using Domain.Contracts;
@@ -11,10 +12,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Adapter
 {
-    public class Worker : IHandle<SubmitStudyForApprovalCommand>, IHandle<CompleteStepCommand>, IWorker
+    public class Worker : IWorker,
+        IHandle<SubmitStudyForApproval>,
+        IHandle<CompleteStep>,
+        IHandle<ExpressInterest>
     {
         private const int MaxLengthForLogs = 255;
-        
         private readonly IDomainRepository _domainRepository;
         private readonly IStudyService _studyService;
         private readonly ILogger<Worker> _logger;
@@ -32,11 +35,12 @@ namespace Adapter
         {
             var requestDataScheme = cloudRequest.DataSchema.ToString().ToLower();
             var cloudRequestSource = cloudRequest.Source.ToString().ToLower();
-            
+
             if (!_deserializers.ContainsKey(requestDataScheme) &&
                 !_deserializers.ContainsKey($"{requestDataScheme}{cloudRequestSource}"))
             {
-                throw new Exception($"I can't find a mapper for schema:'{requestDataScheme}' source:''{cloudRequestSource}''");
+                throw new Exception(
+                    $"I can't find a mapper for schema:'{requestDataScheme}' source:''{cloudRequestSource}''");
             }
 
             var command = _deserializers.ContainsKey(requestDataScheme)
@@ -45,7 +49,8 @@ namespace Adapter
 
             if (command == null)
             {
-                throw new Exception($"I received CloudRequest Type:'{cloudRequest.Type}' Source:'{cloudRequestSource}' Schema:'{requestDataScheme}' but I was unable to deserialize a Command out of it");
+                throw new Exception(
+                    $"I received CloudRequest Type:'{cloudRequest.Type}' Source:'{cloudRequestSource}' Schema:'{requestDataScheme}' but I was unable to deserialize a Command out of it");
             }
 
             IAggregate aggregate = null;
@@ -53,9 +58,11 @@ namespace Adapter
             {
                 aggregate = command switch
                 {
-                    SubmitStudyForApprovalCommand submitStudyForApproval => Handle(submitStudyForApproval),
-                    CompleteStepCommand completeStep => Handle(completeStep),
-                    _ => throw new Exception($"Received CloudRequest Type:'{cloudRequest.Type}' Source:'{cloudRequestSource}' Schema:'{requestDataScheme}' but I can't find an available handler for it")
+                    SubmitStudyForApproval submitStudyForApproval => Handle(submitStudyForApproval),
+                    CompleteStep completeStep => Handle(completeStep),
+                    ExpressInterest expressInterest => Handle(expressInterest),
+                    _ => throw new Exception(
+                        $"Received CloudRequest Type:'{cloudRequest.Type}' Source:'{cloudRequestSource}' Schema:'{requestDataScheme}' but I can't find an available handler for it")
                 };
             }
             finally
@@ -68,7 +75,8 @@ namespace Adapter
                     var error = new StringBuilder();
                     foreach (var uncommittedEvent in uncommittedEventsList)
                     {
-                        _logger.LogInformation($"Handled '{cloudRequest.Type}' AggregateId:'{aggregate.AggregateId}' [0]Resulted event:'{uncommittedEvent.GetType()}'");
+                        _logger.LogInformation(
+                            $"Handled '{cloudRequest.Type}' AggregateId:'{aggregate.AggregateId}' [0]Resulted event:'{uncommittedEvent.GetType()}'");
 
                         if (uncommittedEvent.GetType().ToString().EndsWith("FailedV1"))
                         {
@@ -87,7 +95,7 @@ namespace Adapter
             }
         }
 
-        public IAggregate Handle(SubmitStudyForApprovalCommand command)
+        public IAggregate Handle(SubmitStudyForApproval command)
         {
             Studying aggregate;
 
@@ -99,13 +107,13 @@ namespace Adapter
             {
                 aggregate = Studying.Create();
             }
-            
+
             aggregate.SubmitForApproval(command, _studyService).Wait();
-            
+
             return aggregate;
         }
 
-        public IAggregate Handle(CompleteStepCommand command)
+        public IAggregate Handle(CompleteStep command)
         {
             throw new NotImplementedException("TODO");
         }
@@ -114,33 +122,51 @@ namespace Adapter
         {
             var errMessage = string.Empty;
             var errForLogging = string.Empty;
-            
+
             // TODO add specific condition for specific events
-            
+
             var errStack = !uncommittedEvent.Metadata.ContainsKey("error-stack")
                 ? string.Empty
                 : $"StackTrace: {uncommittedEvent.Metadata["error-stack"]}";
-            
+
             var err = $"{errMessage} - {errStack}";
-            
+
             var id = uncommittedEvent.Metadata.ContainsKey("id")
                 ? uncommittedEvent.Metadata["id"]
                 : "undefined";
-            
+
             var correlationId = uncommittedEvent.Metadata.ContainsKey("$correlationId")
                 ? uncommittedEvent.Metadata["$correlationId"]
                 : "undefined";
-             
+
             var msgToLog = $"id:'{id}';CorrelationId:'{correlationId}';{errForLogging}";
-            
+
             _logger.LogError(TruncateFieldIfNecessary(msgToLog));
-            
+
             return err;
         }
-        
+
         private static string TruncateFieldIfNecessary(string field)
         {
             return field.Length > MaxLengthForLogs ? field[..MaxLengthForLogs] : field;
+        }
+
+        public IAggregate Handle(ExpressInterest command)
+        {
+            PartecipatingToStudy aggregate;
+
+            try
+            {
+                aggregate = _domainRepository.GetById<PartecipatingToStudy>(command.Metadata["$correlationId"]);
+            }
+            catch (AggregateNotFoundException)
+            {
+                aggregate = PartecipatingToStudy.Create();
+            }
+
+            aggregate.ExpressInterest(command);
+
+            return aggregate;
         }
     }
 }
