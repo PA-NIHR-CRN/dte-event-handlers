@@ -17,8 +17,6 @@ using Domain.Contracts;
 using Evento;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
-using Infrastructure.Services.Stubs;
-using Infrastructure.Services.Fakes;
 using MessageListener.Base;
 using MessageListener.Extensions;
 using MessageListener.Handlers;
@@ -65,13 +63,26 @@ namespace MessageListener
         {
             // Configuration
             var awsSettings = Configuration.GetSection(AwsSettings.SectionName).Get<AwsSettings>();
-            
             if (awsSettings == null)
             {
                 throw new Exception("Could not bind the aws settings, please check configuration");
             }
             
+            var appSettings = Configuration.GetSection(AppSettings.SectionName).Get<AppSettings>();
+            if (appSettings == null)
+            {
+                throw new Exception("Could not bind the app settings, please check configuration");
+            }
+            
+            var eventStoreSettings = Configuration.GetSection(EventStoreSettings.SectionName).Get<EventStoreSettings>();
+            if (eventStoreSettings == null)
+            {
+                throw new Exception("Could not bind the event store settings, please check configuration");
+            }
+            
             services.AddSingleton(awsSettings);
+            services.AddSingleton(appSettings);
+            services.AddSingleton(eventStoreSettings);
             
             // Handlers
             services.UseSqsHandler<CloudEvent, CloudEventHandler>();
@@ -81,7 +92,6 @@ namespace MessageListener
             services.AddAWSService<IAmazonDynamoDB>(ServiceLifetime.Scoped);
             services.AddTransient<IClock, Clock>();
             services.AddTransient<IDomainRepositoryBuilder, InMemoryDomainRepositoryBuilder>();
-            services.AddTransient<IStudyRepository, StudyDynamoDbRepository>();
             services.AddTransient<IDomainRepository, InMemoryDomainRepository>();
             services.AddTransient<IStudyRegistrationRepository, StudyRegistrationDynamoDbRepository>();
             services.AddTransient<IStudyService, StudyService>();

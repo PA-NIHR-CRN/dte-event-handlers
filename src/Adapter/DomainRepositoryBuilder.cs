@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using Adapter.Contracts;
+using Common.Settings;
 using Evento;
 using Evento.Repository;
 using EventStore.ClientAPI;
@@ -13,32 +13,28 @@ namespace Adapter
 {
     public class DomainRepositoryBuilder : IDomainRepositoryBuilder
     {
-        private readonly Settings _settings;
+        private readonly AppSettings _appSettings;
+        private readonly EventStoreSettings _eventStoreSettings;
 
-        public DomainRepositoryBuilder()
+        public DomainRepositoryBuilder(AppSettings appSettings, EventStoreSettings eventStoreSettings)
         {
-            // TODO find a way to inject settings
-            _settings = new Settings
-            {
-                EventStore_ProcessorLink = "tcp://localhost:1113", 
-                EventStore_Username = "admin",
-                EventStore_Password = "changeit"
-            };
+            _appSettings = appSettings;
+            _eventStoreSettings = eventStoreSettings;
         }
         
         public IDomainRepository Build()
         {
-            var conn = BuilderForDomain("domain-dte", _settings,
+            var conn = BuilderForDomain("domain-dte", _eventStoreSettings,
                 ConnectionBuilder.BuildConnectionSettings(
-                    new UserCredentials(_settings.EventStore_Username, _settings.EventStore_Password), _settings.CertificateFqdn)).Build();
+                    new UserCredentials(_eventStoreSettings.Username, _eventStoreSettings.Password), _appSettings.CertificateFqdn)).Build();
             return new EventStoreDomainRepository("dte", conn);
         }
 
-        private static IConnectionBuilder BuilderForDomain(string connectionName, Settings settings,
+        private static IConnectionBuilder BuilderForDomain(string connectionName, EventStoreSettings eventStoreSettings,
             ConnectionSettings connSettings)
         {
-            var builderForDomain = new ConnectionBuilder(new Uri(settings.EventStore_ProcessorLink), connSettings,
-                connectionName, new UserCredentials(settings.EventStore_Username, settings.EventStore_Password), new Logger<ConnectionBuilder>(new LoggerFactory()));
+            var builderForDomain = new ConnectionBuilder(new Uri(eventStoreSettings.ProcessorLink), connSettings,
+                connectionName, new UserCredentials(eventStoreSettings.Username, eventStoreSettings.Password), new Logger<ConnectionBuilder>(new LoggerFactory()));
             return builderForDomain;
         }
         

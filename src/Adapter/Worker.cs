@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Adapter.Contracts;
-using Adapter.Mappers;
+using Common;
+using Common.Settings;
 using Domain.Aggregates;
 using Domain.Commands;
 using Domain.Contracts;
@@ -20,22 +21,22 @@ namespace Adapter
         private const int MaxLengthForLogs = 255;
         private readonly IDomainRepository _domainRepository;
         private readonly IStudyService _studyService;
-        private readonly Settings _settings;
         private readonly ILogger<Worker> _logger;
+        private readonly AppSettings _appSettings;
         private readonly Dictionary<string, Func<CloudEvent, Command>> _deserializers;
 
-        public Worker(IDomainRepository domainRepository, IStudyService studyService, IEnumerable<ICloudEventMapper> mappers, ILogger<Worker> logger)
+        public Worker(IDomainRepository domainRepository, IStudyService studyService, IEnumerable<ICloudEventMapper> mappers, ILogger<Worker> logger, AppSettings appSettings)
         {
             _domainRepository = domainRepository;
             _studyService = studyService;
-            _settings = new Settings(); // TODO find a way to inject settings?
             _deserializers = mappers.ToDictionary<ICloudEventMapper, string, Func<CloudEvent, Command>>(x => x.Schema.ToString().ToLower(), x => x.Map);
             _logger = logger;
+            _appSettings = appSettings;
         }
 
         public void Process(CloudEvent cloudRequest)
         {
-            DecryptMessageIfNeeded(cloudRequest, _settings.CryptoKey);
+            DecryptMessageIfNeeded(cloudRequest, _appSettings.CryptoKey);
             var requestDataScheme = cloudRequest.DataSchema.ToString().ToLower();
             var cloudRequestSource = cloudRequest.Source.ToString().ToLower();
 
