@@ -13,7 +13,6 @@ using Evento;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Infrastructure.Services.Fakes;
-using Infrastructure.Services.Stubs;
 using MessageListener.Base;
 using MessageListener.Extensions;
 using MessageListener.Handlers;
@@ -54,7 +53,7 @@ namespace MessageListener
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
             services.AddAWSService<IAmazonDynamoDB>(ServiceLifetime.Scoped);
             services.AddTransient<IClock, Clock>();
-            services.AddTransient<IDomainRepository, InMemoryDomainRepository>();
+            services.AddTransient<IDomainRepositoryBuilder, InMemoryDomainRepositoryBuilder>();
             services.AddTransient<IStudyRepository, StudyDynamoDbRepository>();
             services.AddTransient<IStudyService, StudyService>();
             services.AddTransient<IWorker, Worker>();
