@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using Adapter.Mappers;
 using Domain.Events;
 using Infrastructure.Services.Fakes;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using InMemoryDomainRepository = Tests.Fakes.InMemoryDomainRepository;
 
@@ -37,7 +39,7 @@ namespace Tests
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             var sut = new Worker(domainRepo, new FakeStudyService(new Logger<FakeStudyService>(new LoggerFactory())),
-                _mappers, new Logger<Worker>(new LoggerFactory()));
+                _mappers, new NullLogger<Worker>());
 
             // Act
             sut.Process(cloudRequest);
@@ -56,7 +58,7 @@ namespace Tests
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             var sut = new Worker(domainRepo, new FakeStudyService(new Logger<FakeStudyService>(new LoggerFactory())),
-                _mappers, new Logger<Worker>(new LoggerFactory()));
+                _mappers, new NullLogger<Worker>());
 
             // Act
             sut.Process(cloudRequest);
@@ -64,6 +66,24 @@ namespace Tests
             // Assert
             Assert.IsTrue(domainRepo.EventStore.Single().Value.Count == 1);
             Assert.IsTrue(domainRepo.EventStore.Single().Value[0] is InterestExpressedV1);
+        }
+        
+        [Test]
+        [Category("Integration")]
+        public void given_valid_expressinterest_command_I_expect_to_process_and_raise_interestexpressed_event_for_real()
+        {
+            // Assign
+            var cloudRequest = JsonSerializer.Deserialize<CloudEvent>(File.ReadAllText("./PayloadSamples/dte-web-expressinterest.json"),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        
+            var sut = new Worker(new DomainRepositoryBuilder().Build(), new FakeStudyService(new Logger<FakeStudyService>(new LoggerFactory())),
+                _mappers, new NullLogger<Worker>());
+        
+            // Act
+            sut.Process(cloudRequest);
+        
+            // Assert
+            Assert.Inconclusive("check in the db...");
         }
     }
 }

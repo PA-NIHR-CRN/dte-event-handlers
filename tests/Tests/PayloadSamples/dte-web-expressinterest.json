@@ -6,9 +6,9 @@
     "dataContentType": "application/json",
     "dataSchema": "expressinterest/1.0",
     "data": {
-        "correlationId": "561a660c-21ef-11ec-9621-0242ac130018",
-        "studyId": "123",   
+        "correlationId": "561a660c-21ef-11ec-9621-0242ac130014",
+        "studyId": "333",   
         "siteId": "321",
-        "userId": "riccardo.dinuzzo@paconsulting.com"
+        "userId": "ciao.dinuzzo@ciccio.com"
       }
   }

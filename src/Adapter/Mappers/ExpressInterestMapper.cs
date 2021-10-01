@@ -27,11 +27,11 @@ namespace Adapter.Mappers
             if (!request.DataSchema.Equals(Schema))
                 throw new ArgumentException($"While running Map in '{nameof(ExpressInterestMapper)}' I can't recognize the DataSchema:{request.DataSchema} (Source:{request.Source})");
             
-            var cmd = JsonSerializer.Deserialize<ExpressInterest>(request.Data.ToString(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            ExpressInterest cmd = JsonSerializer.Deserialize<ExpressInterest>(request.Data.ToString(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             
             cmd.Metadata = new Dictionary<string, string>
             {
-                {"$correlationId", cmd.StudyId},
+                {"$correlationId", cmd.CorrelationId},
                 {"source", request.Source.ToString()},
                 {"$applies", request.Time.ToString("O")},
                 {"cloudrequest-id", request.Id},

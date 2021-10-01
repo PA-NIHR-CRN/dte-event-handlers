@@ -20,6 +20,7 @@ namespace Adapter
         private const int MaxLengthForLogs = 255;
         private readonly IDomainRepository _domainRepository;
         private readonly IStudyService _studyService;
+        private readonly Settings _settings;
         private readonly ILogger<Worker> _logger;
         private readonly Dictionary<string, Func<CloudEvent, Command>> _deserializers;
 
@@ -27,12 +28,14 @@ namespace Adapter
         {
             _domainRepository = domainRepository;
             _studyService = studyService;
+            _settings = new Settings(); // TODO find a way to inject settings?
             _deserializers = mappers.ToDictionary<ICloudEventMapper, string, Func<CloudEvent, Command>>(x => x.Schema.ToString().ToLower(), x => x.Map);
             _logger = logger;
         }
 
         public void Process(CloudEvent cloudRequest)
         {
+            DecryptMessageIfNeeded(cloudRequest, _settings.CryptoKey);
             var requestDataScheme = cloudRequest.DataSchema.ToString().ToLower();
             var cloudRequestSource = cloudRequest.Source.ToString().ToLower();
 
@@ -92,6 +95,15 @@ namespace Adapter
                 else
                     _logger.LogInformation(
                         $"Handled CloudRequest Type:'{cloudRequest.Type}' Source:'{cloudRequestSource}' Schema:'{requestDataScheme}' with no events to save");
+            }
+        }
+        
+        private static void DecryptMessageIfNeeded(CloudEvent request, string cryptoKey)
+        {
+            if (!string.IsNullOrWhiteSpace(cryptoKey))
+            {
+                var cryptoService = new AesCryptoService(Convert.FromBase64String(cryptoKey));
+                request.Data = cryptoService.Decrypt(Convert.FromBase64String(request.Data));
             }
         }
 

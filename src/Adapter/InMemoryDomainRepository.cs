@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Evento;
 
-namespace Infrastructure.Services.Stubs
+namespace Adapter
 {
     public class InMemoryDomainRepository : IDomainRepository
     {
