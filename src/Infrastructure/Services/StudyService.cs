@@ -10,12 +10,12 @@ namespace Infrastructure.Services
 {
     public class StudyService : IStudyService
     {
-        private readonly IStudyRepository _studyRepository;
+        private readonly IStudyRegistrationRepository _studyRegistrationRepository;
         private readonly IClock _clock;
 
-        public StudyService(IStudyRepository studyRepository, IClock clock)
+        public StudyService(IStudyRegistrationRepository studyRegistrationRepository, IClock clock)
         {
-            _studyRepository = studyRepository;
+            _studyRegistrationRepository = studyRegistrationRepository;
             _clock = clock;
         }
         
@@ -37,7 +37,7 @@ namespace Infrastructure.Services
                 SubmittedAt = study.SubmittedAt
             };
 
-            await _studyRepository.SaveStudyRegistration(model);
+            await _studyRegistrationRepository.SaveStudyRegistration(model);
         }
     }
 }

@@ -3,7 +3,7 @@
     {
       "messageId": "19dd0b57-b21e-4ac1-bd88-01bbb068cb78",
       "receiptHandle": "MessageReceiptHandle",
-      "body": "{ \"source\": \"dte-web\", \"dataContentType\": \"application/json\", \"type\": \"SubmitStudyForApproval\", \"data\": { \"studyId\": \"1234\", \"title\": \"Study 2\", \"shortName\": \"Study 2 short name\", \"researcherId\": \"Researcher 1\", \"CorrelationId\": \"c4fd745a-1e62-4fc8-aa01-ba9efb75cbea\" }, \"dataSchema\": \"submitstudyforapproval/1.0\", \"CorrelationId\": \"c4fd745a-1e62-4fc8-aa01-ba9efb75cbea\" }",
+      "body": "{ \"source\": \"dte-web\", \"dataContentType\": \"application/json\", \"type\": \"SubmitStudyForApproval\", \"time\": \"2021-10-01T14:23:02\", \"data\": { \"studyId\": \"7809\", \"title\": \"Study 2\", \"shortName\": \"Study 2 short name\", \"researcherId\": \"Researcher 1\", \"CorrelationId\": \"c4fd745a-1e62-4fc8-aa01-ba9efb75cbea\" }, \"dataSchema\": \"submitstudyforapproval/1.0\", \"CorrelationId\": \"c4fd745a-1e62-4fc8-aa01-ba9efb75cbea\" }",
       "attributes": {
         "ApproximateReceiveCount": "1",
         "SentTimestamp": "1523232000000",

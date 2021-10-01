@@ -3,7 +3,7 @@ using Domain.Persistence.Models;
 
 namespace Adapter.Contracts
 {
-    public interface IStudyRepository
+    public interface IStudyRegistrationRepository
     {
         Task SaveStudyRegistration(StudyRegistration studyRegistration);
     }
