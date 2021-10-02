@@ -4,7 +4,6 @@ using Domain.Aggregates.Entities;
 
 namespace Domain.Persistence.Models
 {
-    [DynamoDBTable("nihr_dte_study_registration")]
     public class StudyRegistration
     {
         [DynamoDBHashKey("PK")] public string Pk { get; set; }

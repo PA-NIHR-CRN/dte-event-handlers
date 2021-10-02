@@ -18,7 +18,7 @@ Resources:
       MemorySize: 256
       Environment:
         Variables:
-          PARAM1: VALUE
+          AWS_SECRET_MANAGER_SECRET_NAME: PassInFromRunConfiguration
 
 #Outputs:
 #  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
