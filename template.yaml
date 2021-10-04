@@ -25,11 +25,11 @@ Resources:
 #  # Find out more about other implicit resources you can reference within SAM
 #  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
 #  MessageListener:
-#    Description: "API Gateway endpoint URL for Prod stage for StudyApi function"
+#    Description: "API Gateway endpoint URL for Prod stage for MessageListener function"
 #    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
-#  StudyApiFunction:
-#    Description: "StudyApi Lambda Function ARN"
-#    Value: !GetAtt StudyApiFunction.Arn
-##  StudyApiFunctionIamRole:
-##    Description: "Implicit IAM Role created for StudyApi function"
-##    Value: !GetAtt StudyApiFunctionRole.Arn
+#  MessageListenerFunction:
+#    Description: "MessageListener Lambda Function ARN"
+#    Value: !GetAtt MessageListenerFunction.Arn
+##  MessageListenerFunctionIamRole:
+##    Description: "Implicit IAM Role created for MessageListener function"
+##    Value: !GetAtt MessageListenerFunctionRole.Arn
