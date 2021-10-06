@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,8 +7,14 @@ using Adapter;
 using Adapter.Contracts;
 using Adapter.Mappers;
 using Common.Settings;
+using Domain.CommandHandlers;
+using Domain.Commands;
+using Domain.Contracts;
 using Domain.Events;
-using Infrastructure.Services.Fakes;
+using Domain.Factories;
+using Evento;
+using Infrastructure.Services.Stubs;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
@@ -18,6 +25,7 @@ namespace Tests
     public class WorkerProcessingTests
     {
         private IList<ICloudEventMapper> _mappers;
+        private IServiceProvider _serviceProvider;
 
         [SetUp]
         public void SetUp()
@@ -28,6 +36,14 @@ namespace Tests
                 new SubmitStudyForApprovalMapper(),
                 new ExpressInterestMapper()
             };
+
+            _serviceProvider = new ServiceCollection()
+                .AddTransient<IDomainRepository, InMemoryDomainRepository>()
+                .AddTransient<IStudyService>(provider => new FakeStudyService(new Logger<FakeStudyService>(new LoggerFactory())))
+                .AddTransient<IHandle<CompleteStep>, CompleteStepHandler>()
+                .AddTransient<IHandle<SubmitStudyForApproval>, SubmitStudyForApprovalHandler>()
+                .AddTransient<IHandle<ExpressInterest>, ExpressInterestHandler>()
+                .BuildServiceProvider();
         }
         
         [Test]
@@ -37,9 +53,10 @@ namespace Tests
             var domainRepo = new InMemoryDomainRepository();
             var cloudRequest = JsonSerializer.Deserialize<CloudEvent>(File.ReadAllText("./PayloadSamples/submitStudyForApproval.json"),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
+            var commandExecutor = new CommandExecutor(_serviceProvider, new Logger<CommandExecutor>(new LoggerFactory()));
+            
             var sut = new Worker(domainRepo, new FakeStudyService(new Logger<FakeStudyService>(new LoggerFactory())),
-                _mappers, new NullLogger<Worker>(), new AppSettings());
+                _mappers, new NullLogger<Worker>(), new AppSettings(), commandExecutor);
 
             // Act
             sut.Process(cloudRequest);
@@ -56,9 +73,10 @@ namespace Tests
             var domainRepo = new InMemoryDomainRepository();
             var cloudRequest = JsonSerializer.Deserialize<CloudEvent>(File.ReadAllText("./PayloadSamples/dte-web-expressinterest.json"),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
+            var commandExecutor = new CommandExecutor(_serviceProvider, new Logger<CommandExecutor>(new LoggerFactory()));
+            
             var sut = new Worker(domainRepo, new FakeStudyService(new Logger<FakeStudyService>(new LoggerFactory())),
-                _mappers, new NullLogger<Worker>(), new AppSettings());
+                _mappers, new NullLogger<Worker>(), new AppSettings(), commandExecutor);
 
             // Act
             sut.Process(cloudRequest);
@@ -78,9 +96,10 @@ namespace Tests
 
             var appSettings = new AppSettings();
             var eventStoreSettings = new EventStoreSettings();
-        
+            var commandExecutor = new CommandExecutor(_serviceProvider, new Logger<CommandExecutor>(new LoggerFactory()));
+            
             var sut = new Worker(new DomainRepositoryBuilder(appSettings, eventStoreSettings).Build(), new FakeStudyService(new Logger<FakeStudyService>(new LoggerFactory())),
-                _mappers, new NullLogger<Worker>(), new AppSettings());
+                _mappers, new NullLogger<Worker>(), new AppSettings(), commandExecutor);
         
             // Act
             sut.Process(cloudRequest);

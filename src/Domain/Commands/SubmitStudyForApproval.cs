@@ -18,6 +18,7 @@ namespace Domain.Commands
             ResearcherId = researcherId;
             Metadata = metadata;
         }
+        
         public string StudyId { get; set; }
         public string Title { get;  set;}
         public string ShortName { get;  set;}

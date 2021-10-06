@@ -13,7 +13,10 @@ using Amazon.SecretsManager.Model;
 using Common;
 using Common.Interfaces;
 using Common.Settings;
+using Domain.CommandHandlers;
+using Domain.Commands;
 using Domain.Contracts;
+using Domain.Factories;
 using Evento;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
@@ -84,8 +87,17 @@ namespace MessageListener
             services.AddSingleton(appSettings);
             services.AddSingleton(eventStoreSettings);
             
+            // Factories
+            services.AddTransient<ICommandExecutor, CommandExecutor>();
+            services.AddTransient<IHandle<SubmitStudyForApproval>, SubmitStudyForApprovalHandler>();
+            
             // Handlers
             services.UseSqsHandler<CloudEvent, CloudEventHandler>();
+            services.Scan(s => s
+                .FromAssemblies(Assembly.Load("Domain"))
+                .AddClasses(c => c.AssignableTo(typeof(IHandle<>)))
+                .AsImplementedInterfaces()
+                .WithTransientLifetime());
             
             // Others
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
