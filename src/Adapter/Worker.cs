@@ -5,33 +5,36 @@ using System.Text;
 using Adapter.Contracts;
 using Common;
 using Common.Settings;
-using Domain.Aggregates;
-using Domain.Commands;
 using Domain.Contracts;
+using Domain.Factories;
 using Evento;
 using Microsoft.Extensions.Logging;
 
 namespace Adapter
 {
-    public class Worker : IWorker,
-        IHandle<SubmitStudyForApproval>,
-        IHandle<CompleteStep>,
-        IHandle<ExpressInterest>
+    public class Worker : IWorker
     {
         private const int MaxLengthForLogs = 255;
         private readonly IDomainRepository _domainRepository;
         private readonly IStudyService _studyService;
         private readonly ILogger<Worker> _logger;
         private readonly AppSettings _appSettings;
+        private readonly ICommandExecutor _commandExecutor;
         private readonly Dictionary<string, Func<CloudEvent, Command>> _deserializers;
 
-        public Worker(IDomainRepository domainRepository, IStudyService studyService, IEnumerable<ICloudEventMapper> mappers, ILogger<Worker> logger, AppSettings appSettings)
+        public Worker(IDomainRepository domainRepository,
+            IStudyService studyService,
+            IEnumerable<ICloudEventMapper> mappers,
+            ILogger<Worker> logger,
+            AppSettings appSettings,
+            ICommandExecutor commandExecutor)
         {
             _domainRepository = domainRepository;
             _studyService = studyService;
             _deserializers = mappers.ToDictionary<ICloudEventMapper, string, Func<CloudEvent, Command>>(x => x.Schema.ToString().ToLower(), x => x.Map);
             _logger = logger;
             _appSettings = appSettings;
+            _commandExecutor = commandExecutor;
         }
 
         public void Process(CloudEvent cloudRequest)
@@ -60,14 +63,7 @@ namespace Adapter
             IAggregate aggregate = null;
             try
             {
-                aggregate = command switch
-                {
-                    SubmitStudyForApproval submitStudyForApproval => Handle(submitStudyForApproval),
-                    CompleteStep completeStep => Handle(completeStep),
-                    ExpressInterest expressInterest => Handle(expressInterest),
-                    _ => throw new Exception(
-                        $"Received CloudRequest Type:'{cloudRequest.Type}' Source:'{cloudRequestSource}' Schema:'{requestDataScheme}' but I can't find an available handler for it")
-                };
+                aggregate = _commandExecutor.Execute(command);
             }
             finally
             {
@@ -108,29 +104,6 @@ namespace Adapter
             }
         }
 
-        public IAggregate Handle(SubmitStudyForApproval command)
-        {
-            Studying aggregate;
-
-            try
-            {
-                aggregate = _domainRepository.GetById<Studying>(command.Metadata["$correlationId"]);
-            }
-            catch (AggregateNotFoundException)
-            {
-                aggregate = Studying.Create();
-            }
-
-            aggregate.SubmitForApproval(command, _studyService).Wait();
-
-            return aggregate;
-        }
-
-        public IAggregate Handle(CompleteStep command)
-        {
-            throw new NotImplementedException("TODO");
-        }
-
         private string HandleFailedEvent(Event uncommittedEvent, Command command)
         {
             var errMessage = string.Empty;
@@ -162,24 +135,6 @@ namespace Adapter
         private static string TruncateFieldIfNecessary(string field)
         {
             return field.Length > MaxLengthForLogs ? field[..MaxLengthForLogs] : field;
-        }
-
-        public IAggregate Handle(ExpressInterest command)
-        {
-            PartecipatingToStudy aggregate;
-
-            try
-            {
-                aggregate = _domainRepository.GetById<PartecipatingToStudy>(command.Metadata["$correlationId"]);
-            }
-            catch (AggregateNotFoundException)
-            {
-                aggregate = PartecipatingToStudy.Create();
-            }
-
-            aggregate.ExpressInterest(command);
-
-            return aggregate;
         }
     }
 }

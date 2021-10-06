@@ -4,7 +4,7 @@ using Evento;
 
 namespace Domain.Aggregates
 {
-    public class PartecipatingToStudy : AggregateBase
+    public class ParticipatingToStudy : AggregateBase
     {
         public override string AggregateId => _correlationId;
         private string _correlationId;
@@ -13,7 +13,7 @@ namespace Domain.Aggregates
         private string _siteId;
         private string _userId;
 
-        public PartecipatingToStudy()
+        public ParticipatingToStudy()
         {
             RegisterTransition<InterestExpressedV1>(Apply);
         }
@@ -22,14 +22,14 @@ namespace Domain.Aggregates
         {
             _correlationId = obj.Metadata[$"$correlationId"];
             _interestExpressed = true;
-            _siteId = obj.SiteId;
             _studyId = obj.StudyId;
+            _siteId = obj.SiteId;
             _userId = obj.UserId;
         }
 
-        public static PartecipatingToStudy Create()
+        public static ParticipatingToStudy Create()
         {
-            return new PartecipatingToStudy();
+            return new ParticipatingToStudy();
         }
 
         public void ExpressInterest(ExpressInterest cmd)

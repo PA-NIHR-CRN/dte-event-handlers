@@ -3,7 +3,7 @@ using Domain.Aggregates.Entities;
 using Domain.Contracts;
 using Microsoft.Extensions.Logging;
 
-namespace Infrastructure.Services.Fakes
+namespace Infrastructure.Services.Stubs
 {
     public class FakeStudyService : IStudyService
     {
