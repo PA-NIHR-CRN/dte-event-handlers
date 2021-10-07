@@ -5,17 +5,13 @@ using System.Linq;
 using System.Text.Json;
 using Adapter;
 using Adapter.Contracts;
+using Adapter.Handlers;
 using Adapter.Mappers;
 using Common.Settings;
-using Domain.CommandHandlers;
 using Domain.Commands;
-using Domain.Contracts;
 using Domain.Events;
-using Domain.Factories;
 using Evento;
-using Infrastructure.Services.Stubs;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using InMemoryDomainRepository = Tests.Fakes.InMemoryDomainRepository;
@@ -43,7 +39,6 @@ namespace Tests
 
             _serviceProvider = new ServiceCollection()
                 .AddSingleton<IDomainRepository, InMemoryDomainRepository>()
-                .AddTransient<IStudyService>(provider => new FakeStudyService(new Logger<FakeStudyService>(new LoggerFactory())))
                 .AddTransient<IHandle<CompleteStep>, CompleteStepHandler>()
                 .AddTransient<IHandle<SubmitStudyForApproval>, SubmitStudyForApprovalHandler>()
                 .AddTransient<IHandle<ExpressInterest>, ExpressInterestHandler>()
@@ -53,7 +48,7 @@ namespace Tests
             
             _domainRepo = _serviceProvider.GetService<IDomainRepository>() as InMemoryDomainRepository;
             var commandExecutor = new CommandExecutor(_serviceProvider);
-            _sut = new Worker(_domainRepo, new FakeStudyService(new Logger<FakeStudyService>(new LoggerFactory())), _mappers, new NullLogger<Worker>(), new AppSettings(), commandExecutor);
+            _sut = new Worker(_domainRepo, _mappers, new NullLogger<Worker>(), new AppSettings(), commandExecutor);
         }
         
         [Test]
@@ -126,8 +121,7 @@ namespace Tests
             var eventStoreSettings = new EventStoreSettings();
             var commandExecutor = new CommandExecutor(_serviceProvider);
             
-            var sut = new Worker(new DomainRepositoryBuilder(appSettings, eventStoreSettings).Build(), new FakeStudyService(new Logger<FakeStudyService>(new LoggerFactory())),
-                _mappers, new NullLogger<Worker>(), new AppSettings(), commandExecutor);
+            var sut = new Worker(new DomainRepositoryBuilder(appSettings, eventStoreSettings).Build(), _mappers, new NullLogger<Worker>(), new AppSettings(), commandExecutor);
         
             // Act
             sut.Process(cloudRequest);

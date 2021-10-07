@@ -6,20 +6,15 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Adapter;
 using Adapter.Contracts;
-using Amazon.DynamoDBv2;
+using Adapter.Handlers;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
 using Amazon.SecretsManager.Model;
 using Common;
 using Common.Interfaces;
 using Common.Settings;
-using Domain.CommandHandlers;
 using Domain.Commands;
-using Domain.Contracts;
-using Domain.Factories;
 using Evento;
-using Infrastructure.Repositories;
-using Infrastructure.Services;
 using MessageListener.Base;
 using MessageListener.Extensions;
 using MessageListener.Handlers;
@@ -65,12 +60,7 @@ namespace MessageListener
         protected override void ConfigureServices(IServiceCollection services, IExecutionEnvironment executionEnvironment)
         {
             // Configuration
-            var awsSettings = Configuration.GetSection(AwsSettings.SectionName).Get<AwsSettings>();
-            if (awsSettings == null)
-            {
-                throw new Exception("Could not bind the aws settings, please check configuration");
-            }
-            
+
             var appSettings = Configuration.GetSection(AppSettings.SectionName).Get<AppSettings>();
             if (appSettings == null)
             {
@@ -83,7 +73,6 @@ namespace MessageListener
                 throw new Exception("Could not bind the event store settings, please check configuration");
             }
             
-            services.AddSingleton(awsSettings);
             services.AddSingleton(appSettings);
             services.AddSingleton(eventStoreSettings);
             
@@ -101,12 +90,9 @@ namespace MessageListener
             
             // Others
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
-            services.AddAWSService<IAmazonDynamoDB>(ServiceLifetime.Scoped);
             services.AddTransient<IClock, Clock>();
             services.AddTransient<IDomainRepositoryBuilder, InMemoryDomainRepositoryBuilder>();
             services.AddTransient<IDomainRepository, InMemoryDomainRepository>();
-            services.AddTransient<IStudyRegistrationRepository, StudyRegistrationDynamoDbRepository>();
-            services.AddTransient<IStudyService, StudyService>();
             services.AddTransient<IWorker, Worker>();
 
             // Mappers

@@ -43,7 +43,6 @@
     <ItemGroup>
       <ProjectReference Include="..\..\src\Adapter\Adapter.csproj" />
       <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
-      <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

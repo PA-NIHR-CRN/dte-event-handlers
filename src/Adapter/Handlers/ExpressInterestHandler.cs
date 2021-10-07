@@ -2,7 +2,7 @@ using Domain.Aggregates;
 using Domain.Commands;
 using Evento;
 
-namespace Domain.CommandHandlers
+namespace Adapter.Handlers
 {
     public class ExpressInterestHandler : IHandle<ExpressInterest>
     {

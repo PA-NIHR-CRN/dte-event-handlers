@@ -1,19 +1,16 @@
 using Domain.Aggregates;
 using Domain.Commands;
-using Domain.Contracts;
 using Evento;
 
-namespace Domain.CommandHandlers
+namespace Adapter.Handlers
 {
     public class ApproveStudyCommandHandler : IHandle<ApproveStudyCommand>
     {
         private readonly IDomainRepository _domainRepository;
-        private readonly IStudyService _studyService;
 
-        public ApproveStudyCommandHandler(IDomainRepository domainRepository, IStudyService studyService)
+        public ApproveStudyCommandHandler(IDomainRepository domainRepository)
         {
             _domainRepository = domainRepository;
-            _studyService = studyService;
         }
         
         public IAggregate Handle(ApproveStudyCommand command)

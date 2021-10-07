@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Domain.Aggregates.Entities;
 using Domain.Commands;
-using Domain.Contracts;
 using Domain.Events;
 using Evento;
 

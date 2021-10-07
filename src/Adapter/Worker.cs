@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Adapter.Contracts;
+using Adapter.Handlers;
 using Common;
 using Common.Settings;
-using Domain.Contracts;
-using Domain.Factories;
 using Evento;
 using Microsoft.Extensions.Logging;
 
@@ -16,21 +15,18 @@ namespace Adapter
     {
         private const int MaxLengthForLogs = 255;
         private readonly IDomainRepository _domainRepository;
-        private readonly IStudyService _studyService;
         private readonly ILogger<Worker> _logger;
         private readonly AppSettings _appSettings;
         private readonly ICommandExecutor _commandExecutor;
         private readonly Dictionary<string, Func<CloudEvent, Command>> _deserializers;
 
         public Worker(IDomainRepository domainRepository,
-            IStudyService studyService,
             IEnumerable<ICloudEventMapper> mappers,
             ILogger<Worker> logger,
             AppSettings appSettings,
             ICommandExecutor commandExecutor)
         {
             _domainRepository = domainRepository;
-            _studyService = studyService;
             _deserializers = mappers.ToDictionary<ICloudEventMapper, string, Func<CloudEvent, Command>>(x => x.Schema.ToString().ToLower(), x => x.Map);
             _logger = logger;
             _appSettings = appSettings;

@@ -1,9 +1,8 @@
 using Domain.Aggregates;
 using Domain.Commands;
-using Domain.Contracts;
 using Evento;
 
-namespace Domain.CommandHandlers
+namespace Adapter.Handlers
 {
     public class SubmitStudyForApprovalHandler : IHandle<SubmitStudyForApproval>
     {

@@ -3,7 +3,7 @@ using Domain.Commands;
 using Evento;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Domain.Factories
+namespace Adapter.Handlers
 {
     public interface ICommandExecutor
     {

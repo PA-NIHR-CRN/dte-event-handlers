@@ -38,6 +38,5 @@
   <ItemGroup>
     <ProjectReference Include="..\Adapter\Adapter.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 </Project>
