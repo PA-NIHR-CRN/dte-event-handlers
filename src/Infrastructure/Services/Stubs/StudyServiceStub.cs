@@ -15,12 +15,7 @@ namespace Infrastructure.Services.Stubs
             _logger = logger;
         }
 
-        public async Task<Study> GetStudyRegistration(string studyId)
-        {
-            return await Task.FromResult(_study);
-        }
-
-        public Task SaveStudyRegistration(Study study)
+        public Task SaveWaitingForApprovalStudy(Study study)
         {
             _logger.LogInformation($"Saving study: {study.Id}");
             _study = study;

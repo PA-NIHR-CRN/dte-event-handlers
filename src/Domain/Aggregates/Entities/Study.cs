@@ -31,6 +31,6 @@ namespace Domain.Aggregates.Entities
         public DateTime? ApprovedAtUtc { get; }
         public string SubmissionResearcherId { get; }
         public List<string> Researchers { get; }
-        public StudyRegistrationStatus StudyRegistrationStatus { get; }
+        public StudyRegistrationStatus StudyRegistrationStatus { get; set; }
     }
 }

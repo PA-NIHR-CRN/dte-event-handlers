@@ -5,7 +5,6 @@ namespace Domain.Contracts
 {
     public interface IStudyService
     {
-        Task<Study> GetStudyRegistration(string studyId);
-        Task SaveStudyRegistration(Study study);
+        Task SaveWaitingForApprovalStudy(Study study);
     }
 }

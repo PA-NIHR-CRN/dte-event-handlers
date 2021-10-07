@@ -5,9 +5,10 @@
   "type": "SubmitStudyForApproval",
   "dataSchema": "submitstudyforapproval/1.0",
   "data": {
-    "StudyId": "1",
-    "Title": "health for everyone",
-    "ShortName": "Some short name",
-    "ResearcherId": "123"
+    "correlationId": "561a660c-21ef-11ec-9621-0242ac130015",
+    "studyId": "1",
+    "title": "health for everyone",
+    "shortName": "Some short name",
+    "researcherId": "123"
   }
 }

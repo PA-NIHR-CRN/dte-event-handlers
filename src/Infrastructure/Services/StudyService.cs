@@ -18,13 +18,8 @@ namespace Infrastructure.Services
             _studyRegistrationRepository = studyRegistrationRepository;
             _clock = clock;
         }
-        
-        public async Task<Study> GetStudyRegistration(string studyId)
-        {
-            throw new System.NotImplementedException();
-        }
 
-        public async Task SaveStudyRegistration(Study study)
+        public async Task SaveWaitingForApprovalStudy(Study study)
         {
             var model = new StudyRegistration
             {

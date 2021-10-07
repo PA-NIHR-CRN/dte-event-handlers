@@ -8,12 +8,10 @@ namespace Domain.CommandHandlers
     public class SubmitStudyForApprovalHandler : IHandle<SubmitStudyForApproval>
     {
         private readonly IDomainRepository _domainRepository;
-        private readonly IStudyService _studyService;
 
-        public SubmitStudyForApprovalHandler(IDomainRepository domainRepository, IStudyService studyService)
+        public SubmitStudyForApprovalHandler(IDomainRepository domainRepository)
         {
             _domainRepository = domainRepository;
-            _studyService = studyService;
         }
         
         public IAggregate Handle(SubmitStudyForApproval command)
@@ -29,7 +27,7 @@ namespace Domain.CommandHandlers
                 aggregate = Studying.Create();
             }
 
-            aggregate.SubmitForApproval(command, _studyService).Wait();
+            aggregate.SubmitForApproval(command);
 
             return aggregate;
         }

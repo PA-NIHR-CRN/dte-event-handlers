@@ -1,0 +1,12 @@
+{
+    "type": "ApproveStudy",
+    "source": "dte-web",
+    "id": "0bd43244-21ef-11ec-9621-0242ac130002",
+    "time": "2021-09-30T13:04:28.095Z",
+    "dataContentType": "application/json",
+    "dataSchema": "approvestudyrequest/1.0",
+    "data": {
+        "correlationId": "561a660c-21ef-11ec-9621-0242ac130015",
+        "studyId": "12345"
+      }
+  }

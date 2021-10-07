@@ -13,24 +13,34 @@ namespace Domain.Aggregates
         public override string AggregateId => CorrelationId;
         private string CorrelationId { get; set; }
         private Study _study;
-
         public Studying()
         {
             RegisterTransition<StudyWaitingForApprovalSubmittedV1>(Apply);
+            RegisterTransition<StudyApprovedV1>(Apply);
+            RegisterTransition<StudyRejectedV1>(Apply);
         }
-
-        private void Apply(StudyWaitingForApprovalSubmittedV1 obj)
+        private void Apply(StudyWaitingForApprovalSubmittedV1 @event)
         {
-            CorrelationId = obj.Metadata["$correlationId"];
-            _study = new Study(obj.StudyId, obj.Title, obj.ShortName, DateTime.Parse(obj.Metadata["$applies"]).ToUniversalTime(), null, obj.ResearcherId, null, StudyRegistrationStatus.WaitingForApproval);
+            CorrelationId = @event.Metadata["$correlationId"];
+            _study = new Study(@event.StudyId, @event.Title, @event.ShortName, DateTime.Parse(@event.Metadata["$applies"]).ToUniversalTime(), null, @event.ResearcherId, null, StudyRegistrationStatus.WaitingForApproval);
         }
-
+        private void Apply(StudyApprovedV1 @event)
+        {
+            CorrelationId = @event.Metadata["$correlationId"];
+            _study.StudyRegistrationStatus = StudyRegistrationStatus.Approved;
+        }
+        
+        private void Apply(StudyRejectedV1 @event)
+        {
+            CorrelationId = @event.Metadata["$correlationId"];
+            _study.StudyRegistrationStatus = StudyRegistrationStatus.Rejected;
+        }
         public static Studying Create()
         {
             return new Studying();
         }
 
-        public async Task SubmitForApproval(SubmitStudyForApproval cmd, IStudyService studyService)
+        public void SubmitForApproval(SubmitStudyForApproval cmd)
         {
             // Idempotency
             if (_study != null)
@@ -44,11 +54,23 @@ namespace Domain.Aggregates
             Ensure.NotNullOrWhiteSpace(cmd.ShortName, nameof(cmd.ShortName));
             Ensure.NotNullOrWhiteSpace(cmd.ResearcherId, nameof(cmd.ResearcherId));
 
-            var study = new Study(cmd.StudyId, cmd.Title, cmd.ShortName, DateTime.Parse(cmd.Metadata["$applies"]), null, cmd.ResearcherId, null, StudyRegistrationStatus.WaitingForApproval);
+            RaiseEvent(new StudyWaitingForApprovalSubmittedV1(cmd.StudyId, cmd.Title, cmd.ShortName, cmd.ResearcherId, cmd.Metadata));
+        }
+
+        public void ApproveStudy(ApproveStudyCommand cmd)
+        {
+            Ensure.NotNull(cmd, nameof(cmd));
+            Ensure.IsPositiveLong(cmd.StudyId, nameof(cmd.StudyId));
             
-            await studyService.SaveStudyRegistration(study);
+            RaiseEvent(new StudyApprovedV1(cmd.StudyId, cmd.Metadata));
+        }
+
+        public void RejectStudy(RejectStudyCommand cmd)
+        {
+            Ensure.NotNull(cmd, nameof(cmd));
+            Ensure.IsPositiveLong(cmd.StudyId, nameof(cmd.StudyId));
             
-            RaiseEvent(new StudyWaitingForApprovalSubmittedV1(study.Id, study.Title, study.ShortName, study.SubmissionResearcherId, cmd.Metadata));
+            RaiseEvent(new StudyRejectedV1(cmd.StudyId, cmd.Metadata));
         }
     }
 }
