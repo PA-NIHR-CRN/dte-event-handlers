@@ -32,6 +32,12 @@
       <None Update="PayloadSamples\dte-web-approvestudy.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="PayloadSamples\Study\reject_study.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="PayloadSamples\Study\submit_study_for_approval.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
       <None Update="PayloadSamples\Study\submit_study_and_approve.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>

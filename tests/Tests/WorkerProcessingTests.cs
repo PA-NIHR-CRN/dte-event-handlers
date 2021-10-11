@@ -110,6 +110,25 @@ namespace Tests
             Assert.IsAssignableFrom<StudyRejectedV1>(_domainRepo.EventStore.Single().Value[1]);
         }
 
+        [Test]
+        public void given_valid_rejectstudy_command_in_wrong_order_I_expect_to_process_and_raise_rejectingstudy_event()
+        {
+            // Assign
+            var rejectStudy = ReadCloudEvent("./PayloadSamples/Study/reject_study.json");
+            var submitStudy = ReadCloudEvent("./PayloadSamples/Study/submit_study_for_approval.json");
+
+            // Act
+            Assert.Throws(typeof(AggregateNotFoundException), delegate { _sut.Process(rejectStudy); });
+            _sut.Process(submitStudy);
+            _sut.Process(rejectStudy);
+            _sut.Process(rejectStudy);
+
+            // Assert
+            Assert.AreEqual(2, _domainRepo.EventStore.Single().Value.Count);
+            Assert.IsAssignableFrom<StudyWaitingForApprovalSubmittedV1>(_domainRepo.EventStore.Single().Value[0]);
+            Assert.IsAssignableFrom<StudyRejectedV1>(_domainRepo.EventStore.Single().Value[1]);
+        }
+
         // [Test]
         // [Category("Integration")]
         public void given_valid_expressinterest_command_I_expect_to_process_and_raise_interestexpressed_event_for_real()

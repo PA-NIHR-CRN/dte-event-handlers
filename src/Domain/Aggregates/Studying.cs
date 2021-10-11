@@ -57,6 +57,9 @@ namespace Domain.Aggregates
 
         public void ApproveStudy(ApproveStudyCommand cmd)
         {
+            Ensure.NotNull(_study, "Study has not yet been created and cannot be approved.");
+            if (_study.StudyRegistrationStatus == StudyRegistrationStatus.Approved) return;
+
             Ensure.NotNull(cmd, nameof(cmd));
             Ensure.IsPositiveLong(cmd.StudyId, nameof(cmd.StudyId));
             
@@ -65,6 +68,9 @@ namespace Domain.Aggregates
 
         public void RejectStudy(RejectStudyCommand cmd)
         {
+            Ensure.NotNull(_study, "Study has not yet been created and cannot be rejected.");
+            if (_study.StudyRegistrationStatus == StudyRegistrationStatus.Rejected) return;
+
             Ensure.NotNull(cmd, nameof(cmd));
             Ensure.IsPositiveLong(cmd.StudyId, nameof(cmd.StudyId));
             
