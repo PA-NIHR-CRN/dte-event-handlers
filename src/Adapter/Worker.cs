@@ -56,6 +56,7 @@ namespace Adapter
                     $"I received CloudRequest Type:'{cloudRequest.Type}' Source:'{cloudRequestSource}' Schema:'{requestDataScheme}' but I was unable to deserialize a Command out of it");
             }
 
+            _logger.LogInformation($"Using Domain Repository: {_domainRepository.GetType().Name}");
             IAggregate aggregate = null;
             try
             {
@@ -71,8 +72,7 @@ namespace Adapter
                     var error = new StringBuilder();
                     foreach (var uncommittedEvent in uncommittedEventsList)
                     {
-                        _logger.LogInformation(
-                            $"Handled '{cloudRequest.Type}' AggregateId:'{aggregate.AggregateId}' [0]Resulted event:'{uncommittedEvent.GetType()}'");
+                        _logger.LogInformation($"Handled '{cloudRequest.Type}' AggregateId:'{aggregate.AggregateId}' [0]Resulted event:'{uncommittedEvent.GetType()}'");
 
                         if (uncommittedEvent.GetType().ToString().EndsWith("FailedV1"))
                         {

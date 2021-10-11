@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 using Adapter;
 using Adapter.Contracts;
 using Adapter.Handlers;
+using Amazon.Extensions.NETCore.Setup;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
 using Amazon.SecretsManager.Model;
+using Amazon.SQS;
 using Common;
 using Common.Interfaces;
 using Common.Settings;
-using Domain.Commands;
 using Evento;
 using MessageListener.Base;
 using MessageListener.Extensions;
@@ -60,7 +61,6 @@ namespace MessageListener
         protected override void ConfigureServices(IServiceCollection services, IExecutionEnvironment executionEnvironment)
         {
             // Configuration
-
             var appSettings = Configuration.GetSection(AppSettings.SectionName).Get<AppSettings>();
             if (appSettings == null)
             {
@@ -73,17 +73,42 @@ namespace MessageListener
                 throw new Exception("Could not bind the event store settings, please check configuration");
             }
             
+            var awsSettings = Configuration.GetSection(AwsSettings.SectionName).Get<AwsSettings>();
+            if (awsSettings == null)
+            {
+                throw new Exception("Could not bind the aws settings, please check configuration");
+            }
+            
             services.AddSingleton(appSettings);
             services.AddSingleton(eventStoreSettings);
+            services.AddSingleton(awsSettings);
+            
+            // AWS
+            var awsOptions = new AWSOptions();
+            
+            if (!string.IsNullOrWhiteSpace(awsSettings.ServiceUrl))
+            {
+                awsOptions.DefaultClientConfig.ServiceURL = awsSettings.ServiceUrl;
+            }
+            
+            services.AddAWSService<IAmazonSQS>(awsOptions);
             
             // Factories
             services.AddTransient<ICommandExecutor, CommandExecutor>();
-            services.AddTransient<IHandle<SubmitStudyForApproval>, SubmitStudyForApprovalHandler>();
             
-            // Handlers
-            services.UseSqsHandler<CloudEvent, CloudEventHandler>();
+            // main sqs message Handlers
+            if (executionEnvironment.RunAsQueueListener)
+            {
+                services.UseSqsHandler<ManualSqsQueueUrlMessage, ManualCloudEventHandler>();
+            }
+            else
+            {
+                services.UseSqsHandler<CloudEvent, CloudEventHandler>();
+            }
+
+            // Command handlers
             services.Scan(s => s
-                .FromAssemblies(Assembly.Load("Domain"))
+                .FromAssemblies(Assembly.Load("Adapter"))
                 .AddClasses(c => c.AssignableTo(typeof(IHandle<>)))
                 .AsImplementedInterfaces()
                 .WithTransientLifetime());
@@ -91,8 +116,17 @@ namespace MessageListener
             // Others
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
             services.AddTransient<IClock, Clock>();
-            services.AddTransient<IDomainRepositoryBuilder, InMemoryDomainRepositoryBuilder>();
-            services.AddTransient<IDomainRepository, InMemoryDomainRepository>();
+            
+            if (executionEnvironment.IsProduction())
+            {
+                var builder = new DomainRepositoryBuilder(appSettings, eventStoreSettings);
+                services.AddTransient<IDomainRepository>(_ => builder.Build());
+            }
+            else
+            {
+                services.AddTransient<IDomainRepository, InMemoryDomainRepository>();
+            }
+            
             services.AddTransient<IWorker, Worker>();
 
             // Mappers

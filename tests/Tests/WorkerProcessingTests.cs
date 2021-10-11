@@ -137,10 +137,27 @@ namespace Tests
             var cloudRequest = ReadCloudEvent("./PayloadSamples/dte-web-expressinterest.json");
 
             var appSettings = new AppSettings();
-            var eventStoreSettings = new EventStoreSettings();
+            var eventStoreSettings = new EventStoreSettings
+            {
+                ProcessorLink = "tcp://localhost:1113", 
+                Username = "",
+                Password = ""
+            };
+
+            var builder = new DomainRepositoryBuilder(appSettings, eventStoreSettings);
+            var domainRepository = builder.Build();
+            _serviceProvider = new ServiceCollection()
+                .AddSingleton<IDomainRepository>(_ => domainRepository)
+                .AddTransient<IHandle<CompleteStep>, CompleteStepHandler>()
+                .AddTransient<IHandle<SubmitStudyForApproval>, SubmitStudyForApprovalHandler>()
+                .AddTransient<IHandle<ExpressInterest>, ExpressInterestHandler>()
+                .AddTransient<IHandle<ApproveStudyCommand>, ApproveStudyCommandHandler>()
+                .AddTransient<IHandle<RejectStudyCommand>, RejectStudyCommandHandler>()
+                .BuildServiceProvider();
+            
             var commandExecutor = new CommandExecutor(_serviceProvider);
             
-            var sut = new Worker(new DomainRepositoryBuilder(appSettings, eventStoreSettings).Build(), _mappers, new NullLogger<Worker>(), new AppSettings(), commandExecutor);
+            var sut = new Worker(domainRepository, _mappers, new NullLogger<Worker>(), new AppSettings(), commandExecutor);
         
             // Act
             sut.Process(cloudRequest);

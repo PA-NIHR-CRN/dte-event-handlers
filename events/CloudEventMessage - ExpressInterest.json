@@ -1,0 +1,20 @@
+{
+  "Records": [
+    {
+      "messageId": "19dd0b57-b21e-4ac1-bd88-01bbb068cb78",
+      "receiptHandle": "MessageReceiptHandle",
+      "body": "{ \"type\": \"ExpressInterest\", \"source\": \"dte-web\", \"id\": \"0bd43244-21ef-11ec-9621-0242ac130002\", \"time\": \"2021-09-30T13:04:28.097Z\", \"dataContentType\": \"application/json\", \"dataSchema\": \"expressinterest/1.0\", \"data\": { \"correlationId\": \"561a660c-21ef-11ec-9621-0242ac130025\", \"studyId\": \"333\", \"siteId\": \"321\", \"userId\": \"ciao.dinuzzo@ciccio.com\" } }",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1523232000000",
+        "SenderId": "123456789012",
+        "ApproximateFirstReceiveTimestamp": "1523232000001"
+      },
+      "messageAttributes": {},
+      "md5OfBody": "7b270e59b47ff90a553787216d55d91d",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:{partition}:sqs:{region}:123456789012:MyQueue",
+      "awsRegion": "{region}"
+    }
+  ]
+}

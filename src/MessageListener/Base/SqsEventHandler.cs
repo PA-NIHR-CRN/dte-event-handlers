@@ -34,7 +34,6 @@ namespace MessageListener.Base
                     throw new InvalidOperationException($"No IMessageHandler<{typeof(TMessage).Name}> could be found.");
                 }
 
-                _logger.LogInformation("Invoking notification handler");
                 await handler.HandleAsync(message, context).ConfigureAwait(false);
             }
         }

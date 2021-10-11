@@ -1,0 +1,35 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="[Local] Execute Message" type="aws.lambda" factoryName="Local">
+    <option name="credentialProviderId" value="profile:default" />
+    <option name="regionId" value="eu-west-1" />
+    <option name="debugHost" value="localhost" />
+    <option name="environmentVariables">
+      <map>
+        <entry key="AWS_SECRET_MANAGER_SECRET_NAME" value="nihr_dte_message_listener_sandbox" />
+        <entry key="Environment" value="Production" />
+      </map>
+    </option>
+    <option name="handler" />
+    <option name="image" value="false" />
+    <option name="logicalFunctionName" value="DteMessageListenerFunction" />
+    <option name="memorySize" value="128" />
+    <option name="pathMappings">
+      <list />
+    </option>
+    <option name="platform" />
+    <option name="runtime" />
+    <option name="templateFile" value="$PROJECT_DIR$/template.yaml" />
+    <option name="timeout" value="300" />
+    <option name="useTemplate" value="true" />
+    <option name="input" value="$PROJECT_DIR$/events/CloudEventMessage - ExpressInterest.json" />
+    <option name="inputIsFile" value="true" />
+    <sam>
+      <option name="additionalBuildArgs" value="" />
+      <option name="additionalLocalArgs" value="" />
+      <option name="buildInContainer" value="false" />
+      <option name="dockerNetwork" value="bridge" />
+      <option name="skipImagePull" value="false" />
+    </sam>
+    <method v="2" />
+  </configuration>
+</component>

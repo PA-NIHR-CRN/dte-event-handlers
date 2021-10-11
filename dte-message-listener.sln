@@ -120,4 +120,8 @@ Global
 		{58997102-1946-417E-B293-0E689EBBDEB2} = {8810A240-2CCF-4E9D-AF4C-346F45C839AC}
 		{4EBE05D6-7BB5-43C1-B223-D0D930F06462} = {CDADFA5C-896C-44D5-8CE5-8BC81A5366EC}
 	EndGlobalSection
+	GlobalSection(RiderSharedRunConfigurations) = postSolution
+		File = .rider-run-configuration\[Local] Execute Message.run.xml
+		File = .rider-run-configuration\[Local] Execute Sqs listener.run.xml
+	EndGlobalSection
 EndGlobal

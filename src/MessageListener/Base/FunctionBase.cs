@@ -18,7 +18,8 @@ namespace MessageListener.Base
             var executionEnvironment = new LambdaExecutionEnvironment
             {
                 EnvironmentName = Configuration["Environment"],
-                IsLambda = Configuration["LAMBDA_RUNTIME_DIR"] != null
+                IsLambda = Configuration["LAMBDA_RUNTIME_DIR"] != null,
+                RunAsQueueListener = Configuration["RunAsQueueListener"] == "true" 
             };
 
             services.AddSingleton<IExecutionEnvironment>(executionEnvironment);
@@ -27,6 +28,8 @@ namespace MessageListener.Base
             ConfigureServices(services, executionEnvironment);
             ServiceProvider = services.BuildServiceProvider();
             Logger = ServiceProvider.GetRequiredService<ILogger<FunctionBase>>();
+            Logger.LogInformation($"***** Running environment: {executionEnvironment.EnvironmentName}");
+            Logger.LogInformation($"***** Run As Queue Listener: {executionEnvironment.RunAsQueueListener}");
         }
 
         protected virtual void Configure(IConfigurationBuilder builder) { }

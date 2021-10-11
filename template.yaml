@@ -5,7 +5,7 @@ Description: >
 
 Globals:
   Function:
-    Timeout: 10
+    Timeout: 900
 
 Resources:
   DteMessageListenerFunction:
@@ -19,6 +19,8 @@ Resources:
       Environment:
         Variables:
           AWS_SECRET_MANAGER_SECRET_NAME: PassInFromRunConfiguration
+          Environment: PassInFromRunConfiguration
+          RunAsQueueListener: PassInFromRunConfiguration
 
 #Outputs:
 #  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
