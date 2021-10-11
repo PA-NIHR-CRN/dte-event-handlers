@@ -1,9 +1,6 @@
-name: Dev Build
+name: QA Build
 
 on:
-  push:
-    branches: [ master ]
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -38,4 +35,4 @@ jobs:
       - name: Deploy
         run: |
           dotnet tool install -g Amazon.Lambda.Tools
-          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/MessageListener ${{ secrets.LAMBDA_NAME_DEV }} --function-role ${{ secrets.LAMBDA_ROLE }} -ev "AWS_SECRET_MANAGER_SECRET_NAME=${{ secrets.AWS_SECRET_MANAGER_SECRET_NAME_DEV }}"
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/MessageListener ${{ secrets.LAMBDA_NAME_QA }} --function-role ${{ secrets.LAMBDA_ROLE }} -ev "AWS_SECRET_MANAGER_SECRET_NAME=${{ secrets.AWS_SECRET_MANAGER_SECRET_NAME_QA }}"
