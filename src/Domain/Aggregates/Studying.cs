@@ -3,6 +3,7 @@ using Domain.Aggregates.Entities;
 using Domain.Commands;
 using Domain.Events;
 using Evento;
+using Researcher = Domain.Aggregates.Entities.Researcher;
 
 namespace Domain.Aggregates
 {
@@ -17,22 +18,32 @@ namespace Domain.Aggregates
             RegisterTransition<StudyApprovedV1>(Apply);
             RegisterTransition<StudyRejectedV1>(Apply);
         }
-        private void Apply(StudyWaitingForApprovalSubmittedV1 @event)
+        
+        private void Apply(StudyWaitingForApprovalSubmittedV1 evt)
         {
-            CorrelationId = @event.Metadata["$correlationId"];
-            _study = new Study(@event.StudyId, @event.Title, @event.ShortName, DateTime.Parse(@event.Metadata["$applies"]).ToUniversalTime(), null, @event.ResearcherId, null, StudyRegistrationStatus.WaitingForApproval);
+            CorrelationId = evt.Metadata["$correlationId"];
+            _study = new Study(evt.StudyId,
+                evt.Title,
+                evt.ShortName,
+                DateTime.Parse(evt.Metadata["$applies"]).ToUniversalTime(),
+                null,
+                new Researcher(evt.ResearcherFirstname, evt.ResearcherLastname, evt.ResearcherEmail),
+                null,
+                evt.RegistrationStatus);
         }
-        private void Apply(StudyApprovedV1 @event)
+        
+        private void Apply(StudyApprovedV1 evt)
         {
-            CorrelationId = @event.Metadata["$correlationId"];
+            CorrelationId = evt.Metadata["$correlationId"];
             _study.StudyRegistrationStatus = StudyRegistrationStatus.Approved;
         }
         
-        private void Apply(StudyRejectedV1 @event)
+        private void Apply(StudyRejectedV1 evt)
         {
-            CorrelationId = @event.Metadata["$correlationId"];
+            CorrelationId = evt.Metadata["$correlationId"];
             _study.StudyRegistrationStatus = StudyRegistrationStatus.Rejected;
         }
+        
         public static Studying Create()
         {
             return new Studying();
@@ -50,9 +61,11 @@ namespace Domain.Aggregates
             Ensure.IsPositiveLong(cmd.StudyId, nameof(cmd.StudyId));
             Ensure.NotNullOrWhiteSpace(cmd.Title, nameof(cmd.Title));
             Ensure.NotNullOrWhiteSpace(cmd.ShortName, nameof(cmd.ShortName));
-            Ensure.NotNullOrWhiteSpace(cmd.ResearcherId, nameof(cmd.ResearcherId));
+            Ensure.NotNullOrWhiteSpace(cmd.ResearcherFirstname, nameof(cmd.ResearcherFirstname));
+            Ensure.NotNullOrWhiteSpace(cmd.ResearcherLastname, nameof(cmd.ResearcherLastname));
+            Ensure.NotNullOrWhiteSpace(cmd.ResearcherEmail, nameof(cmd.ResearcherEmail));
 
-            RaiseEvent(new StudyWaitingForApprovalSubmittedV1(cmd.StudyId, cmd.Title, cmd.ShortName, cmd.ResearcherId, cmd.Metadata));
+            RaiseEvent(new StudyWaitingForApprovalSubmittedV1(cmd.StudyId, cmd.Title, cmd.ShortName, cmd.ResearcherFirstname, cmd.ResearcherLastname, cmd.ResearcherEmail, StudyRegistrationStatus.WaitingForApproval, cmd.Metadata));
         }
 
         public void ApproveStudy(ApproveStudyCommand cmd)

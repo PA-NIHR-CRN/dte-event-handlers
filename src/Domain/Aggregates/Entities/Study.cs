@@ -10,7 +10,7 @@ namespace Domain.Aggregates.Entities
             string shortName,
             DateTime submittedAt,
             DateTime? approvedAtUtc,
-            string submissionResearcherId,
+            Researcher submissionResearcher,
             List<string> researchers,
             StudyRegistrationStatus studyRegistrationStatus)
         {
@@ -19,7 +19,7 @@ namespace Domain.Aggregates.Entities
             ShortName = shortName;
             SubmittedAt = submittedAt;
             ApprovedAtUtc = approvedAtUtc;
-            SubmissionResearcherId = submissionResearcherId;
+            SubmissionResearcher = submissionResearcher;
             Researchers = researchers;
             StudyRegistrationStatus = studyRegistrationStatus;
         }
@@ -29,7 +29,7 @@ namespace Domain.Aggregates.Entities
         public string ShortName { get; }
         public DateTime SubmittedAt { get; }
         public DateTime? ApprovedAtUtc { get; }
-        public string SubmissionResearcherId { get; }
+        public Researcher SubmissionResearcher { get; }
         public List<string> Researchers { get; }
         public StudyRegistrationStatus StudyRegistrationStatus { get; set; }
     }

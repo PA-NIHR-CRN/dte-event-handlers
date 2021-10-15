@@ -9,6 +9,8 @@
     "studyId": "1",
     "title": "health for everyone",
     "shortName": "Some short name",
-    "researcherId": "123"
+    "researcherFirstname": "firstname",
+    "researcherLastname": "lastname",
+    "researcherEmail": "email@email.com"
   }
 }

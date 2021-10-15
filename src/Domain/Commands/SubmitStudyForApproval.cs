@@ -9,7 +9,9 @@ namespace Domain.Commands
         public string StudyId { get; set; }
         public string Title { get; set;}
         public string ShortName { get; set;}
-        public string ResearcherId { get; set; }
+        public string ResearcherFirstname { get; set; }
+        public string ResearcherLastname { get; set; }
+        public string ResearcherEmail { get; set; }
         public IDictionary<string, string> Metadata { get; set; }
     }
 }
