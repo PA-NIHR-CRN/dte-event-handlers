@@ -22,10 +22,5 @@ namespace MessageListener.Base
             Logger.LogInformation("Invoking handler");
             await handler.HandleAsync(input, context).ConfigureAwait(false);
         }
-
-        protected void RegisterHandler<THandler>(IServiceCollection services) where THandler : class, IEventHandler<TInput>
-        {
-            services.AddTransient<IEventHandler<TInput>, THandler>();
-        }
     }
 }

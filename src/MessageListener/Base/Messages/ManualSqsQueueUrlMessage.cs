@@ -1,4 +1,4 @@
-namespace MessageListener.Base
+namespace MessageListener.Base.Messages
 {
     public class ManualSqsQueueUrlMessage
     {

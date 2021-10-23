@@ -21,7 +21,7 @@
     <option name="templateFile" value="$PROJECT_DIR$/template.yaml" />
     <option name="timeout" value="300" />
     <option name="useTemplate" value="true" />
-    <option name="input" value="$PROJECT_DIR$/events/CloudEventMessage - ExpressInterest.json" />
+    <option name="input" value="$PROJECT_DIR$/events/MessageBase - Test.json" />
     <option name="inputIsFile" value="true" />
     <sam>
       <option name="additionalBuildArgs" value="" />

@@ -4,9 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Adapter;
-using Adapter.Contracts;
-using Adapter.Handlers;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
@@ -15,9 +12,11 @@ using Amazon.SQS;
 using Common;
 using Common.Interfaces;
 using Common.Settings;
-using Evento;
 using MessageListener.Base;
+using MessageListener.Base.Handlers;
+using MessageListener.Base.Messages;
 using MessageListener.Extensions;
+using MessageListener.Factories;
 using MessageListener.Handlers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -67,12 +66,6 @@ namespace MessageListener
                 throw new Exception("Could not bind the app settings, please check configuration");
             }
             
-            var eventStoreSettings = Configuration.GetSection(EventStoreSettings.SectionName).Get<EventStoreSettings>();
-            if (eventStoreSettings == null)
-            {
-                throw new Exception("Could not bind the event store settings, please check configuration");
-            }
-            
             var awsSettings = Configuration.GetSection(AwsSettings.SectionName).Get<AwsSettings>();
             if (awsSettings == null)
             {
@@ -80,7 +73,6 @@ namespace MessageListener
             }
             
             services.AddSingleton(appSettings);
-            services.AddSingleton(eventStoreSettings);
             services.AddSingleton(awsSettings);
             
             // AWS
@@ -93,48 +85,28 @@ namespace MessageListener
             
             services.AddAWSService<IAmazonSQS>(awsOptions);
             
-            // Factories
-            services.AddTransient<ICommandExecutor, CommandExecutor>();
-            
             // main sqs message Handlers
             if (executionEnvironment.RunAsQueueListener)
             {
-                services.UseSqsHandler<ManualSqsQueueUrlMessage, ManualCloudEventHandler>();
+                services.UseSqsHandler<ManualSqsQueueUrlMessage, ManualMessageHandler>();
             }
             else
             {
-                services.UseSqsHandler<CloudEvent, CloudEventHandler>();
+                services.UseSqsHandler<MessageBase, SendNotificationV1Handler>();
             }
-
-            // Command handlers
+            
+            // Handlers
+            services.AddTransient<IMessageHandlerFactory, MessageHandlerFactory>();
+            
             services.Scan(s => s
-                .FromAssemblies(Assembly.Load("Adapter"))
-                .AddClasses(c => c.AssignableTo(typeof(IHandle<>)))
+                .FromAssemblies(Assembly.GetExecutingAssembly())
+                .AddClasses(c => c.AssignableTo(typeof(IMessageHandler)))
                 .AsImplementedInterfaces()
                 .WithTransientLifetime());
             
             // Others
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
             services.AddTransient<IClock, Clock>();
-            
-            if (executionEnvironment.IsProduction())
-            {
-                var builder = new DomainRepositoryBuilder(appSettings, eventStoreSettings);
-                services.AddTransient<IDomainRepository>(_ => builder.Build());
-            }
-            else
-            {
-                services.AddTransient<IDomainRepository, InMemoryDomainRepository>();
-            }
-            
-            services.AddTransient<IWorker, Worker>();
-
-            // Mappers
-            services.Scan(s => s
-                .FromAssemblies(Assembly.Load("Adapter"))
-                .AddClasses(c => c.AssignableTo(typeof(ICloudEventMapper)))
-                .AsImplementedInterfaces()
-                .WithTransientLifetime());
         }
 
         // Needed to be able to run

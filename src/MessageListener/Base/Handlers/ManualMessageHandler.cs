@@ -1,34 +1,33 @@
 using System;
 using System.Threading.Tasks;
-using Adapter;
-using Adapter.Contracts;
 using Amazon.Lambda.Core;
 using Amazon.SQS;
 using Amazon.SQS.Model;
-using MessageListener.Base;
+using MessageListener.Base.Messages;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace MessageListener.Handlers
+namespace MessageListener.Base.Handlers
 {
-    public class ManualCloudEventHandler : IMessageHandler<ManualSqsQueueUrlMessage>
+    public class ManualMessageHandler : IMessageHandler
     {
         private readonly IAmazonSQS _sqsClient;
-        private readonly IWorker _worker;
-        private readonly ILogger<ManualCloudEventHandler> _logger;
+        private readonly ILogger<ManualMessageHandler> _logger;
         
 
-        public ManualCloudEventHandler(IAmazonSQS sqsClient, IWorker worker, ILogger<ManualCloudEventHandler> logger)
+        public ManualMessageHandler(IAmazonSQS sqsClient, ILogger<ManualMessageHandler> logger)
         {
             _sqsClient = sqsClient;
-            _worker = worker;
             _logger = logger;
         }
-        
-        public async Task HandleAsync(ManualSqsQueueUrlMessage message, ILambdaContext context)
-        {
-            _logger.LogInformation($"Handle started for: {nameof(ManualCloudEventHandler)}");
 
+        public string MessageType => "ManualMessage";
+
+        public async Task HandleAsync(string messageBody, ILambdaContext context)
+        {
+            _logger.LogInformation($"Handle started for: {nameof(ManualMessageHandler)}");
+
+            var message = JsonConvert.DeserializeObject<ManualSqsQueueUrlMessage>(messageBody);
             var queueUrl = await GetQueueUrlAsync(message.SqsQueueName);
             
             var receiveMessageRequest = new ReceiveMessageRequest
@@ -47,8 +46,10 @@ namespace MessageListener.Handlers
                 {
                     _logger.LogInformation($"Message received: {DateTime.Now}: {m.Body}");
                     _logger.LogInformation("Calling handler");
+                    _logger.LogInformation(JsonConvert.SerializeObject(m.Body, Formatting.Indented));
 
-                    _worker.Process(JsonConvert.DeserializeObject<CloudEvent>(m.Body));
+                    // JsonConvert.DeserializeObject<CloudEvent>(m.Body)
+                    //_worker.Process();
                     
                     //Handle message 
                     _logger.LogInformation($"Deleting message ReceiptHandle: {m.ReceiptHandle}");

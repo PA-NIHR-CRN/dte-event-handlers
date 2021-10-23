@@ -37,7 +37,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Adapter\Adapter.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Messages" />
   </ItemGroup>
 </Project>

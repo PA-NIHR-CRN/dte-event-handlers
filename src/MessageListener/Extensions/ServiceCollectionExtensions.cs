@@ -1,5 +1,6 @@
 using Amazon.Lambda.SQSEvents;
 using MessageListener.Base;
+using MessageListener.Base.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MessageListener.Extensions
@@ -15,7 +16,7 @@ namespace MessageListener.Extensions
 
         public static IServiceCollection UseSqsHandler<TMessage, THandler>(this IServiceCollection services, bool enableParallelExecution = false)
             where TMessage : class
-            where THandler : class, IMessageHandler<TMessage>
+            where THandler : class, IMessageHandler
         {
             services.AddOptions();
 
@@ -28,7 +29,7 @@ namespace MessageListener.Extensions
                 services.AddTransient<IEventHandler<SQSEvent>, SqsEventHandler<TMessage>>();
             }
 
-            services.AddTransient<IMessageHandler<TMessage>, THandler>();
+            // services.AddTransient<IMessageHandler<TMessage>, THandler>();
 
             return services;
         }
