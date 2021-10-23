@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MessageListener.Extensions
+namespace Common.Extensions
 {
     public static class AsyncExtensions
     {

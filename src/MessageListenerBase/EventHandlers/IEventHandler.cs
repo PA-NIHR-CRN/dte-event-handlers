@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 
-namespace MessageListener.Base
+namespace MessageListenerBase.EventHandlers
 {
     public interface IEventHandler<in TInput>
     {

@@ -12,12 +12,9 @@ using Amazon.SQS;
 using Common;
 using Common.Interfaces;
 using Common.Settings;
-using MessageListener.Base;
-using MessageListener.Base.Handlers;
-using MessageListener.Base.Messages;
-using MessageListener.Extensions;
-using MessageListener.Factories;
-using MessageListener.Handlers;
+using MessageListenerBase;
+using MessageListenerBase.EventHandlers;
+using MessageListenerBase.Handlers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -84,23 +81,28 @@ namespace MessageListener
             }
             
             services.AddAWSService<IAmazonSQS>(awsOptions);
+
+            // IEventHandlers
+            services.Configure<ParallelSqsExecutionOptions>(option => option.MaxDegreeOfParallelism = 5);
             
-            // main sqs message Handlers
             if (executionEnvironment.RunAsQueueListener)
             {
-                services.UseSqsHandler<ManualSqsQueueUrlMessage, ManualMessageHandler>();
+                services.AddTransient<IEventHandler<SQSEvent>, ManualMessageEventHandler>();
             }
             else
             {
-                services.UseSqsHandler<MessageBase, SendNotificationV1Handler>();
+                if (appSettings.RunInParallel)
+                    services.AddTransient<IEventHandler<SQSEvent>, ParallelSqsEventHandler>();
+                else
+                    services.AddTransient<IEventHandler<SQSEvent>, SqsEventHandler>();
             }
             
             // Handlers
-            services.AddTransient<IMessageHandlerFactory, MessageHandlerFactory>();
+            services.AddTransient<IHandlerExecutor, HandlerExecutor>(_ => new HandlerExecutor(ServiceProvider, Assembly.GetExecutingAssembly()));
             
             services.Scan(s => s
                 .FromAssemblies(Assembly.GetExecutingAssembly())
-                .AddClasses(c => c.AssignableTo(typeof(IMessageHandler)))
+                .AddClasses(c => c.AssignableTo(typeof(IHandler<,>)))
                 .AsImplementedInterfaces()
                 .WithTransientLifetime());
             

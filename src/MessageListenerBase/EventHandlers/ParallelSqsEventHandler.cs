@@ -3,16 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
-using MessageListener.Base.Messages;
-using MessageListener.Extensions;
+using Common.Extensions;
+using MessageListenerBase.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 
-namespace MessageListener.Base.Handlers
+namespace MessageListenerBase.EventHandlers
 {
-    public class ParallelSqsEventHandler<TMessage> : IEventHandler<SQSEvent> where TMessage : class
+    public class ParallelSqsEventHandler : IEventHandler<SQSEvent>
     {
         private readonly ILogger _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -29,22 +28,19 @@ namespace MessageListener.Base.Handlers
         {
             if (input.Records.Any())
             {
-                await input.Records.ForEachAsync(_options.MaxDegreeOfParallelism, async singleSqsMessage =>
+                await input.Records.ForEachAsync(_options.MaxDegreeOfParallelism, async record =>
                 {
                     using var scope = _serviceProvider.CreateScope();
-                    var sqsMessage = singleSqsMessage.Body;
-                    _logger.LogDebug($"Message received: {sqsMessage}");
+                    var sqsMessage = record.Body;
+                    var handlerExecutor = _serviceProvider.GetService<IHandlerExecutor>();
 
-                    var message = JsonConvert.DeserializeObject<MessageBase>(sqsMessage);
+                    if (handlerExecutor == null)
+                    {
+                        throw new Exception("No IHandlerExecutor found");
+                    }
 
-                    // var messageHandler = scope.ServiceProvider.GetService<IMessageHandler<TMessage>>();
-                    // if (messageHandler == null)
-                    // {
-                    //     _logger.LogError($"No IMessageHandler<{typeof(TMessage).Name}> could be found.");
-                    //     throw new InvalidOperationException($"No IMessageHandler<{typeof(TMessage).Name}> could be found.");
-                    // }
-                    //
-                    // await messageHandler.HandleAsync(message, context);
+                    var (handlerName, success) = await handlerExecutor.ExecuteHandlerAsync(sqsMessage);
+                    _logger.LogInformation($"**** Handle {(success ? "SUCCESS" : "FAILURE")} for handler: {handlerName}");
                 });
             }
         }

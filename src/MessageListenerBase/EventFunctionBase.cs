@@ -1,10 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
+using MessageListenerBase.EventHandlers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace MessageListener.Base
+namespace MessageListenerBase
 {
     public abstract class EventFunctionBase<TInput> : FunctionBase
     {
@@ -19,7 +20,7 @@ namespace MessageListener.Base
                 throw new InvalidOperationException($"No IEventHandler<{typeof(TInput).Name}> could be found.");
             }
 
-            Logger.LogInformation("Invoking handler");
+            Logger.LogInformation($"******* Invoking handler: {handler.GetType().Name}");
             await handler.HandleAsync(input, context).ConfigureAwait(false);
         }
     }

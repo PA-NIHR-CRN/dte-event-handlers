@@ -1,11 +1,12 @@
 using System.Threading.Tasks;
-using Amazon.Lambda.Core;
-using MessageListener.Base.Handlers;
+using MessageListener.Messages;
+using MessageListenerBase.Handlers;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace MessageListener.Handlers
 {
-    public class SendNotificationV1Handler : IMessageHandler
+    public class SendNotificationV1Handler : IHandler<SendNotificationV1, bool>
     {
         private readonly ILogger<SendNotificationV1Handler> _logger;
         
@@ -14,19 +15,14 @@ namespace MessageListener.Handlers
             _logger = logger;
         }
 
-        public string MessageType => "SendNotificationV1";
-
-        public async Task HandleAsync(string messageBody, ILambdaContext context)
+        public async Task<bool> HandleAsync(SendNotificationV1 message)
         {
-            _logger.LogInformation($"Handle started for: {nameof(SendNotificationV1Handler)}");
-            _logger.LogInformation(messageBody);
-            // _logger.LogInformation(JsonConvert.SerializeObject(messageBase, Formatting.Indented));
-            
-            // Call a processor here
-            
-            _logger.LogInformation($"Handle completed for: {nameof(SendNotificationV1Handler)}");
-            
-            await Task.CompletedTask;
+            _logger.LogInformation("************** SendNotificationV1Handler STARTED");
+            _logger.LogInformation(JsonConvert.SerializeObject(message));
+            await Task.Delay(1000);
+            _logger.LogInformation("************** SendNotificationV1Handler FINISHED");
+
+            return true;
         }
     }
 }

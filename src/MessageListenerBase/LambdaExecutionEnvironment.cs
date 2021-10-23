@@ -1,4 +1,4 @@
-namespace MessageListener.Base
+namespace MessageListenerBase
 {
     public interface IExecutionEnvironment
     {

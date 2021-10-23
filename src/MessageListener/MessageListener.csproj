@@ -38,8 +38,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Messages" />
+    <ProjectReference Include="..\MessageListenerBase\MessageListenerBase.csproj" />
   </ItemGroup>
 </Project>

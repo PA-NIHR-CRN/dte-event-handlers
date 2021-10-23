@@ -1,7 +1,6 @@
 using System;
-using MessageListener.Base;
 
-namespace MessageListener.Extensions
+namespace MessageListenerBase.Extensions
 {
     public static class ExecutionEnvironmentExtensions
     {
