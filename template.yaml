@@ -12,7 +12,20 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./src/MessageListener/
-      Handler: MessageListener::MessageListener.Function::FunctionHandlerAsync
+      Handler: MessageListener::MessageListener.SqsFunction::FunctionHandler
+      Runtime: dotnetcore3.1
+      Role: arn:aws:iam::536374685097:role/nihr-dte-dev-eu-west-2-lambdaRole
+      MemorySize: 256
+      Environment:
+        Variables:
+          AWS_SECRET_MANAGER_SECRET_NAME: PassInFromRunConfiguration
+          Environment: PassInFromRunConfiguration
+          RunAsQueueListener: PassInFromRunConfiguration
+  DteCognitoEventFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./src/CognitoCustomMessageProcessor/
+      Handler: CognitoCustomMessageProcessor::CognitoCustomMessageProcessor.CognitoCustomMessageFunction::FunctionHandler
       Runtime: dotnetcore3.1
       Role: arn:aws:iam::536374685097:role/nihr-dte-dev-eu-west-2-lambdaRole
       MemorySize: 256

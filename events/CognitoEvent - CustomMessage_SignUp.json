@@ -1,0 +1,28 @@
+{
+  "version": "1",
+  "region": "eu-west-1",
+  "userPoolId": "eu-west-1_770gLzpop",
+  "userName": "d7cdf4c5-1c00-4b08-a275-b379d61bca00",
+  "callerContext": {
+    "awsSdkVersion": "aws-sdk-dotnet-coreclr-3.7.1.59",
+    "clientId": "1oc4bt7alksc1q5i8um895k6fv"
+  },
+  "triggerSource": "CustomMessage_SignUp",
+  "request": {
+    "userAttributes": {
+      "sub": "d7cdf4c5-1c00-4b08-a275-b379d61bca00",
+      "cognito:email_alias": "rehmanab@gmail.com",
+      "email_verified": "false",
+      "cognito:user_status": "UNCONFIRMED",
+      "email": "rehmanab@gmail.com"
+    },
+    "codeParameter": "{####}",
+    "linkParameter": "{##Click Here##}",
+    "usernameParameter": null
+  },
+  "response": {
+    "smsMessage": null,
+    "emailMessage": null,
+    "emailSubject": null
+  }
+}

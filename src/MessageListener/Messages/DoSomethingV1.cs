@@ -1,4 +1,4 @@
-using MessageListenerBase.Messages;
+using Application.Messages;
 
 namespace MessageListener.Messages
 {
