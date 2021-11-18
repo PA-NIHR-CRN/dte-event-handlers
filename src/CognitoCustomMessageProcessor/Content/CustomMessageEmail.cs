@@ -313,7 +313,7 @@ namespace CognitoCustomMessageProcessor.Content
                                 >###TEXT_REPLACE2###</span
                               ><br /><br /><span style=""color:#e42748;""
                                 ><span style=""font-size:20px;""
-                                  ><strong>###LINK_REPLACE### </strong></span
+                                  ><strong>###LINK_REPLACE###</strong></span
                                 ></span
                               >
                             </p>

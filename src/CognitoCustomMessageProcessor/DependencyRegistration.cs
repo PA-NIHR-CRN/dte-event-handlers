@@ -6,6 +6,8 @@ using Application.Events;
 using Application.Executors;
 using Application.Extensions;
 using Application.Resolvers;
+using CognitoCustomMessageProcessor.Builders;
+using CognitoCustomMessageProcessor.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,6 +24,7 @@ namespace CognitoCustomMessageProcessor
             // Handlers
             services.AddTransient<IHandlerResolver>(_ => new HandlerResolver(services.BuildServiceProvider(), Assembly.GetExecutingAssembly()));
             services.AddTransient<ICognitoMessageHandlerExecutor, CognitoMessageHandlerExecutor>();
+            services.AddTransient<ILinkBuilder, LinkBuilder>();
 
             services.Scan(s => s
                 .FromAssemblies(Assembly.GetExecutingAssembly())
