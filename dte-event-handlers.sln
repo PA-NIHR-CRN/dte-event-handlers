@@ -129,5 +129,6 @@ Global
 	GlobalSection(RiderSharedRunConfigurations) = postSolution
 		File = .rider-run-configuration\[Local] Execute Message.run.xml
 		File = .rider-run-configuration\[Local] Execute Sqs listener.run.xml
+		File = .rider-run-configuration\[Local] Cognito Custom Message - SignUp.run.xml
 	EndGlobalSection
 EndGlobal
