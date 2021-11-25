@@ -18,7 +18,7 @@ namespace Application.Extensions
     {
         private const string AwsSecretManagerSecretName = "AWS_SECRET_MANAGER_SECRET_NAME";
         
-        public static void AddConfiguration(this IConfigurationBuilder builder, ILogger logger)
+        public static void AddConfiguration(this IConfigurationBuilder builder)
         {
             builder
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -30,7 +30,8 @@ namespace Application.Extensions
 
                     if (string.IsNullOrWhiteSpace(awsSecretsName))
                     {
-                        logger.LogWarning($"The {AwsSecretManagerSecretName} environment variable has not been set");
+                        var logger = new LoggerFactory().AddLambdaLogger().CreateLogger<FunctionBase>();
+                        logger.LogError($"The {AwsSecretManagerSecretName} environment variable has not been set");
                     }
                     
                     var allowedSecretNames = new[] { awsSecretsName };

@@ -15,7 +15,7 @@ namespace CognitoCustomMessageProcessor
 {
     public class CognitoCustomMessageFunction : EventFunctionBase<CognitoCustomMessageEvent>
     {
-        protected override void Configure(IConfigurationBuilder builder) => builder.AddConfiguration(Logger);
+        protected override void Configure(IConfigurationBuilder builder) => builder.AddConfiguration();
         protected override void ConfigureLogging(ILoggingBuilder logging, IExecutionEnvironment executionEnvironment) => logging.AddLambdaLogger();
         protected override void ConfigureServices(IServiceCollection services, IExecutionEnvironment executionEnvironment) => DependencyRegistration.RegisterServices(services, executionEnvironment, Configuration);
 
