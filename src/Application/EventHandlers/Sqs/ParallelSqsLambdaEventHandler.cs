@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
 using Application.Contracts;
-using Common.Extensions;
+using Application.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

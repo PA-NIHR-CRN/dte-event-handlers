@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Common.Extensions
+namespace Application.Extensions
 {
     public static class AsyncExtensions
     {

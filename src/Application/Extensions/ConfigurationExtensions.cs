@@ -5,9 +5,7 @@ using System.Linq;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.SecretsManager.Model;
 using Amazon.SQS;
-using Common;
-using Common.Interfaces;
-using Common.Settings;
+using Application.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -73,7 +71,6 @@ namespace Application.Extensions
 
             // Others
             services.AddDefaultAWSOptions(configuration.GetAWSOptions());
-            services.AddTransient<IClock, Clock>();
         }
 
         // Only load entries that start with any of the allowed prefixes

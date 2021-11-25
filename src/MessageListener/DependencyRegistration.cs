@@ -7,7 +7,7 @@ using Application.EventHandlers.Sqs;
 using Application.Executors;
 using Application.Extensions;
 using Application.Resolvers;
-using Common.Settings;
+using Application.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

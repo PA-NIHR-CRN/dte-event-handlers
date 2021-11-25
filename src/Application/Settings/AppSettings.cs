@@ -1,6 +1,4 @@
-using System;
-
-namespace Common.Settings
+namespace Application.Settings
 {
     public class AppSettings
     {
