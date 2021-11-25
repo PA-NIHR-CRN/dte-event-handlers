@@ -1,6 +1,8 @@
 using System;
 using System.Reflection;
+using Amazon.Extensions.NETCore.Setup;
 using Amazon.Lambda.SQSEvents;
+using Amazon.SQS;
 using Application;
 using Application.Contracts;
 using Application.EventHandlers.Sqs;
@@ -8,6 +10,7 @@ using Application.Executors;
 using Application.Extensions;
 using Application.Resolvers;
 using Application.Settings;
+using MessageListener.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,14 +20,21 @@ namespace MessageListener
     {
         public static IServiceCollection RegisterServices(IServiceCollection services, IExecutionEnvironment executionEnvironment, IConfigurationRoot configuration)
         {
-            services.ConfigureServices(executionEnvironment, configuration);
+            var requiredSettings = new SettingsBase []{ new AppSettings(), new AwsSettings() };
+            services.ConfigureServices(executionEnvironment, configuration, requiredSettings);
             
             var appSettings = services.BuildServiceProvider().GetService<AppSettings>();
+            if (appSettings == null) throw new Exception("Can not find AppSettings in ServiceCollection");
+            var awsSettings = services.BuildServiceProvider().GetService<AwsSettings>();
+            if (awsSettings == null) throw new Exception("Can not find AwsSettings in ServiceCollection");
 
-            if (appSettings == null)
+            // AWS
+            var awsOptions = new AWSOptions();
+            if (!string.IsNullOrWhiteSpace(awsSettings.ServiceUrl))
             {
-                throw new Exception("Can not find AppSettings in ServiceCollection");
+                awsOptions.DefaultClientConfig.ServiceURL = awsSettings.ServiceUrl;
             }
+            services.AddAWSService<IAmazonSQS>(awsOptions);
 
             if (executionEnvironment.RunAsQueueListener)
             {

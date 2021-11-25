@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Amazon.Extensions.NETCore.Setup;
 using Amazon.SecretsManager.Model;
-using Amazon.SQS;
 using Application.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,33 +37,19 @@ namespace Application.Extensions
                 });
         }
 
-        public static void ConfigureServices(this IServiceCollection services, IExecutionEnvironment executionEnvironment, IConfigurationRoot configuration)
+        public static void ConfigureServices(this IServiceCollection services, IExecutionEnvironment executionEnvironment, IConfigurationRoot configuration, params SettingsBase[] settings)
         {
             // Configuration
-            var appSettings = configuration.GetSection(AppSettings.SectionName).Get<AppSettings>();
-            if (appSettings == null)
+            foreach (var setting in settings)
             {
-                throw new Exception("Could not bind the app settings, please check configuration");
+                var baseSetting = configuration.GetSection(setting.SectionName).Get(setting.GetType());
+                if (baseSetting == null)
+                {
+                    throw new Exception($"Could not bind the {setting.GetType().Name}, please check configuration");
+                }
+                
+                services.AddSingleton(baseSetting.GetType(), baseSetting);
             }
-            
-            var awsSettings = configuration.GetSection(AwsSettings.SectionName).Get<AwsSettings>();
-            if (awsSettings == null)
-            {
-                throw new Exception("Could not bind the aws settings, please check configuration");
-            }
-            
-            services.AddSingleton(appSettings);
-            services.AddSingleton(awsSettings);
-            
-            // AWS
-            var awsOptions = new AWSOptions();
-            
-            if (!string.IsNullOrWhiteSpace(awsSettings.ServiceUrl))
-            {
-                awsOptions.DefaultClientConfig.ServiceURL = awsSettings.ServiceUrl;
-            }
-            
-            services.AddAWSService<IAmazonSQS>(awsOptions);
 
             services.Configure<ParallelSqsExecutionOptions>(option => option.MaxDegreeOfParallelism = 5);
 
