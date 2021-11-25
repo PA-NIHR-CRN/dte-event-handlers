@@ -1,14 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>netstandard2.1</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Amazon.Lambda.CognitoEvents" Version="2.0.0" />
         <PackageReference Include="Amazon.Lambda.Core" Version="2.0.0" />
         <PackageReference Include="Amazon.Lambda.Logging.AspNetCore" Version="3.1.0" />
-        <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.1.0" />
         <PackageReference Include="Amazon.Lambda.SQSEvents" Version="2.0.0" />
         <PackageReference Include="AWSSDK.Core" Version="3.7.3.17" />
         <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.1" />
