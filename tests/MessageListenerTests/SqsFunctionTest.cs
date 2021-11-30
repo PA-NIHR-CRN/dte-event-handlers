@@ -12,7 +12,7 @@ namespace MessageListenerTests
     public class SqsFunctionTest
     {
         [Test]
-        public void Function_Executes_Correct_Handler_From_Incoming_Message()
+        public void Function_Executes_Correct_Handler_From_Incoming_Event()
         {
             var sqsEvent = new SQSEvent();
             var function = new SqsFunction();
