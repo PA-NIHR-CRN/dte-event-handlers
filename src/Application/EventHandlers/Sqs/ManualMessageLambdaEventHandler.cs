@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
 using Amazon.SQS;
 using Amazon.SQS.Model;
@@ -35,7 +34,7 @@ namespace Application.EventHandlers.Sqs
             _options = options?.Value ?? throw new ArgumentNullException(nameof(options));;
         }
 
-        public async Task HandleLambdaEventAsync(SQSEvent @event, ILambdaContext context)
+        public async Task HandleLambdaEventAsync(SQSEvent @event)
         {
             if (!@event.Records.Any())
             {

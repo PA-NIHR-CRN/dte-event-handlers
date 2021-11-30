@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Amazon.Lambda.CloudWatchEvents.ScheduledEvents;
-using Amazon.Lambda.Core;
 using Application.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -19,7 +18,7 @@ namespace Application.EventHandlers.ScheduledJobs
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
         
-        public async Task HandleLambdaEventAsync(ScheduledEvent @event, ILambdaContext context)
+        public async Task HandleLambdaEventAsync(ScheduledEvent @event)
         {
             using var scope = _serviceProvider.CreateScope();
             var handlerExecutor = _serviceProvider.GetService<IScheduledJobsHandlerExecutor>();

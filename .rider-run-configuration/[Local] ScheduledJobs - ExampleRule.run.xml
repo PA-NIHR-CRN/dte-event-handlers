@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="[Local] ScheduledJobs - ExampleRule" type="aws.lambda" factoryName="Local">
+  <configuration default="false" name="[Local] ScheduledJobs - CpmsImport" type="aws.lambda" factoryName="Local">
     <option name="credentialProviderId" value="profile:default" />
     <option name="regionId" value="eu-west-1" />
     <option name="debugHost" value="localhost" />

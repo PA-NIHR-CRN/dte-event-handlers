@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
 using Application.Contracts;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +18,7 @@ namespace Application.EventHandlers.Sqs
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
-        public async Task HandleLambdaEventAsync(SQSEvent @event, ILambdaContext context)
+        public async Task HandleLambdaEventAsync(SQSEvent @event)
         {
             foreach (var record in @event.Records)
             {

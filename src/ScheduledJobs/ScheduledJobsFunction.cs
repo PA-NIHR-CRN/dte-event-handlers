@@ -21,9 +21,10 @@ namespace ScheduledJobs
         public async Task FunctionHandler(ScheduledEvent input, ILambdaContext context)
         {
             Logger.LogInformation($"FunctionHandler called for event: {input.GetType().Name}");
+            Logger.LogInformation($"LambdaContext: {JsonConvert.SerializeObject(context)}");
             Logger.LogInformation(JsonConvert.SerializeObject(input, Formatting.Indented));
             
-            await FunctionHandlerAsync(input, context);
+            await FunctionHandlerAsync(input);
         }
     }
 }

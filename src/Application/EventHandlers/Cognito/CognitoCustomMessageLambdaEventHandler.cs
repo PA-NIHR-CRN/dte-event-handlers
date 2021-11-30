@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Amazon.Lambda.Core;
 using Application.Contracts;
 using Application.Events;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +18,7 @@ namespace Application.EventHandlers.Cognito
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
-        public async Task HandleLambdaEventAsync(CognitoCustomMessageEvent @event, ILambdaContext context)
+        public async Task HandleLambdaEventAsync(CognitoCustomMessageEvent @event)
         {
             using var scope = _serviceProvider.CreateScope();
             var handlerExecutor = _serviceProvider.GetService<ICognitoMessageHandlerExecutor>();

@@ -7,6 +7,7 @@ using Application.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
@@ -24,11 +25,12 @@ namespace CognitoCustomMessageProcessor
         {
             // Needs to be verification set to Code
             Logger.LogInformation($"FunctionHandler called for event: {input.GetType().Name}");
+            Logger.LogInformation($"LambdaContext: {JsonConvert.SerializeObject(context)}");
 
             var serialize = JsonSerializer.Serialize(input);
             Logger.LogInformation(serialize);
             
-            await FunctionHandlerAsync(input, context);
+            await FunctionHandlerAsync(input);
             
             return JsonDocument.Parse(JsonSerializer.Serialize(input)).RootElement.Clone();
         }

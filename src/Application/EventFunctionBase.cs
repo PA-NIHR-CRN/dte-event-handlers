@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Amazon.Lambda.Core;
 using Application.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -9,7 +8,7 @@ namespace Application
 {
     public abstract class EventFunctionBase<TInput> : FunctionBase
     {
-        protected async Task FunctionHandlerAsync(TInput input, ILambdaContext context)
+        protected async Task FunctionHandlerAsync(TInput input)
         {
             using var scope = ServiceProvider.CreateScope();
             var lambdaEventHandler = scope.ServiceProvider.GetService<ILambdaEventHandler<TInput>>();
@@ -21,7 +20,7 @@ namespace Application
             }
 
             Logger.LogInformation($"Invoking: {lambdaEventHandler.GetType().Name}");
-            await lambdaEventHandler.HandleLambdaEventAsync(input, context).ConfigureAwait(false);
+            await lambdaEventHandler.HandleLambdaEventAsync(input).ConfigureAwait(false);
         }
     }
 }
