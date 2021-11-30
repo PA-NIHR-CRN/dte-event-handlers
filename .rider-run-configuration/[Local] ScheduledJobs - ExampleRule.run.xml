@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="[Local] Cognito Custom Message - SignUp" type="aws.lambda" factoryName="Local">
+  <configuration default="false" name="[Local] ScheduledJobs - ExampleRule" type="aws.lambda" factoryName="Local">
     <option name="credentialProviderId" value="profile:default" />
     <option name="regionId" value="eu-west-1" />
     <option name="debugHost" value="localhost" />
@@ -11,7 +11,7 @@
     </option>
     <option name="handler" />
     <option name="image" value="false" />
-    <option name="logicalFunctionName" value="DteCognitoEventFunction" />
+    <option name="logicalFunctionName" value="DteScheduledJobsFunction" />
     <option name="memorySize" value="128" />
     <option name="pathMappings">
       <list />
@@ -21,13 +21,13 @@
     <option name="templateFile" value="$PROJECT_DIR$/template.yaml" />
     <option name="timeout" value="300" />
     <option name="useTemplate" value="true" />
-    <option name="input" value="$PROJECT_DIR$/events/CognitoEvent - CustomMessage_SignUp.json" />
+    <option name="input" value="$PROJECT_DIR$/events/ScheduledTask - CpmsImport.json" />
     <option name="inputIsFile" value="true" />
     <sam>
       <option name="additionalBuildArgs" value="" />
       <option name="additionalLocalArgs" value="" />
       <option name="buildInContainer" value="false" />
-      <option name="dockerNetwork" value="bridge" />
+      <option name="dockerNetwork" value="" />
       <option name="skipImagePull" value="false" />
     </sam>
     <method v="2" />

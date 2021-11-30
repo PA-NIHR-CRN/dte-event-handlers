@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Amazon.Lambda.CloudWatchEvents" Version="4.0.0" />
         <PackageReference Include="Amazon.Lambda.CognitoEvents" Version="2.0.0" />
         <PackageReference Include="Amazon.Lambda.Core" Version="2.0.0" />
         <PackageReference Include="Amazon.Lambda.Logging.AspNetCore" Version="3.1.0" />
