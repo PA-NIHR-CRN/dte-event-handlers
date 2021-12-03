@@ -27,6 +27,7 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
                 .AddLink("Reset your password on localhost", "http://localhost:3000/resetpassword", source.Request.CodeParameter, source.Request.UserAttributes.Email)
                 .AddLink("Reset your password on dev", "https://nihr-dev.dte-pilot.net/resetpassword", source.Request.CodeParameter, source.Request.UserAttributes.Email)
                 .AddLink("Reset your password on qa", "https://nihr-qa.dte-pilot.net/resetpassword", source.Request.CodeParameter, source.Request.UserAttributes.Email)
+                .AddLink("Reset your password on uat", "https://nihr-uat.dte-pilot.net/resetpassword", source.Request.CodeParameter, source.Request.UserAttributes.Email)
                 .Build();
             
             source.Response.EmailSubject = $"hi, from ForgotPassword";

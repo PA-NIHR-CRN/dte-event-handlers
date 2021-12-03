@@ -27,6 +27,7 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
                 .AddLink("Verify on localhost", "http://localhost:3000/verify", source.Request.CodeParameter, source.Request.UserAttributes.Email)
                 .AddLink("Verify on dev", "https://nihr-dev.dte-pilot.net/verify", source.Request.CodeParameter, source.Request.UserAttributes.Email)
                 .AddLink("Verify on qa", "https://nihr-qa.dte-pilot.net/verify", source.Request.CodeParameter, source.Request.UserAttributes.Email)
+                .AddLink("Verify on uat", "https://nihr-uat.dte-pilot.net/verify", source.Request.CodeParameter, source.Request.UserAttributes.Email)
                 .Build();
             
             source.Response.EmailSubject = $"hi, from SignUp";
