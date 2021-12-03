@@ -24,7 +24,7 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
             _logger.LogInformation($"************** {nameof(SignUpHandler)} STARTED");
 
             var links = _linkBuilder
-                .AddLink("Verify on localhost", "http://localhost:3000/verify", source.Request.CodeParameter, source.Request.UserAttributes.Email)
+                .AddLink("Verify on localhost2", "http://localhost:3000/verify", source.Request.CodeParameter, source.Request.UserAttributes.Email)
                 .AddLink("Verify on dev", "https://nihr-dev.dte-pilot.net/verify", source.Request.CodeParameter, source.Request.UserAttributes.Email)
                 .AddLink("Verify on qa", "https://nihr-qa.dte-pilot.net/verify", source.Request.CodeParameter, source.Request.UserAttributes.Email)
                 .AddLink("Verify on uat", "https://nihr-uat.dte-pilot.net/verify", source.Request.CodeParameter, source.Request.UserAttributes.Email)
