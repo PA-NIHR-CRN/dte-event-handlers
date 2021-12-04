@@ -58,12 +58,12 @@ namespace ScheduledJobs.JobHandlers
             }
             catch (AmazonS3Exception ex)
             {
-                _logger.LogError(ex, "Error getting object from S3");
+                _logger.LogError(ex, $"Error getting object from S3: {ex.Message}");
                 throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting object from S3");
+                _logger.LogError(ex, $"Error getting object from S3: {ex.Message}");
                 throw;
             }
         }
