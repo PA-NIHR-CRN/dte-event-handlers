@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.Lambda.CloudWatchEvents.ScheduledEvents;
+using Amazon.S3;
 using Amazon.SQS;
 using Application;
 using Application.Contracts;
@@ -21,11 +22,9 @@ namespace ScheduledJobs
     {
         public static IServiceCollection RegisterServices(IServiceCollection services, IExecutionEnvironment executionEnvironment, IConfigurationRoot configuration)
         {
-            var requiredSettings = new SettingsBase []{ new AppSettings(), new AwsSettings() };
+            var requiredSettings = new SettingsBase []{ new CpmsImportSettings(), new AwsSettings() };
             services.ConfigureServices(executionEnvironment, configuration, requiredSettings);
             
-            var appSettings = services.BuildServiceProvider().GetService<AppSettings>();
-            if (appSettings == null) throw new Exception("Can not find AppSettings in ServiceCollection");
             var awsSettings = services.BuildServiceProvider().GetService<AwsSettings>();
             if (awsSettings == null) throw new Exception("Can not find AwsSettings in ServiceCollection");
 
@@ -35,7 +34,7 @@ namespace ScheduledJobs
             {
                 awsOptions.DefaultClientConfig.ServiceURL = awsSettings.ServiceUrl;
             }
-            services.AddAWSService<IAmazonSQS>(awsOptions);
+            services.AddAWSService<IAmazonS3>(awsOptions);
 
             services.AddTransient<ILambdaEventHandler<ScheduledEvent>, ScheduledJobsLambdaEventHandler>();
             
