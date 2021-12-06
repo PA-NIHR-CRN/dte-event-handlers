@@ -37,9 +37,10 @@ namespace ScheduledJobs.JobHandlers
             using var csv = new CsvReader(new StringReader(responseString), CultureInfo.InvariantCulture);
 
             csv.Context.RegisterClassMap<SiteMap>();
-            var records = csv.GetRecords<Site>().GetByBatch(6);
+            var records = csv.GetRecords<Site>().GetByBatch(100);
             
-            records.ToList().ForEach(x => x.ToList().ForEach(site => _logger.LogInformation($"{site.SiteName} {site.SiteCode}")));
+            records.ToList().ForEach(x => x.ToList().ForEach(site => _logger.LogInformation($"{site.Region} {site.Country}")));
+            //records.ToList().ForEach(x => x.ToList().ForEach(async site => await Task.Delay(20)));
             
             _logger.LogInformation($"************** {nameof(CpmsImportJobHandler)} FINISHED");
 
@@ -71,26 +72,18 @@ namespace ScheduledJobs.JobHandlers
     
     public class Site
     {
-        public string SiteName { get; set; }
-        public string SiteCode { get; set; }
-        public string Postcode { get; set; }
-        public string AddressLine1 { get; set; }
-        public string AddressLine2 { get; set; }
-        public string AddressLine3 { get; set; }
-        public string AddressLine4 { get; set; }
+        public string Region { get; set; }
+        public string Country { get; set; }
+        public string ItemType { get; set; }
     }
 
     public sealed class SiteMap : ClassMap<Site>
     {
         public SiteMap()
         {
-            Map(m => m.SiteName).Name("Site Name");
-            Map(m => m.SiteCode).Name("Site Code");
-            Map(m => m.Postcode);
-            Map(m => m.AddressLine1).Name("Address Line 1");
-            Map(m => m.AddressLine2).Name("Address Line 2");
-            Map(m => m.AddressLine3).Name("Address Line 3");
-            Map(m => m.AddressLine4).Name("Address Line 4");
+            Map(m => m.Region).Name("Region");
+            Map(m => m.Country).Name("Country");
+            Map(m => m.ItemType).Name("Item Type");
         }
     }
 }
