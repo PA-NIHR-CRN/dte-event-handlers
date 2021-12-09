@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using System.Web;
 using Application.Contracts;
 using Application.Events;
 using CognitoCustomMessageProcessor.Content;
@@ -22,12 +23,15 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
         public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageForgotPassword source)
         {
             _logger.LogInformation($"************** {nameof(ForgotPasswordHandler)} STARTED");
+
+            var requestCodeParameter = source.Request.CodeParameter;
+            var userAttributesEmail = HttpUtility.UrlEncode(source.Request.UserAttributes.Email);
             
             var links = _linkBuilder
-                .AddLink("Reset your password on localhost", "http://localhost:3000/resetpassword", source.Request.CodeParameter, source.Request.UserAttributes.Email)
-                .AddLink("Reset your password on dev", "https://nihr-dev.dte-pilot.net/resetpassword", source.Request.CodeParameter, source.Request.UserAttributes.Email)
-                .AddLink("Reset your password on qa", "https://nihr-qa.dte-pilot.net/resetpassword", source.Request.CodeParameter, source.Request.UserAttributes.Email)
-                .AddLink("Reset your password on uat", "https://nihr-uat.dte-pilot.net/resetpassword", source.Request.CodeParameter, source.Request.UserAttributes.Email)
+                .AddLink("Reset your password on localhost", "http://localhost:3000/resetpassword", requestCodeParameter, userAttributesEmail)
+                .AddLink("Reset your password on dev", "https://nihr-dev.dte-pilot.net/resetpassword", requestCodeParameter, userAttributesEmail)
+                .AddLink("Reset your password on qa", "https://nihr-qa.dte-pilot.net/resetpassword", requestCodeParameter, userAttributesEmail)
+                .AddLink("Reset your password on uat", "https://nihr-uat.dte-pilot.net/resetpassword", requestCodeParameter, userAttributesEmail)
                 .Build();
             
             source.Response.EmailSubject = $"hi, from ForgotPassword";

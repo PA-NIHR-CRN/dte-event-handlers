@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using System.Web;
 using Application.Contracts;
 using Application.Events;
 using CognitoCustomMessageProcessor.Content;
@@ -23,11 +24,14 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
         {
             _logger.LogInformation($"************** {nameof(SignUpHandler)} STARTED");
 
+            var requestCodeParameter = source.Request.CodeParameter;
+            var userAttributesEmail = HttpUtility.UrlEncode(source.Request.UserAttributes.Email);
+            
             var links = _linkBuilder
-                .AddLink("Verify on localhost", "http://localhost:3000/verify", source.Request.CodeParameter, source.Request.UserAttributes.Email)
-                .AddLink("Verify on dev", "https://nihr-dev.dte-pilot.net/verify", source.Request.CodeParameter, source.Request.UserAttributes.Email)
-                .AddLink("Verify on qa", "https://nihr-qa.dte-pilot.net/verify", source.Request.CodeParameter, source.Request.UserAttributes.Email)
-                .AddLink("Verify on uat", "https://nihr-uat.dte-pilot.net/verify", source.Request.CodeParameter, source.Request.UserAttributes.Email)
+                .AddLink("Verify on localhost", "http://localhost:3000/verify", requestCodeParameter, userAttributesEmail)
+                .AddLink("Verify on dev", "https://nihr-dev.dte-pilot.net/verify", requestCodeParameter, userAttributesEmail)
+                .AddLink("Verify on qa", "https://nihr-qa.dte-pilot.net/verify", requestCodeParameter, userAttributesEmail)
+                .AddLink("Verify on uat", "https://nihr-uat.dte-pilot.net/verify", requestCodeParameter, userAttributesEmail)
                 .Build();
             
             source.Response.EmailSubject = $"hi, from SignUp";
