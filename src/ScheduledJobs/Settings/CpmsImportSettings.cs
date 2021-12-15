@@ -5,7 +5,8 @@ namespace ScheduledJobs.Settings
     public class CpmsImportSettings : SettingsBase
     {
         public override string SectionName => "CpmsImportSettings";
-        public string ExportS3BucketName { get; set; }
-        public string ExportS3FileName { get; set; }
+        public string ArchiveS3BucketName { get; set; }
+        public string S3BucketName { get; set; }
+        public int GetRecordBatchSize { get; set; }
     }
 }
