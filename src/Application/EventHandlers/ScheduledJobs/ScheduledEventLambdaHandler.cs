@@ -7,12 +7,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.EventHandlers.ScheduledJobs
 {
-    public class ScheduledJobsLambdaEventHandler : ILambdaEventHandler<ScheduledEvent>
+    public class ScheduledEventLambdaHandler : ILambdaEventHandler<ScheduledEvent>
     {
         private readonly ILogger _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        public ScheduledJobsLambdaEventHandler(IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
+        public ScheduledEventLambdaHandler(IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory?.CreateLogger("SqsEventHandler") ?? throw new ArgumentNullException(nameof(loggerFactory));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));

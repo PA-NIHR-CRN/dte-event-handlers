@@ -36,7 +36,7 @@ namespace ScheduledJobs
             }
             services.AddAWSService<IAmazonS3>(awsOptions);
 
-            services.AddTransient<ILambdaEventHandler<ScheduledEvent>, ScheduledJobsLambdaEventHandler>();
+            services.AddTransient<ILambdaEventHandler<ScheduledEvent>, ScheduledEventLambdaHandler>();
             
             // Handlers
             services.AddTransient<IHandlerResolver>(_ => new HandlerResolver(services.BuildServiceProvider(), Assembly.GetExecutingAssembly()));

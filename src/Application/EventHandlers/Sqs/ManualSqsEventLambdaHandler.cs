@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 
 namespace Application.EventHandlers.Sqs
 {
-    public class ManualMessageLambdaEventHandler :  ILambdaEventHandler<SQSEvent>
+    public class ManualSqsEventLambdaHandler :  ILambdaEventHandler<SQSEvent>
     {
         private readonly IAmazonSQS _sqsClient;
         private readonly ISqsMessageHandlerExecutor _handlerExecutor;
@@ -21,7 +21,7 @@ namespace Application.EventHandlers.Sqs
         private readonly IServiceProvider _serviceProvider;
         private readonly ParallelSqsExecutionOptions _options;
 
-        public ManualMessageLambdaEventHandler(IAmazonSQS sqsClient,
+        public ManualSqsEventLambdaHandler(IAmazonSQS sqsClient,
             ISqsMessageHandlerExecutor handlerExecutor,
             IServiceProvider serviceProvider,
             ILoggerFactory loggerFactory,

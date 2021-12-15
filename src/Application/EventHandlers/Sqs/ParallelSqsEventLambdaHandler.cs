@@ -10,13 +10,13 @@ using Microsoft.Extensions.Options;
 
 namespace Application.EventHandlers.Sqs
 {
-    public class ParallelSqsLambdaEventHandler : ILambdaEventHandler<SQSEvent>
+    public class ParallelSqsEventLambdaHandler : ILambdaEventHandler<SQSEvent>
     {
         private readonly ILogger _logger;
         private readonly IServiceProvider _serviceProvider;
         private readonly ParallelSqsExecutionOptions _options;
 
-        public ParallelSqsLambdaEventHandler(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, IOptions<ParallelSqsExecutionOptions> options)
+        public ParallelSqsEventLambdaHandler(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, IOptions<ParallelSqsExecutionOptions> options)
         {
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _logger = loggerFactory?.CreateLogger("SqsForEachAsyncEventHandler") ?? throw new ArgumentNullException(nameof(loggerFactory));

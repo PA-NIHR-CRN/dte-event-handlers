@@ -38,14 +38,14 @@ namespace MessageListener
 
             if (executionEnvironment.RunAsQueueListener)
             {
-                services.AddTransient<ILambdaEventHandler<SQSEvent>, ManualMessageLambdaEventHandler>();
+                services.AddTransient<ILambdaEventHandler<SQSEvent>, ManualSqsEventLambdaHandler>();
             }
             else
             {
                 if (appSettings.RunInParallel)
-                    services.AddTransient<ILambdaEventHandler<SQSEvent>, ParallelSqsLambdaEventHandler>();
+                    services.AddTransient<ILambdaEventHandler<SQSEvent>, ParallelSqsEventLambdaHandler>();
                 else
-                    services.AddTransient<ILambdaEventHandler<SQSEvent>, SqsLambdaEventHandler>();
+                    services.AddTransient<ILambdaEventHandler<SQSEvent>, SqsEventLambdaHandler>();
             }
             
             // Handlers

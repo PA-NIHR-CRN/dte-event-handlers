@@ -7,12 +7,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.EventHandlers.Cognito
 {
-    public class CognitoCustomMessageLambdaEventHandler : ILambdaEventHandler<CognitoCustomMessageEvent>
+    public class CognitoCustomMessageEventLambdaHandler : ILambdaEventHandler<CognitoCustomMessageEvent>
     {
         private readonly ILogger _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        public CognitoCustomMessageLambdaEventHandler(IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
+        public CognitoCustomMessageEventLambdaHandler(IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory?.CreateLogger("CognitoCustomMessageSignUpEventHandler") ?? throw new ArgumentNullException(nameof(loggerFactory));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));

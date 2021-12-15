@@ -7,12 +7,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.EventHandlers.Sqs
 {
-    public class SqsLambdaEventHandler : ILambdaEventHandler<SQSEvent>
+    public class SqsEventLambdaHandler : ILambdaEventHandler<SQSEvent>
     {
         private readonly ILogger _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        public SqsLambdaEventHandler(IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
+        public SqsEventLambdaHandler(IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory?.CreateLogger("SqsEventHandler") ?? throw new ArgumentNullException(nameof(loggerFactory));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));

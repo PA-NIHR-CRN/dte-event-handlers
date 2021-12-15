@@ -28,7 +28,7 @@ namespace CognitoCustomMessageProcessor
             var awsSettings = services.BuildServiceProvider().GetService<AwsSettings>();
             if (awsSettings == null) throw new Exception("Can not find AwsSettings in ServiceCollection");
 
-            services.AddTransient<ILambdaEventHandler<CognitoCustomMessageEvent>, CognitoCustomMessageLambdaEventHandler>();
+            services.AddTransient<ILambdaEventHandler<CognitoCustomMessageEvent>, CognitoCustomMessageEventLambdaHandler>();
 
             // Handlers
             services.AddTransient<IHandlerResolver>(_ => new HandlerResolver(services.BuildServiceProvider(), Assembly.GetExecutingAssembly()));
