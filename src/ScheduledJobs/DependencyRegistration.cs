@@ -6,7 +6,7 @@ using Amazon.S3;
 using Amazon.SQS;
 using Application;
 using Application.Contracts;
-using Application.EventHandlers.ScheduledJobs;
+using Application.EventHandlers.ScheduledEvents;
 using Application.EventHandlers.Sqs;
 using Application.Executors;
 using Application.Extensions;

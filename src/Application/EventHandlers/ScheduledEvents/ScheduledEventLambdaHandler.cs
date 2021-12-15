@@ -5,7 +5,7 @@ using Application.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Application.EventHandlers.ScheduledJobs
+namespace Application.EventHandlers.ScheduledEvents
 {
     public class ScheduledEventLambdaHandler : ILambdaEventHandler<ScheduledEvent>
     {
