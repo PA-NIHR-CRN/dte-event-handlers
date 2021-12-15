@@ -1,5 +1,7 @@
 using System;
 using System.Reflection;
+using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DataModel;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.Lambda.CloudWatchEvents.ScheduledEvents;
 using Amazon.S3;
@@ -14,6 +16,8 @@ using Application.Resolvers;
 using Application.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ScheduledJobs.Contracts;
+using ScheduledJobs.Repositories;
 using ScheduledJobs.Settings;
 
 namespace ScheduledJobs
@@ -30,12 +34,17 @@ namespace ScheduledJobs
 
             // AWS
             var awsOptions = new AWSOptions();
+            var amazonDynamoDbConfig = new AmazonDynamoDBConfig();
             if (!string.IsNullOrWhiteSpace(awsSettings.ServiceUrl))
             {
                 awsOptions.DefaultClientConfig.ServiceURL = awsSettings.ServiceUrl;
+                amazonDynamoDbConfig.ServiceURL = awsSettings.ServiceUrl;
             }
             services.AddAWSService<IAmazonS3>(awsOptions);
+            services.AddScoped<IAmazonDynamoDB>(_ => new AmazonDynamoDBClient(amazonDynamoDbConfig));
+            services.AddScoped<IDynamoDBContext>(_ => new DynamoDBContext(new AmazonDynamoDBClient(amazonDynamoDbConfig)));
 
+            // Lambda Event Handlers
             services.AddTransient<ILambdaEventHandler<ScheduledEvent>, ScheduledEventLambdaHandler>();
             
             // Handlers
@@ -47,6 +56,9 @@ namespace ScheduledJobs
                 .AddClasses(c => c.AssignableTo(typeof(IHandler<,>)))
                 .AsImplementedInterfaces()
                 .WithTransientLifetime());
+            
+            // Others
+            services.AddTransient<ICpmsStudyDynamoDbRepository, CpmsStudyDynamoDbRepository>();
 
             return services;
         }

@@ -39,7 +39,7 @@ Resources:
       CodeUri: ./src/ScheduledJobs/
       Handler: ScheduledJobs::ScheduledJobs.ScheduledJobsFunction::FunctionHandler
       Role: arn:aws:iam::536374685097:role/nihr-dte-dev-eu-west-2-lambdaRole
-      MemorySize: 10240
+      MemorySize: 1024
       Environment:
         Variables:
           AWS_SECRET_MANAGER_SECRET_NAME: PassInFromRunConfiguration

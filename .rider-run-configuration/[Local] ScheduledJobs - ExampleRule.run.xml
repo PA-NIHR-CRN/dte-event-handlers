@@ -5,7 +5,7 @@
     <option name="debugHost" value="localhost" />
     <option name="environmentVariables">
       <map>
-        <entry key="AWS_SECRET_MANAGER_SECRET_NAME" value="PassInFromRunConfiguration" />
+        <entry key="AWS_SECRET_MANAGER_SECRET_NAME" value="nihr_dte_scheduled_jobs_sandbox" />
         <entry key="Environment" value="PassInFromRunConfiguration" />
       </map>
     </option>

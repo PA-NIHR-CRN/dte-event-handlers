@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -9,29 +10,43 @@ using Amazon.S3.Model;
 using Application.Contracts;
 using Application.Extensions;
 using CsvHelper;
-using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
-using ScheduledJobs.Jobs;
+using ScheduledJobs.Contracts;
+using ScheduledJobs.Models;
 using ScheduledJobs.Settings;
 
 namespace ScheduledJobs.JobHandlers
 {
+    // Reference class for handler generic type param
+    public class CpmsImport { }
+    
     public class CpmsImportJobHandler : IHandler<CpmsImport, bool>
     {
         private readonly IAmazonS3 _client;
+        private readonly ICpmsStudyDynamoDbRepository _repository;
         private readonly CpmsImportSettings _cpmsImportSettings;
         private readonly ILogger<CpmsImportJobHandler> _logger;
+        
+        private const int DefaultBatchSize = 1000;
+        private readonly string _archiveFolderName;
 
-        public CpmsImportJobHandler(IAmazonS3 client, CpmsImportSettings cpmsImportSettings, ILogger<CpmsImportJobHandler> logger)
+        public CpmsImportJobHandler(IAmazonS3 client, ICpmsStudyDynamoDbRepository repository, CpmsImportSettings cpmsImportSettings, ILogger<CpmsImportJobHandler> logger)
         {
             _client = client;
+            _repository = repository;
             _cpmsImportSettings = cpmsImportSettings;
             _logger = logger;
+            
+            _archiveFolderName= $"{DateTime.Now:yyyy-MM-dd--HH-mm-ss}";
         }
         
         public async Task<bool> HandleAsync(CpmsImport source)
         {
             _logger.LogInformation($"************** {nameof(CpmsImportJobHandler)} STARTED");
+            var sw = Stopwatch.StartNew();
+            
+            var batchSize = int.TryParse(_cpmsImportSettings.GetRecordBatchSize, out var parsed) ? parsed : DefaultBatchSize;
+            _logger.LogInformation($"BatchSize set to: {batchSize}");
             
             if (!await _client.DoesS3BucketExistAsync(_cpmsImportSettings.ArchiveS3BucketName))
             {
@@ -49,28 +64,38 @@ namespace ScheduledJobs.JobHandlers
             var tasks = listObjects.S3Objects.Where(x => x.Size > 0).Select(x => GetFileAsync(_cpmsImportSettings.S3BucketName, x.Key));
 
             var results = await Task.WhenAll(tasks);
+            _logger.LogInformation($"*** Elapsed time taken to get files from S3: {sw.Elapsed}");
 
+            var totalRecords = 0;
             foreach (var (filename, content) in results)
             {
                 using var csv = new CsvReader(new StringReader(content), CultureInfo.InvariantCulture);
 
-                csv.Context.RegisterClassMap<SiteMap>();
-                var byBatch = csv.GetRecords<Site>().GetByBatch(_cpmsImportSettings.GetRecordBatchSize);
+                csv.Context.RegisterClassMap<CpmsStudyMap>();
+                var byBatch = csv.GetRecords<CpmsStudy>().GetByBatch(batchSize);
 
                 var batchNumber = 1;
                 foreach (var batch in byBatch)
                 {
-                    _logger.LogInformation($"Processing - {filename} - Batch ({batchNumber}) - Parsed {batch.Count()} records");
-                    
-                    // DO SOMETHING WITH THE BATCH
+                    var cpmsStudies = batch.ToList();
+                    _logger.LogInformation($"Processing - {filename} - Batch ({batchNumber}) - Parsed {cpmsStudies.Count} records");
+
+                    await _repository.BatchInsertCpmsStudyAsync(cpmsStudies.Select(x => new CpmsStudy
+                    {
+                        Pk = Guid.NewGuid().ToString(), Sk = "STUDY#",
+                        Country = x.Country,
+                        Region = x.Region,
+                        ItemType = x.ItemType
+                    }));
                     
                     batchNumber++;
+                    totalRecords += cpmsStudies.Count;
                 }
 
-                await MoveObjectAsync(_cpmsImportSettings.S3BucketName, filename, _cpmsImportSettings.ArchiveS3BucketName, filename, false);
+                await MoveObjectAsync(_cpmsImportSettings.S3BucketName, filename, _cpmsImportSettings.ArchiveS3BucketName, $"{_archiveFolderName}/{filename}", false);
             }
             
-            _logger.LogInformation($"************** {nameof(CpmsImportJobHandler)} FINISHED");
+            _logger.LogInformation($"************** {nameof(CpmsImportJobHandler)} FINISHED in {sw.Elapsed} - {totalRecords} records processed");
 
             return true;
         }
@@ -127,23 +152,6 @@ namespace ScheduledJobs.JobHandlers
                     _logger.LogError($"Could not delete original file from {srcBucket}/{srcKey}");
                 }
             }
-        }
-    }
-
-    public class Site
-    {
-        public string Region { get; set; }
-        public string Country { get; set; }
-        public string ItemType { get; set; }
-    }
-
-    public sealed class SiteMap : ClassMap<Site>
-    {
-        public SiteMap()
-        {
-            Map(m => m.Region).Name("Region");
-            Map(m => m.Country).Name("Country");
-            Map(m => m.ItemType).Name("Item Type");
         }
     }
 }
