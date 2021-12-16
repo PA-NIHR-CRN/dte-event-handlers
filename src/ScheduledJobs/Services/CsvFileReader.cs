@@ -3,14 +3,10 @@ using System.Globalization;
 using System.IO;
 using CsvHelper;
 using CsvHelper.Configuration;
+using ScheduledJobs.Contracts;
 
 namespace ScheduledJobs.Services
 {
-    public interface ICsvFileReader
-    {
-        IEnumerable<TResult> ParseStringCsvContent<TMapping, TResult>(string content) where TMapping : ClassMap;
-    }
-
     public class CsvFileReader : ICsvFileReader
     {
         public IEnumerable<TResult> ParseStringCsvContent<TMapping, TResult>(string content) where TMapping : ClassMap
