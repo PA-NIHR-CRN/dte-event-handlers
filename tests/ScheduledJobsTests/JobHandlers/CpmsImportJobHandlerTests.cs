@@ -8,7 +8,6 @@ using NUnit.Framework;
 using ScheduledJobs.Contracts;
 using ScheduledJobs.JobHandlers;
 using ScheduledJobs.Models;
-using ScheduledJobs.Services;
 using ScheduledJobs.Settings;
 
 namespace ScheduledJobsTests.JobHandlers

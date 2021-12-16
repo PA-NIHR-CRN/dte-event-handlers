@@ -22,36 +22,13 @@ namespace ScheduledJobs.Services
             _client = client;
             _logger = logger;
         }
-        
-        private async Task<S3FileContent> GetFileAsync(string path, string fileName)
-        {
-            try
-            {
-                using var response = await _client.GetObjectAsync(path, fileName);
-                await using var responseStream = response.ResponseStream;
-                using var reader = new StreamReader(responseStream);
-
-                return new S3FileContent { Name = fileName, Content = await reader.ReadToEndAsync()};
-            }
-            catch (AmazonS3Exception ex)
-            {
-                // If bucket or object does not exist
-                _logger.LogError(ex, $"S3 Error encountered ***. Message:'{ex.Message}' when reading object");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"UNKNOWN Error encountered ***. Message:'{ex.Message}' when reading object");
-                throw;
-            }
-        }
 
         public async Task CreateBucketIfNotExistsAsync(string bucketName)
         {
             if (!await _client.DoesS3BucketExistAsync(bucketName))
             {
                 _logger.LogInformation($"Archive bucket does not exist - Creating S3 bucket {bucketName}");
-                await _client.EnsureBucketExistsAsync($"{bucketName}");
+                await _client.EnsureBucketExistsAsync(bucketName);
             }
         }
 
@@ -95,6 +72,29 @@ namespace ScheduledJobs.Services
                 {
                     _logger.LogError($"Could not delete original file from {srcBucket}/{srcKey}");
                 }
+            }
+        }
+
+        public async Task<S3FileContent> GetFileAsync(string path, string fileName)
+        {
+            try
+            {
+                using var response = await _client.GetObjectAsync(path, fileName);
+                await using var responseStream = response.ResponseStream;
+                using var reader = new StreamReader(responseStream);
+
+                return new S3FileContent { Name = fileName, Content = await reader.ReadToEndAsync()};
+            }
+            catch (AmazonS3Exception ex)
+            {
+                // If bucket or object does not exist
+                _logger.LogError(ex, $"S3 Error encountered ***. Message:'{ex.Message}' when reading object");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"UNKNOWN Error encountered ***. Message:'{ex.Message}' when reading object");
+                throw;
             }
         }
     }
