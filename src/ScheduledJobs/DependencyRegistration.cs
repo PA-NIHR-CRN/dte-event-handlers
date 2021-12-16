@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ScheduledJobs.Contracts;
 using ScheduledJobs.Repositories;
+using ScheduledJobs.Services;
 using ScheduledJobs.Settings;
 
 namespace ScheduledJobs
@@ -58,6 +59,8 @@ namespace ScheduledJobs
                 .WithTransientLifetime());
             
             // Others
+            services.AddTransient<IS3Service, S3Service>();
+            services.AddTransient<ICsvFileReader, CsvFileReader>();
             services.AddTransient<ICpmsStudyDynamoDbRepository, CpmsStudyDynamoDbRepository>();
 
             return services;
