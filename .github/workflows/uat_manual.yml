@@ -37,3 +37,4 @@ jobs:
           dotnet tool install -g Amazon.Lambda.Tools
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/MessageListener nihr-dte-message-listener-uat --function-role nihrdo-dte-lambda-iam-uat-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=nihr_dte_message_listener_uat"
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor nihr-dte-cognito-custom-message-processor-uat --function-role nihrdo-dte-lambda-iam-uat-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=nihr_dte_cognito_custom_message_processor_uat"
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs nihr-dte-schedule-jobs-uat --function-role nihrdo-dte-lambda-iam-uat-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=nihr_dte_scheduled_jobs_uat"
