@@ -1,4 +1,4 @@
-using Application.Messages;
+using Dte.Common.Lambda.Messages;
 
 namespace MessageListener.Messages
 {

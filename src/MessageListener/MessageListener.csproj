@@ -38,6 +38,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Dte.Common.Lambda\Dte.Common.Lambda.csproj" />
   </ItemGroup>
 </Project>

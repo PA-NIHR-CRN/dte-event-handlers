@@ -1,4 +1,4 @@
-using Application.Settings;
+using Dte.Common.Lambda.Settings;
 
 namespace ScheduledJobs.Settings
 {

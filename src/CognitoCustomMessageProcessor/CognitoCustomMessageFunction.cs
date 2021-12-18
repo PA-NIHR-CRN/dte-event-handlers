@@ -1,9 +1,9 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
-using Application;
-using Application.Events;
-using Application.Extensions;
+using Dte.Common.Lambda;
+using Dte.Common.Lambda.Events;
+using Dte.Common.Lambda.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

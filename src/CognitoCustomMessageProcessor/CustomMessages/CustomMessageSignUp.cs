@@ -1,4 +1,4 @@
-using Application.Events;
+using Dte.Common.Lambda.Events;
 
 namespace CognitoCustomMessageProcessor.CustomMessages
 {

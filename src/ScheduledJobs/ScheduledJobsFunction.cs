@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using Amazon.Lambda.CloudWatchEvents.ScheduledEvents;
 using Amazon.Lambda.Core;
-using Application;
-using Application.Extensions;
+using Dte.Common.Lambda;
+using Dte.Common.Lambda.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using System.Web;
-using Application.Contracts;
-using Application.Events;
+using Dte.Common.Lambda.Contracts;
+using Dte.Common.Lambda.Events;
 using CognitoCustomMessageProcessor.Content;
 using CognitoCustomMessageProcessor.Contracts;
 using CognitoCustomMessageProcessor.CustomMessages;

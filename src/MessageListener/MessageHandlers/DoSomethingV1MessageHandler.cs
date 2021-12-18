@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using MessageListener.Messages;
-using Application.Contracts;
+using Dte.Common.Lambda.Contracts;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
