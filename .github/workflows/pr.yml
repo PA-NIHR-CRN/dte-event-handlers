@@ -24,7 +24,10 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.101
+          dotnet-version: 3.1.200
+
+      - name: Add Nuget Source
+        run: dotnet nuget add source --username ${{ secrets.NUGET_USERNAME }} --password ${{ secrets.NUGET_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/nihr-interoperability-platform/index.json"
 
       - name: Install dependencies
         run: dotnet restore
