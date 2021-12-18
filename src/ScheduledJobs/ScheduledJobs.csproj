@@ -13,11 +13,8 @@
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.2.2" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.7.3" />
     <PackageReference Include="CsvHelper" Version="27.2.1" />
+    <PackageReference Include="Dte.Common.Lambda" Version="0.0.2" />
     <PackageReference Include="Scrutor" Version="3.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Dte.Common.Lambda\Dte.Common.Lambda.csproj" />
   </ItemGroup>
 
   <ItemGroup>
