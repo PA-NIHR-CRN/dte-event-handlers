@@ -7,7 +7,6 @@ using Dte.Common.Lambda.Extensions;
 using Microsoft.Extensions.Logging;
 using ScheduledJobs.Contracts;
 using ScheduledJobs.Models;
-using ScheduledJobs.Services;
 using ScheduledJobs.Settings;
 
 namespace ScheduledJobs.JobHandlers

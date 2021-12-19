@@ -6,7 +6,7 @@
   "time": "1970-01-01T00:00:00Z",
   "region": "us-east-1",
   "resources": [
-    "arn:aws:events:us-east-1:123456789012:rule/CpmsImport"
+    "arn:aws:events:eu-west-1:536374685097:rule/nihr-dte-scheduled-jobs-sandbox-cpmsimport"
   ],
   "detail": {}
 }
