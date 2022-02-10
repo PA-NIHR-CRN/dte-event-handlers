@@ -36,56 +36,65 @@ namespace ScheduledJobs.JobHandlers
 
         public async Task<bool> HandleAsync(RtsSiteImport source)
         {
-            var pageNumber = 3;
+            var pageNumber = 1;
             const int pageSize = 50000;
-            const int stopPage = 10;
+            const int stopPage = 20;
 
             var types = RtsDataMapper.GetMappedTypeDictionary();
 
-            do
+            try
             {
-                if (pageNumber > stopPage)
+                do
                 {
-                    _logger.LogInformation($"Stop Page: {stopPage} hit");
-                    break;
-                }
-
-                var response = await _retryService.WaitAndRetryAsync<HttpRequestException, HttpResponseMessage>
-                (
-                    3,
-                    currentRetryAttempt => TimeSpan.FromSeconds(5),
-                    currentRetryAttempt => _logger.LogWarning($"Retry attempt: {currentRetryAttempt}"),
-                    () =>
+                    if (pageNumber > stopPage)
                     {
-                        _logger.LogInformation($"Attempting Page: {pageNumber}");
-                        return _client.GetSitesAsync(pageSize, pageNumber);
+                        _logger.LogInformation($"Stop Page: {stopPage} hit");
+                        break;
                     }
-                );
 
-                var result = JsonConvert.DeserializeObject<RtsDataResponse>(await response.Content.ReadAsStringAsync());
+                    var response = await _retryService.WaitAndRetryAsync<HttpRequestException, HttpResponseMessage>
+                    (
+                        3,
+                        currentRetryAttempt => TimeSpan.FromSeconds(5),
+                        currentRetryAttempt => _logger.LogWarning($"Retry attempt: {currentRetryAttempt}"),
+                        () =>
+                        {
+                            _logger.LogInformation($"Attempting Page: {pageNumber}");
+                            return _client.GetSitesAsync(pageSize, pageNumber);
+                        }
+                    );
 
-                if (result?.Result?.RtsOrganisationSites == null)
-                {
-                    _logger.LogInformation("Result RtsOrganisationSites is null, break");
-                    break;
-                }
+                    var result = JsonConvert.DeserializeObject<RtsDataResponse>(await response.Content.ReadAsStringAsync());
 
-                var results = result.Result.RtsOrganisationSites.Where(x => types.ContainsKey(x.Type)).Where(x => x.Status != "Terminated");
+                    if (result?.Result?.RtsOrganisationSites == null)
+                    {
+                        _logger.LogInformation($"Result RtsOrganisationSites is null, break on page: {pageNumber}");
+                        break;
+                    }
 
-                var list = new List<RtsData>();
+                    var results = result.Result.RtsOrganisationSites.Where(x => types.ContainsKey(x.Type)).Where(x => x.Status != "Terminated");
 
-                list.AddRange(results.Select(RtsDataMapper.MapTo));
+                    var list = new List<RtsData>();
 
-                list = list.GroupBy(l => l.Pk).Select(l => l.First()).ToList();
+                    list.AddRange(results.Select(RtsDataMapper.MapTo));
 
-                await _repository.BatchInsertAsync(list);
-                _logger.LogInformation($"Page {pageNumber} saved {list.Count} items to the DB");
+                    list = list.GroupBy(l => l.Pk).Select(l => l.First()).ToList();
 
-                pageNumber++;
-                await Task.Delay(50);
-            } while (true);
+                    await _repository.BatchInsertAsync(list);
+                    _logger.LogInformation($"Page {pageNumber} saved {list.Count} items to the DB");
 
-            return true;
+                    pageNumber++;
+                    await Task.Delay(50);
+                } while (true);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error occurred on page: {pageNumber}: {ex.Message}");
+            }
+
+            return false;
         }
     }
 }
