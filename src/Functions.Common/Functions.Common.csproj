@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Dte.Common" Version="0.0.44" />
+      <PackageReference Include="Dte.Common.Lambda" Version="0.0.7" />
+    </ItemGroup>
+
+</Project>
