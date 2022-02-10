@@ -35,7 +35,7 @@ namespace ScheduledJobs.JobHandlers
         public async Task<bool> HandleAsync(RtsOrganisationImport source)
         {
             var pageNumber = 1;
-            const int pageSize = 5;
+            const int pageSize = 50000;
             const int stopPage = 20;
 
             try
