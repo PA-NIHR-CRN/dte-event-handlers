@@ -1,5 +1,6 @@
 using System;
 using Amazon.DynamoDBv2.DataModel;
+using Dte.Common.Converters;
 
 namespace ScheduledJobs.Models
 {
@@ -32,5 +33,7 @@ namespace ScheduledJobs.Models
 	
         [DynamoDBProperty] public string UKCountryIdentifier { get; set; }
         [DynamoDBProperty] public string UKCountryName { get; set; }
+        
+        [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime CreatedAtUtc { get; set; }
     }
 }

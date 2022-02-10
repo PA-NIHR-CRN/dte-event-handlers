@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ScheduledJobs.Models;
 using ScheduledJobs.Responses;
@@ -31,7 +32,8 @@ namespace ScheduledJobs.Mappers
                 Postcode = source.Postcode,
                 PostcodeSearch = source.Postcode.ToLower().Replace(" ", ""),
                 UKCountryIdentifier = source.UkCountryIdentifier,
-                UKCountryName = source.UkCountryName
+                UKCountryName = source.UkCountryName,
+                CreatedAtUtc = DateTime.Now
             };
         }
 
@@ -60,7 +62,8 @@ namespace ScheduledJobs.Mappers
                 Postcode = source.Postcode,
                 PostcodeSearch = source.Postcode.ToLower().Replace(" ", ""),
                 UKCountryIdentifier = source.UkCountryIdentifier,
-                UKCountryName = source.UkCountryName
+                UKCountryName = source.UkCountryName,
+                CreatedAtUtc = DateTime.Now
             };
         }
         
