@@ -12,5 +12,6 @@ namespace Functions.Common.Settings
         public ClientSettings LocationService { get; set; }
         public ClientSettings ReferenceDataService { get; set; }
         public ClientSettings RtsService { get; set; }
+        public ClientSettings IpAddressService { get; set; }
     }
 }

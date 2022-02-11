@@ -22,13 +22,19 @@ namespace ScheduledJobs.JobHandlers
     public class RtsSiteImportJobHandler : IHandler<RtsSiteImport, bool>
     {
         private readonly IRtsServiceClient _client;
+        private readonly IIpAddressServiceClient _ipAddressServiceClient;
         private readonly IPollyRetryService _retryService;
         private readonly IRtsDataDynamoDbRepository _repository;
         private readonly ILogger<RtsSiteImportJobHandler> _logger;
 
-        public RtsSiteImportJobHandler(IRtsServiceClient client, IPollyRetryService retryService, IRtsDataDynamoDbRepository repository, ILogger<RtsSiteImportJobHandler> logger)
+        public RtsSiteImportJobHandler(IRtsServiceClient client,
+            IIpAddressServiceClient ipAddressServiceClient,
+            IPollyRetryService retryService,
+            IRtsDataDynamoDbRepository repository,
+            ILogger<RtsSiteImportJobHandler> logger)
         {
             _client = client;
+            _ipAddressServiceClient = ipAddressServiceClient;
             _retryService = retryService;
             _repository = repository;
             _logger = logger;
@@ -39,6 +45,8 @@ namespace ScheduledJobs.JobHandlers
             var pageNumber = 1;
             const int pageSize = 50000;
             const int stopPage = 20;
+            
+            _logger.LogInformation($"**** Ip: {await _ipAddressServiceClient.GetExternalIpAddressAsync()}");
 
             var types = RtsDataMapper.GetMappedTypeDictionary();
 

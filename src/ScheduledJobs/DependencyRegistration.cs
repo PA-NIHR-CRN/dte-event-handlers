@@ -83,6 +83,12 @@ namespace ScheduledJobs
             });
             if (executionEnvironment.IsDevelopment()) rtsServiceHttpClientBuilder.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true });
             rtsServiceHttpClientBuilder.AddHttpMessageHandler<RtsServiceClientMessageHandler>();
+            
+            // Ip Address Service
+            services.AddTransient<IpAddressServiceClientMessageHandler>();
+            var ipAddressServiceHttpClientBuilder = services.AddHttpClient<IIpAddressServiceClient, IpAddressServiceClient>(client => { client.BaseAddress = new Uri(dteClientsSettings.IpAddressService.BaseUrl); });
+            if (executionEnvironment.IsDevelopment()) ipAddressServiceHttpClientBuilder.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true });
+            ipAddressServiceHttpClientBuilder.AddHttpMessageHandler<IpAddressServiceClientMessageHandler>();
 
             // Others
             services.AddTransient<IS3Service, S3Service>();
