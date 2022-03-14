@@ -41,6 +41,6 @@ jobs:
       - name: Deploy
         run: |
           dotnet tool install -g Amazon.Lambda.Tools
-          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/MessageListener nihr-dte-message-listener-dev --function-role nihrdo-dte-lambda-iam-dev-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=nihr_dte_message_listener_dev"
-          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor nihr-dte-cognito-custom-message-processor-dev --function-role nihrdo-dte-lambda-iam-dev-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=nihr_dte_cognito_custom_message_processor_dev"
-          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs nihr-dte-scheduled-jobs-dev --function-role nihrdo-dte-lambda-iam-dev-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=nihr_dte_scheduled_jobs_dev"
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/MessageListener nihrd-lambda-dev-dte-message-listener --function-role nihrd-iam-dev-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=nihrd-secret-dev-dte-message-listener"
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor nihrd-lambda-dev-dte-cognito-custom-message-processor --function-role nihrd-iam-dev-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=nihrd-secret-dev-dte-cognito-custom-message-processor"
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs nihrd-lambda-dev-dte-scheduled-jobs --function-role nihrd-iam-dev-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=nihrd-secret-dev-dte-scheduled-jobs"
