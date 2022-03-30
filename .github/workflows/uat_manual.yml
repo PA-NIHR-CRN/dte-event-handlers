@@ -38,6 +38,6 @@ jobs:
       - name: Deploy
         run: |
           dotnet tool install -g Amazon.Lambda.Tools
-          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/MessageListener nihr-dte-message-listener-uat --function-role nihrdo-dte-lambda-iam-uat-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=nihr_dte_message_listener_uat"
-          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor nihr-dte-cognito-custom-message-processor-uat --function-role nihrdo-dte-lambda-iam-uat-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=nihr_dte_cognito_custom_message_processor_uat"
-          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs nihr-dte-scheduled-jobs-uat --function-role nihrdo-dte-lambda-iam-uat-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=nihr_dte_scheduled_jobs_uat"
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/MessageListener nihru-lambda-uat-dte-message-listener --function-role nihru-iam-uat-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=nihru-secret-uat-dte-message-listener"
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor nihru-lambda-uat-dte-cognito-custom-message-processor --function-role nihru-iam-uat-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=nihru-secret-uat-dte-cognito-custom-message-processor"
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs nihru-lambda-uat-dte-scheduled-jobs --function-role nihru-iam-uat-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=nihru-secret-uat-dte-scheduled-jobs"
