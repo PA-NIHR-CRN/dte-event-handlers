@@ -35,10 +35,11 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
             source.Response.EmailSubject = "Be Part of Research password reset";
             source.Response.EmailMessage = CustomMessageEmail.GetCustomMessageHtml()
                 .Replace("###TITLE_REPLACE1###", "Password reset")
-                .Replace("###TEXT_REPLACE1###", "You have asked us to reset your password.")
-                .Replace("###TEXT_REPLACE2###", "Please click the link below to reset your password")
-                .Replace("###LINK_REPLACE###", links);
-            
+                .Replace("###TEXT_REPLACE1###", "A request has been received to change the password for your Be Part of Research account, please ignore this email if you did not ask to reset your password.")
+                .Replace("###TEXT_REPLACE2###", "Reset your password by clicking the link. The link only lasts for 24 hours.")
+                .Replace("###LINK_REPLACE###", links)
+                .Replace("###TEXT_REPLACE3###", null);
+
             return await Task.FromResult(source);
         }
     }
