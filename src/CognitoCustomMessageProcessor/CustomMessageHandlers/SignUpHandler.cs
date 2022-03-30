@@ -32,11 +32,13 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
                 .AddLink("Verify", $"{_appSettings.DteWebBaseUrl}verify", requestCodeParameter, userAttributesEmail)
                 .Build();
             
-            source.Response.EmailSubject = $"hi, from SignUp";
+            source.Response.EmailSubject = "Be Part of Research email verification";
             source.Response.EmailMessage = CustomMessageEmail.GetCustomMessageHtml()
-                .Replace("###TEXT_REPLACE1###", "Welcome to Be Part of Research.")
-                .Replace("###TEXT_REPLACE2###", "Please click the link below to verify your account")
-                .Replace("###LINK_REPLACE###", links);
+                .Replace("###TITLE_REPLACE1###", "Confirm your email address")
+                .Replace("###TEXT_REPLACE1###", "Thank you for your interest in Be Part of\n                                Research. By signing up, you are joining our\n                                community of amazing volunteers who are helping\n                                researchers to understand more about health and\n                                care conditions. And as a result, you are\n                                playing an important part in helping us all to\n                                live healthier and better lives, now and in the\n                                future.")
+                .Replace("###TEXT_REPLACE2###", "Confirm your email address and continue your\n                                registration by clicking the link.")
+                .Replace("###LINK_REPLACE###", links)
+                .Replace("###TEXT_REPLACE3###", "After 24 hours this link will not work.");
             
             return await Task.FromResult(source);
         }

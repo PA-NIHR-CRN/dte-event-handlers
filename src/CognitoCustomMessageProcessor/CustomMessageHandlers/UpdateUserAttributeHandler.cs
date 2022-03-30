@@ -32,8 +32,9 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
                 .AddLink("VerifyEmail", $"{_appSettings.DteWebBaseUrl}verifyemail", "0", userAttributesEmail)
                 .Build();
             
-            source.Response.EmailSubject = $"hi, from UpdateUserAttribute";
+            source.Response.EmailSubject = "Be Part of Research email address updated";
             source.Response.EmailMessage = CustomMessageEmail.GetCustomMessageHtml()
+                .Replace("###TITLE_REPLACE1###", "Updated email address")
                 .Replace("###TEXT_REPLACE1###", "You have changed your account details.")
                 .Replace("###TEXT_REPLACE2###", "Please click the link below to verify your account")
                 .Replace("###LINK_REPLACE###", links);

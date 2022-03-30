@@ -18,55 +18,9 @@ namespace CognitoCustomMessageProcessor.Content
     <!--<![endif]-->
     <meta http-equiv=""Content-Type"" content=""text/html; charset=UTF-8"" />
     <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
-    <style type=""text/css"">
-      #outlook a {
-        padding: 0;
-      }
-      .ReadMsgBody {
-        width: 100%;
-      }
-      .ExternalClass {
-        width: 100%;
-      }
-      .ExternalClass * {
-        line-height: 100%;
-      }
-      body {
-        margin: 0;
-        padding: 0;
-        -webkit-text-size-adjust: 100%;
-        -ms-text-size-adjust: 100%;
-      }
-      table,
-      td {
-        border-collapse: collapse;
-        mso-table-lspace: 0pt;
-        mso-table-rspace: 0pt;
-      }
-      img {
-        border: 0;
-        height: auto;
-        line-height: 100%;
-        outline: none;
-        text-decoration: none;
-        -ms-interpolation-mode: bicubic;
-      }
-      p {
-        display: block;
-        margin: 13px 0;
-      }
-    </style>
+
     <!--[if !mso]><!-->
-    <style type=""text/css"">
-      @media only screen and (max-width: 480px) {
-        @-ms-viewport {
-          width: 320px;
-        }
-        @viewport {
-          width: 320px;
-        }
-      }
-    </style>
+
     <!--<![endif]-->
     <!--[if mso
       ]><xml>
@@ -83,63 +37,93 @@ namespace CognitoCustomMessageProcessor.Content
       </style><!
     [endif]-->
     <!--[if !mso]><!-->
-    <link
-      href=""https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700""
-      rel=""stylesheet""
-      type=""text/css""
-    />
-    <style type=""text/css"">
-      @import url(
-        https://fonts.googleapis.com/css?family=Ubuntu:300,
-        400,
-        500,
-        700
-      );
-    </style>
+
     <!--<![endif]-->
-    <style type=""text/css"">
-      @media only screen and (min-width: 480px) {
-        .mj-column-per-100 {
-          width: 100% !important;
-        }
-      }
-    </style>
   </head>
-  <body style=""background: #FDFDFD;"">
-    <div class=""mj-container"" style=""background-color:#FDFDFD;"">
+  <body
+    style=""
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    ""
+  >
+    <div class=""mj-container"">
       <!--[if mso | IE]>      <table role=""presentation"" border=""0"" cellpadding=""0"" cellspacing=""0"" width=""600"" align=""center"" style=""width:600px;"">        <tr>          <td style=""line-height:0px;font-size:0px;mso-line-height-rule:exactly;"">      <![endif]-->
-      <div style=""margin:0px auto;max-width:600px;background:#FFFFFF;"">
+      <div
+        style=""margin: 18px auto 0 auto; max-width: 600px; background: #ffffff""
+      >
         <table
           role=""presentation""
-          cellpadding=""0""
-          cellspacing=""0""
-          style=""font-size:0px;width:100%;background:#FFFFFF;""
+          style=""
+            font-size: 0px;
+            width: 100%;
+            background: #ffffff;
+            border-collapse: collapse;
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+            padding: 0 10px;
+          ""
           align=""center""
           border=""0""
         >
           <tbody>
             <tr>
               <td
-                style=""text-align:center;vertical-align:middle;direction:ltr;font-size:0px;padding:0px 0px 0px 0px;""
+                style=""
+                  text-align: center;
+                  vertical-align: middle;
+                  direction: ltr;
+                  font-size: 0px;
+                  border-collapse: collapse;
+                  mso-table-lspace: 0pt;
+                  mso-table-rspace: 0pt;
+                ""
               >
                 <!--[if mso | IE]>      <table role=""presentation"" border=""0"" cellpadding=""0"" cellspacing=""0"">        <tr>          <td style=""vertical-align:middle;width:600px;"">      <![endif]-->
                 <div
                   class=""mj-column-per-100 outlook-group-fix""
-                  style=""vertical-align:middle;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%;""
+                  style=""
+                    vertical-align: middle;
+                    display: inline-block;
+                    direction: ltr;
+                    font-size: 13px;
+                    text-align: left;
+                    width: 100%;
+                  ""
                 >
                   <table
                     role=""presentation""
                     cellpadding=""0""
                     cellspacing=""0""
-                    style=""vertical-align:middle;""
+                    style=""
+                      vertical-align: middle;
+                      border-collapse: collapse;
+                      mso-table-lspace: 0pt;
+                      mso-table-rspace: 0pt;
+                      padding: 0 10px;
+                    ""
                     width=""100%""
                     border=""0""
                   >
                     <tbody>
                       <tr>
-                        <td style=""word-wrap:break-word;font-size:0px;"">
+                        <td
+                          style=""
+                            word-wrap: break-word;
+                            font-size: 0px;
+                            border-collapse: collapse;
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
+                          ""
+                        >
                           <div
-                            style=""font-size:1px;line-height:10px;white-space:nowrap;""
+                            style=""
+                              font-size: 1px;
+                              line-height: 10px;
+                              white-space: nowrap;
+                            ""
                           >
                             &#xA0;
                           </div>
@@ -147,26 +131,77 @@ namespace CognitoCustomMessageProcessor.Content
                       </tr>
                       <tr>
                         <td
-                          style=""word-wrap:break-word;font-size:0px;padding:0px 0px 0px 0px;""
-                          align=""center""
+                          style=""
+                            word-wrap: break-word;
+                            font-size: 0px;
+                            padding: 0px 0px 0px 0px;
+                            border-collapse: collapse;
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
+                          ""
                         >
                           <table
                             role=""presentation""
                             cellpadding=""0""
                             cellspacing=""0""
-                            style=""border-collapse:collapse;border-spacing:0px;""
-                            align=""center""
+                            style=""
+                              border-collapse: collapse;
+                              border-spacing: 0px;
+                              width: 100%;
+                              mso-table-lspace: 0pt;
+                              mso-table-rspace: 0pt;
+                              padding: 0 10px;
+                            ""
                             border=""0""
                           >
                             <tbody>
                               <tr>
-                                <td style=""width:600px;"">
+                                <td
+                                  style=""
+                                    width: 50%;
+                                    border-collapse: collapse;
+                                    mso-table-lspace: 0pt;
+                                    mso-table-rspace: 0pt;
+                                  ""
+                                  align=""left""
+                                >
+                                  <img
+                                    alt=""Be Part of Research Logo""
+                                    src=""https://bepartofresearch-uat.nihr.ac.uk/dA/e300bee7b2/BPoR%20colour%20RGB.jpg""
+                                    style=""
+                                      width: 150px;
+                                      height: auto;
+                                      margin: 0 18px;
+                                      border: 0;
+                                      line-height: 100%;
+                                      outline: none;
+                                      text-decoration: none;
+                                      -ms-interpolation-mode: bicubic;
+                                    ""
+                                  />
+                                </td>
+                                <td
+                                  style=""
+                                    width: 50%;
+                                    border-collapse: collapse;
+                                    mso-table-lspace: 0pt;
+                                    mso-table-rspace: 0pt;
+                                  ""
+                                  align=""right""
+                                >
                                   <img
                                     alt
-                                    height=""auto""
-                                    src=""https://storage.googleapis.com/afuxova10642/konfety.png""
-                                    style=""border:none;border-radius:0px;display:block;font-size:13px;outline:none;text-decoration:none;width:100%;height:auto;""
-                                    width=""600""
+                                    src=""https://bepartofresearch-uat.nihr.ac.uk/dA/84c0a77dd7/NHS.png""
+                                    style=""
+                                      width: 100px;
+                                      height: auto;
+                                      margin: 0 18px;
+                                      border: 0;
+                                      line-height: 100%;
+                                      outline: none;
+                                      text-decoration: none;
+                                      -ms-interpolation-mode: bicubic;
+                                    ""
                                   />
                                 </td>
                               </tr>
@@ -174,38 +209,6 @@ namespace CognitoCustomMessageProcessor.Content
                           </table>
                         </td>
                       </tr>
-                      <tr>
-                        <td
-                          style=""word-wrap:break-word;font-size:0px;padding:0px 0px 0px 0px;""
-                          align=""center""
-                        >
-                          <table
-                            role=""presentation""
-                            cellpadding=""0""
-                            cellspacing=""0""
-                            style=""border-collapse:collapse;border-spacing:0px;""
-                            align=""center""
-                            border=""0""
-                          >
-                            <tbody>
-                              <tr>
-                                <td style=""width:486px;"">
-                                  <a
-                                    href=""https://www.ndorms.ox.ac.uk/images/news/be-part-of-research-logo/responsive_image?ratio=image&scale=w1140""
-                                    target=""_blank""
-                                    ><img
-                                      alt=""Logo""
-                                      height=""auto""
-                                      src=""https://www.ndorms.ox.ac.uk/images/news/be-part-of-research-logo/responsive_image?ratio=image&scale=w1140""
-                                      style=""border:none;border-radius:0px;display:block;font-size:13px;outline:none;text-decoration:none;width:100%;height:auto;""
-                                      width=""486""
-                                  /></a>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </td>
-                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -217,38 +220,80 @@ namespace CognitoCustomMessageProcessor.Content
       </div>
       <!--[if mso | IE]>      </td></tr></table>      <![endif]-->
       <!--[if mso | IE]>      <table role=""presentation"" border=""0"" cellpadding=""0"" cellspacing=""0"" width=""600"" align=""center"" style=""width:600px;"">        <tr>          <td style=""line-height:0px;font-size:0px;mso-line-height-rule:exactly;"">      <![endif]-->
-      <div style=""margin:0px auto;max-width:600px;background:#FFFFFF;"">
+      <div style=""margin: 0px auto; max-width: 600px; background: #ffffff"">
         <table
           role=""presentation""
           cellpadding=""0""
           cellspacing=""0""
-          style=""font-size:0px;width:100%;background:#FFFFFF;""
+          style=""
+            font-size: 0px;
+            width: 100%;
+            background: #ffffff;
+            border-collapse: collapse;
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+            padding: 0 10px;
+          ""
           align=""center""
           border=""0""
         >
           <tbody>
             <tr>
               <td
-                style=""text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:0px 0px 0px 0px;""
+                style=""
+                  text-align: center;
+                  vertical-align: top;
+                  direction: ltr;
+                  font-size: 0px;
+                  padding: 0px 0px 0px 0px;
+                  border-collapse: collapse;
+                  mso-table-lspace: 0pt;
+                  mso-table-rspace: 0pt;
+                ""
               >
                 <!--[if mso | IE]>      <table role=""presentation"" border=""0"" cellpadding=""0"" cellspacing=""0"">        <tr>          <td style=""vertical-align:top;width:600px;"">      <![endif]-->
                 <div
                   class=""mj-column-per-100 outlook-group-fix""
-                  style=""vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%;""
+                  style=""
+                    vertical-align: top;
+                    display: inline-block;
+                    direction: ltr;
+                    font-size: 13px;
+                    text-align: left;
+                    width: 100%;
+                  ""
                 >
                   <table
                     role=""presentation""
                     cellpadding=""0""
                     cellspacing=""0""
-                    style=""vertical-align:top;""
+                    style=""
+                      vertical-align: top;
+                      border-collapse: collapse;
+                      mso-table-lspace: 0pt;
+                      mso-table-rspace: 0pt;
+                      padding: 0 10px;
+                    ""
                     width=""100%""
                     border=""0""
                   >
                     <tbody>
                       <tr>
-                        <td style=""word-wrap:break-word;font-size:0px;"">
+                        <td
+                          style=""
+                            word-wrap: break-word;
+                            font-size: 0px;
+                            border-collapse: collapse;
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
+                          ""
+                        >
                           <div
-                            style=""font-size:1px;line-height:15px;white-space:nowrap;""
+                            style=""
+                              font-size: 1px;
+                              line-height: 15px;
+                              white-space: nowrap;
+                            ""
                           >
                             &#xA0;
                           </div>
@@ -265,56 +310,137 @@ namespace CognitoCustomMessageProcessor.Content
       </div>
       <!--[if mso | IE]>      </td></tr></table>      <![endif]-->
       <!--[if mso | IE]>      <table role=""presentation"" border=""0"" cellpadding=""0"" cellspacing=""0"" width=""600"" align=""center"" style=""width:600px;"">        <tr>          <td style=""line-height:0px;font-size:0px;mso-line-height-rule:exactly;"">      <![endif]-->
-      <div style=""margin:0px auto;max-width:600px;background:#FFFFFF;"">
+      <div style=""margin: 0px auto; max-width: 600px; background: #ffffff"">
         <table
           role=""presentation""
           cellpadding=""0""
           cellspacing=""0""
-          style=""font-size:0px;width:100%;background:#FFFFFF;""
+          style=""
+            font-size: 0px;
+            width: 100%;
+            background: #ffffff;
+            margin: 0 1px;
+            border-collapse: collapse;
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+            padding: 0 10px;
+          ""
           align=""center""
           border=""0""
         >
           <tbody>
             <tr>
               <td
-                style=""text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:9px 0px 9px 0px;""
+                style=""
+                  text-align: center;
+                  vertical-align: top;
+                  direction: ltr;
+                  font-size: 0px;
+                  padding: 9px 0px 9px 0px;
+                  border-collapse: collapse;
+                  mso-table-lspace: 0pt;
+                  mso-table-rspace: 0pt;
+                ""
               >
                 <!--[if mso | IE]>      <table role=""presentation"" border=""0"" cellpadding=""0"" cellspacing=""0"">        <tr>          <td style=""vertical-align:top;width:600px;"">      <![endif]-->
                 <div
                   class=""mj-column-per-100 outlook-group-fix""
-                  style=""vertical-align:top;display:inline-block;direction:ltr;font-size:13px;text-align:left;width:100%;""
+                  style=""
+                    vertical-align: top;
+                    display: inline-block;
+                    direction: ltr;
+                    font-size: 13px;
+                    text-align: left;
+                    width: 100%;
+                  ""
                 >
                   <table
                     role=""presentation""
                     cellpadding=""0""
                     cellspacing=""0""
-                    style=""vertical-align:top;""
+                    style=""
+                      vertical-align: top;
+                      border-collapse: collapse;
+                      mso-table-lspace: 0pt;
+                      mso-table-rspace: 0pt;
+                      padding: 0 10px;
+                    ""
                     width=""100%""
                     border=""0""
                   >
                     <tbody>
                       <tr>
                         <td
-                          style=""word-wrap:break-word;font-size:0px;padding:0px 0px 0px 0px;""
-                          align=""center""
+                          style=""
+                            word-wrap: break-word;
+                            font-size: 0px;
+                            padding: 0px 0px 0px 0px;
+                            border-collapse: collapse;
+                            mso-table-lspace: 0pt;
+                            mso-table-rspace: 0pt;
+                          ""
                         >
                           <div
-                            style=""cursor:auto;color:#000000;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:11px;line-height:1.5;text-align:center;""
+                            style=""
+                              cursor: auto;
+                              color: #000000;
+                              font-family: Lato, Helvetica, Arial, sans-serif;
+                              font-size: 11px;
+                              line-height: 1.5;
+                              margin: 0 18px;
+                            ""
                           >
-                            <p>
-                              <span style=""font-size:18px;""
+                            <p style=""display: block; margin: 13px 0"">
+                              <span style=""font-size: 24px; color: #193e72""
                                 ><strong
-                                  >###TEXT_REPLACE1###</strong
-                                ></span
+                                  >###TITLE_REPLACE1###
+                                </strong></span
                               >
                             </p>
-                            <p>
-                              <span style=""font-size: 14px;""
-                                >###TEXT_REPLACE2###</span
-                              ><br /><br /><span style=""color:#e42748;""
-                                ><span style=""font-size:20px;""
-                                  ><strong>###LINK_REPLACE###</strong></span
-                                ></span
+                            <p style=""display: block; margin: 13px 0"">
+                              <span style=""font-size: 16px""
+                                >###TEXT_REPLACE1###
+                              </span>
+                            </p>
+                            <p style=""display: block; margin: 13px 0"">
+                              <span style=""font-size: 16px""
+                                >###TEXT_REPLACE2###
+                              </span>
+                            </p>
+                            <p style=""display: block; margin: 13px 0"">
+                              <span style=""font-size: 16px""
+                                >###LINK_REPLACE###
+                              </span>
+                            </p>
+                            <p style=""display: block; margin: 13px 0"">
+                              <span style=""font-size: 16px""
+                                >###TEXT_REPLACE3###
+                              </span>
+                            </p>
+                            <p style=""display: block; margin: 13px 0"">
+                              <span style=""font-size: 16px""
+                                >The Be Part of Research team
+                              </span>
+                            </p>
+                            <hr />
+                            <p style=""display: block; margin: 13px 0"">
+                              <span style=""font-size: 16px""
+                                >This is an automated email, please do not reply
+                                directly to this email address.
+                              </span>
+                            </p>
+                            <p style=""display: block; margin: 13px 0"">
+                              <span style=""font-size: 16px""
+                                >If you have any questions about your Be Part of
+                                Research account or taking part in research, see
+                                our
+                                <a
+                                  href=""https://bepartofresearch-uat.nihr.ac.uk/Taking-part/""
+                                  target=""_blank""
+                                  rel=""noopener noreferrer""
+                                >
+                                  frequently asked questions.
+                                </a></span
                               >
                             </p>
                           </div>

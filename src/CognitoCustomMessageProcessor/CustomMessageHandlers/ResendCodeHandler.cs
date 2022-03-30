@@ -32,8 +32,9 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
                 .AddLink("Verify", $"{_appSettings.DteWebBaseUrl}verify", requestCodeParameter, userAttributesEmail)
                 .Build();
             
-            source.Response.EmailSubject = $"hi, from ResendCode";
+            source.Response.EmailSubject = "Be Part of Research email verification";
             source.Response.EmailMessage = CustomMessageEmail.GetCustomMessageHtml()
+                .Replace("###TITLE_REPLACE1###", "Confirm your email address")
                 .Replace("###TEXT_REPLACE1###", "You have asked us to resend a verification email.")
                 .Replace("###TEXT_REPLACE2###", "Please click the link below to verify your account")
                 .Replace("###LINK_REPLACE###", links);
