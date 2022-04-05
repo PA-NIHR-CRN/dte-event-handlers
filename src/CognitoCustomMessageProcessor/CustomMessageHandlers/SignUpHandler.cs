@@ -27,9 +27,9 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
         {
             var requestCodeParameter = source.Request.CodeParameter;
             var userAttributesEmail = HttpUtility.UrlEncode(source.Request.UserAttributes.Email);
-            
-            var links = _linkBuilder
-                .AddLink("Verify", $"{_appSettings.DteWebBaseUrl}verify", requestCodeParameter, userAttributesEmail)
+
+            var link = _linkBuilder
+                .AddLink(null, $"{_appSettings.DteWebBaseUrl}verify", requestCodeParameter, userAttributesEmail)
                 .Build();
             
             source.Response.EmailSubject = "Be Part of Research email verification";
@@ -37,7 +37,7 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
                 .Replace("###TITLE_REPLACE1###", "Confirm your email address")
                 .Replace("###TEXT_REPLACE1###", "Thank you for your interest in Be Part of Research. By signing up, you are joining our community of amazing volunteers who are helping researchers to understand more about health and care conditions. And as a result, you are playing an important part in helping us all to live healthier and better lives, now and in the future.")
                 .Replace("###TEXT_REPLACE2###", "Confirm your email address and continue your registration by clicking the link.")
-                .Replace("###LINK_REPLACE###", links)
+                .Replace("###LINK_REPLACE###", link)
                 .Replace("###TEXT_REPLACE3###", "After 24 hours this link will not work.");
             
             return await Task.FromResult(source);

@@ -10,7 +10,7 @@ namespace CognitoCustomMessageProcessor.Models
         public override string ToString()
         {
             var link = $"{BaseUrl}?code={Code}&email={Email}";
-            return @$"<a href=""{link}"">{Name}</a>";
+            return @$"<a href=""{link}"">{Name ?? link}</a>";
         }
     }
 }

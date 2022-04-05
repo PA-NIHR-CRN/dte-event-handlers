@@ -27,9 +27,9 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
         {
             var requestCodeParameter = source.Request.CodeParameter;
             var userAttributesEmail = HttpUtility.UrlEncode(source.Request.UserAttributes.Email);
-            
-            var links = _linkBuilder
-                .AddLink("VerifyEmail", $"{_appSettings.DteWebBaseUrl}verifyemail", "0", userAttributesEmail)
+
+            var link = _linkBuilder
+                .AddLink(null, $"{_appSettings.DteWebBaseUrl}verifyemail", "0", userAttributesEmail)
                 .Build();
             
             source.Response.EmailSubject = "Be Part of Research email address updated";

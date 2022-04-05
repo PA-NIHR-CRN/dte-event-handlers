@@ -27,9 +27,9 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
         {
             var requestCodeParameter = source.Request.CodeParameter;
             var userAttributesEmail = HttpUtility.UrlEncode(source.Request.UserAttributes.Email);
-            
-            var links = _linkBuilder
-                .AddLink("Reset your password", $"{_appSettings.DteWebBaseUrl}resetpassword", requestCodeParameter, userAttributesEmail)
+
+            var link = _linkBuilder
+                .AddLink(null, $"{_appSettings.DteWebBaseUrl}resetpassword", requestCodeParameter, userAttributesEmail)
                 .Build();
             
             source.Response.EmailSubject = "Be Part of Research password reset";
@@ -37,7 +37,7 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
                 .Replace("###TITLE_REPLACE1###", "Password reset")
                 .Replace("###TEXT_REPLACE1###", "A request has been received to change the password for your Be Part of Research account, please ignore this email if you did not ask to reset your password.")
                 .Replace("###TEXT_REPLACE2###", "Reset your password by clicking the link. The link only lasts for 24 hours.")
-                .Replace("###LINK_REPLACE###", links)
+                .Replace("###LINK_REPLACE###", link)
                 .Replace("###TEXT_REPLACE3###", null);
 
             return await Task.FromResult(source);
