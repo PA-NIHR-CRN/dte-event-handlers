@@ -407,7 +407,7 @@ namespace CognitoCustomMessageProcessor.Content
                                 >###TEXT_REPLACE2###
                               </span>
                             </p>
-                            <p style=""display: block; margin: 13px 0"">
+                            <p style=""display: ###LINK_DISPLAY_VALUE_REPLACE###; margin: 13px 0"">
                               <span style=""font-size: 16px""
                                 >###LINK_REPLACE###
                               </span>

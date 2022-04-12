@@ -38,6 +38,7 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
                 .Replace("###TEXT_REPLACE1###", "Thank you for your interest in Be Part of Research. By signing up, you are joining our community of amazing volunteers who are helping researchers to understand more about health and care conditions. And as a result, you are playing an important part in helping us all to live healthier and better lives, now and in the future.")
                 .Replace("###TEXT_REPLACE2###", "Confirm your email address and continue your registration by clicking the link.")
                 .Replace("###LINK_REPLACE###", link)
+                .Replace("###LINK_DISPLAY_VALUE_REPLACE###", "block")
                 .Replace("###TEXT_REPLACE3###", "After 24 hours this link will not work.");
             
             return await Task.FromResult(source);
