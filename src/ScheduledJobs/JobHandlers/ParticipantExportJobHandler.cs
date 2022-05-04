@@ -20,33 +20,36 @@ namespace ScheduledJobs.JobHandlers
         private readonly IS3Service _s3Service;
         private readonly ICsvFileReader _csvFileReader;
         private readonly ICpmsStudyDynamoDbRepository _repository;
+        private readonly AwsSettings _awsSettings;
         private readonly ParticipantExportSettings _participantExportSettings;
         private readonly ILogger<ParticipantExportJobHandler> _logger;
 
         private const int DefaultBatchSize = 1000;
 
-        public ParticipantExportJobHandler(IS3Service s3Service, ICsvFileReader csvFileReader, ICpmsStudyDynamoDbRepository repository, ParticipantExportSettings participantExportSettings, ILogger<ParticipantExportJobHandler> logger)
+        public ParticipantExportJobHandler(IS3Service s3Service, ICsvFileReader csvFileReader, ICpmsStudyDynamoDbRepository repository, AwsSettings awsSettings, ParticipantExportSettings participantExportSettings, ILogger<ParticipantExportJobHandler> logger)
         {
             _s3Service = s3Service;
             _csvFileReader = csvFileReader;
             _repository = repository;
+            _awsSettings = awsSettings;
             _participantExportSettings = participantExportSettings;
             _logger = logger;
         }
 
         public async Task<bool> HandleAsync(ParticipantExport source)
         {
-            _logger.LogInformation($"***** Bucket: {_participantExportSettings.S3BucketName} *****");
+            _logger.LogInformation($"**** Getting files names from bucket: {_participantExportSettings.S3BucketName} with DynamoDB table name: {_awsSettings.ParticipantRegistrationDynamoDbTableName}");
+
             var sw = Stopwatch.StartNew();
 
             try
             {
-                var fileName = $"participant-{DateTime.Now:yyyy-MM-dd--HH-mm-ss}.csv";
+                var fileName = $"participant-export-{DateTime.Now:yyyy-MM-dd--HH-mm-ss}.csv";
 
-                // await _s3Service.SaveStringContentAsync(_participantExportSettings.S3BucketName, fileName, Guid.NewGuid().ToString());
+                await _s3Service.SaveStringContentAsync(_participantExportSettings.S3BucketName, fileName, Guid.NewGuid().ToString());
 
-                var oldExistingFiles = await _s3Service.GetFilesNamesAsync(_participantExportSettings.S3BucketName, "participant");
-                // await _s3Service.DeleteFilesAsync(_participantExportSettings.S3BucketName, oldExistingFiles.Except(new[] { fileName }));
+                var oldExistingFiles = await _s3Service.GetFilesNamesAsync(_participantExportSettings.S3BucketName, "participant-export");
+                await _s3Service.DeleteFilesAsync(_participantExportSettings.S3BucketName, oldExistingFiles.Except(new[] { fileName }));
 
                 _logger.LogInformation($"{nameof(ParticipantExportJobHandler)} FINISHED in {sw.Elapsed}");
 

@@ -102,8 +102,6 @@ namespace ScheduledJobs.Services
 
         public async Task<IEnumerable<string>> GetFilesNamesAsync(string bucketName, string prefix)
         {
-            _logger.LogInformation($"**** Getting files names from bucket {bucketName} with prefix {prefix}");
-            _logger.LogInformation($"**** {JsonConvert.SerializeObject(_client.Config, Formatting.Indented)}");
             var listResponse = await _client.ListObjectsAsync(new ListObjectsRequest
             {
                 BucketName = bucketName,

@@ -7,6 +7,7 @@ namespace ScheduledJobs.Settings
         public override string SectionName => "AwsSettings";
         public string CpmsStudyDynamoDbTableName { get; set; }
         public string RtsDataDynamoDbTableName { get; set; }
+        public string ParticipantRegistrationDynamoDbTableName { get; set; }
         public string ServiceUrl { get; set; }
     }
 }
