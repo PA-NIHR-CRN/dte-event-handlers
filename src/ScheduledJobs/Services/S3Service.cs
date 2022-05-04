@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using ScheduledJobs.Contracts;
 using ScheduledJobs.Models;
 
@@ -75,15 +77,15 @@ namespace ScheduledJobs.Services
             }
         }
 
-        public async Task<S3FileContent> GetFileAsync(string path, string fileName)
+        public async Task<S3FileContent> GetFileAsync(string bucketName, string key)
         {
             try
             {
-                using var response = await _client.GetObjectAsync(path, fileName);
+                using var response = await _client.GetObjectAsync(bucketName, key);
                 await using var responseStream = response.ResponseStream;
                 using var reader = new StreamReader(responseStream);
 
-                return new S3FileContent { Name = fileName, Content = await reader.ReadToEndAsync()};
+                return new S3FileContent { Name = key, Content = await reader.ReadToEndAsync()};
             }
             catch (AmazonS3Exception ex)
             {
@@ -95,6 +97,55 @@ namespace ScheduledJobs.Services
             {
                 _logger.LogError(ex, $"UNKNOWN Error encountered ***. Message:'{ex.Message}' when reading object");
                 throw;
+            }
+        }
+
+        public async Task<IEnumerable<string>> GetFilesNamesAsync(string bucketName, string prefix)
+        {
+            _logger.LogInformation($"**** Getting files names from bucket {bucketName} with prefix {prefix}");
+            _logger.LogInformation($"**** {JsonConvert.SerializeObject(_client.Config, Formatting.Indented)}");
+            var listResponse = await _client.ListObjectsAsync(new ListObjectsRequest
+            {
+                BucketName = bucketName,
+                Prefix = prefix, // Add prefix to filter, case sensitive!
+                MaxKeys = 1000
+            });
+
+            return listResponse.S3Objects.Select(x => x.Key);
+        }
+
+        public async Task SaveStringContentAsync(string bucketName, string key, string content)
+        {
+            var ms = new MemoryStream(Encoding.UTF8.GetBytes(content));
+            var response = await _client.PutObjectAsync(new PutObjectRequest { BucketName = bucketName, InputStream = ms, Key = key});
+            
+            if(!(response.HttpStatusCode >= HttpStatusCode.OK && response.HttpStatusCode < HttpStatusCode.MultipleChoices))
+            {
+                var errorMessage = $"Could not add content to bucket {bucketName}/{key}";
+                _logger.LogError(errorMessage);
+                throw new ApplicationException(errorMessage);
+            }
+        }
+
+        public async Task DeleteFilesAsync(string bucketName, IEnumerable<string> fileNames)
+        {
+            try
+            {
+                var deleteResponse = await _client.DeleteObjectsAsync(new DeleteObjectsRequest
+                {
+                    BucketName = bucketName,
+                    Objects = fileNames.Select(x => new KeyVersion { Key = x }).ToList()
+                });
+                    
+                if(!(deleteResponse.HttpStatusCode >= HttpStatusCode.OK && deleteResponse.HttpStatusCode < HttpStatusCode.MultipleChoices))
+                {
+                    var errorMessage = $"Could not delete files from bucket {bucketName} - got statusCode: {deleteResponse.HttpStatusCode}";
+                    _logger.LogError(errorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"S3 Error encountered ***. Message:'{ex.Message}' when deleting objects");
             }
         }
     }

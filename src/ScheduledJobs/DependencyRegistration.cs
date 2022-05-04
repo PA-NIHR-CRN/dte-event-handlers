@@ -30,7 +30,7 @@ namespace ScheduledJobs
     {
         public static IServiceCollection RegisterServices(IServiceCollection services, IExecutionEnvironment executionEnvironment, IConfigurationRoot configuration)
         {
-            var requiredSettings = new SettingsBase[] { new CpmsImportSettings(), new AwsSettings(), new DteClientsSettings() };
+            var requiredSettings = new SettingsBase[] { new CpmsImportSettings(), new AwsSettings(), new DteClientsSettings(), new ParticipantExportSettings(), new ParticipantOdpExportSettings() };
             services.ConfigureServices(executionEnvironment, configuration, requiredSettings);
 
             var awsSettings = services.BuildServiceProvider().GetService<AwsSettings>();
