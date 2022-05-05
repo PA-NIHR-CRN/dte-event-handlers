@@ -43,7 +43,7 @@ namespace ScheduledJobs.JobHandlers
             {
                 var participants = await _repository.GetAllAsync();
 
-                var csv = _csvUtilities.WriteCsvString(participants.Select(ParticipantMapper.MapTo));
+                var csv = _csvUtilities.WriteCsvString(participants.Select(ParticipantMapper.MapToParticipantExportModel));
 
                 _logger.LogInformation(csv);
 
@@ -57,12 +57,12 @@ namespace ScheduledJobs.JobHandlers
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, $"ERROR: {ex.GetType().Name}: {ex.Message}");
+                _logger.LogError(ex, $"ERROR {nameof(ParticipantExportJobHandler)}: {ex.GetType().Name}: {ex.Message}");
                 return false;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"ERROR: {ex.GetType().Name}: {ex.Message}: {ex.StackTrace}");
+                _logger.LogError(ex, $"ERROR {nameof(ParticipantExportJobHandler)}: {ex.GetType().Name}: {ex.Message}: {ex.StackTrace}");
                 return false;
             }
         }
