@@ -16,7 +16,7 @@ namespace ScheduledJobsTests.JobHandlers
     public class CpmsImportJobHandlerTests
     {
         private IS3Service _s3Service;
-        private ICsvFileReader _csvFileReader;
+        private ICsvUtilities _csvUtilities;
         private ICpmsStudyDynamoDbRepository _repository;
         private CpmsImportSettings _cpmsImportSettings;
 
@@ -26,7 +26,7 @@ namespace ScheduledJobsTests.JobHandlers
         public void SetUp()
         {
             _s3Service = Substitute.For<IS3Service>();
-            _csvFileReader = Substitute.For<ICsvFileReader>();
+            _csvUtilities = Substitute.For<ICsvUtilities>();
             _repository = Substitute.For<ICpmsStudyDynamoDbRepository>();
             var logger = Substitute.For<ILogger<CpmsImportJobHandler>>();
             _cpmsImportSettings = new CpmsImportSettings
@@ -34,7 +34,7 @@ namespace ScheduledJobsTests.JobHandlers
                 S3BucketName = "AnyBucket", ArchiveS3BucketName = "AnyArchiveBucket", GetRecordBatchSize = "1"
             };
             
-            _handler = new CpmsImportJobHandler(_s3Service, _csvFileReader, _repository, _cpmsImportSettings, logger);
+            _handler = new CpmsImportJobHandler(_s3Service, _csvUtilities, _repository, _cpmsImportSettings, logger);
         }
 
         [Test]
@@ -51,7 +51,7 @@ namespace ScheduledJobsTests.JobHandlers
             };
             
             _s3Service.GetFileContentsAsync(_cpmsImportSettings.S3BucketName).Returns(expectedS3Files);
-            _csvFileReader.ParseStringCsvContent<CpmsStudyMap, CpmsStudy>(expectedS3Files[0].Content).Returns(expectedStudies);
+            _csvUtilities.ParseStringCsvContent<CpmsStudyMap, CpmsStudy>(expectedS3Files[0].Content).Returns(expectedStudies);
 
             var result = await _handler.HandleAsync(new CpmsImport());
 
@@ -84,7 +84,7 @@ namespace ScheduledJobsTests.JobHandlers
             };
             
             _s3Service.GetFileContentsAsync(_cpmsImportSettings.S3BucketName).Returns(expectedS3Files);
-            _csvFileReader.ParseStringCsvContent<CpmsStudyMap, CpmsStudy>(expectedS3Files[0].Content).Returns(expectedStudies);
+            _csvUtilities.ParseStringCsvContent<CpmsStudyMap, CpmsStudy>(expectedS3Files[0].Content).Returns(expectedStudies);
 
             var result = await _handler.HandleAsync(new CpmsImport());
 
@@ -111,9 +111,9 @@ namespace ScheduledJobsTests.JobHandlers
             };
             
             _s3Service.GetFileContentsAsync(_cpmsImportSettings.S3BucketName).Returns(expectedS3Files);
-            _csvFileReader.ParseStringCsvContent<CpmsStudyMap, CpmsStudy>(expectedS3Files[0].Content).Returns(expectedStudies);
-            _csvFileReader.ParseStringCsvContent<CpmsStudyMap, CpmsStudy>(expectedS3Files[1].Content).Returns(expectedStudies);
-            _csvFileReader.ParseStringCsvContent<CpmsStudyMap, CpmsStudy>(expectedS3Files[2].Content).Returns(expectedStudies);
+            _csvUtilities.ParseStringCsvContent<CpmsStudyMap, CpmsStudy>(expectedS3Files[0].Content).Returns(expectedStudies);
+            _csvUtilities.ParseStringCsvContent<CpmsStudyMap, CpmsStudy>(expectedS3Files[1].Content).Returns(expectedStudies);
+            _csvUtilities.ParseStringCsvContent<CpmsStudyMap, CpmsStudy>(expectedS3Files[2].Content).Returns(expectedStudies);
 
             var result = await _handler.HandleAsync(new CpmsImport());
 

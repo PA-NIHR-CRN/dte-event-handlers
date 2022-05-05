@@ -12,12 +12,12 @@ namespace ScheduledJobsTests.Services
     [TestFixture]
     public class CsvFileReaderTests
     {
-        private CsvFileReader _csvFileReader;
+        private CsvUtilities _csvUtilities;
         
         [SetUp]
         public void SetUp()
         {
-            _csvFileReader = new CsvFileReader();
+            _csvUtilities = new CsvUtilities();
         }
         
         [Test]
@@ -25,7 +25,7 @@ namespace ScheduledJobsTests.Services
         {
             var stringContent = await File.ReadAllTextAsync($"{AppDomain.CurrentDomain.BaseDirectory}/Resources/CpmsImport/export1.csv");
             
-            var result = _csvFileReader.ParseStringCsvContent<TestModelMap, TestModel>(stringContent).ToList();
+            var result = _csvUtilities.ParseStringCsvContent<TestModelMap, TestModel>(stringContent).ToList();
 
             result.Should().NotBeNull();
             result.Should().HaveCount(205);

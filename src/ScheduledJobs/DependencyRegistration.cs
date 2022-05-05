@@ -92,9 +92,10 @@ namespace ScheduledJobs
 
             // Others
             services.AddTransient<IS3Service, S3Service>();
-            services.AddTransient<ICsvFileReader, CsvFileReader>();
+            services.AddTransient<ICsvUtilities, CsvUtilities>();
             services.AddTransient<ICpmsStudyDynamoDbRepository, CpmsStudyDynamoDbRepository>();
             services.AddTransient<IRtsDataDynamoDbRepository, RtsDataDynamoDbRepository>();
+            services.AddTransient<IParticipantRegistrationDynamoDbRepository, ParticipantRegistrationDynamoDbRepository>();
             services.AddTransient<IPollyRetryService, PollyRetryService>();
 
             return services;

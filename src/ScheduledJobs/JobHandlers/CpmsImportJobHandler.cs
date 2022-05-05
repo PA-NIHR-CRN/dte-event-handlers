@@ -18,7 +18,7 @@ namespace ScheduledJobs.JobHandlers
     public class CpmsImportJobHandler : IHandler<CpmsImport, bool>
     {
         private readonly IS3Service _s3Service;
-        private readonly ICsvFileReader _csvFileReader;
+        private readonly ICsvUtilities _csvUtilities;
         private readonly ICpmsStudyDynamoDbRepository _repository;
         private readonly CpmsImportSettings _cpmsImportSettings;
         private readonly ILogger<CpmsImportJobHandler> _logger;
@@ -26,10 +26,10 @@ namespace ScheduledJobs.JobHandlers
         private const int DefaultBatchSize = 1000;
         private readonly string _archiveFolderName;
 
-        public CpmsImportJobHandler(IS3Service s3Service, ICsvFileReader csvFileReader, ICpmsStudyDynamoDbRepository repository, CpmsImportSettings cpmsImportSettings, ILogger<CpmsImportJobHandler> logger)
+        public CpmsImportJobHandler(IS3Service s3Service, ICsvUtilities csvUtilities, ICpmsStudyDynamoDbRepository repository, CpmsImportSettings cpmsImportSettings, ILogger<CpmsImportJobHandler> logger)
         {
             _s3Service = s3Service;
-            _csvFileReader = csvFileReader;
+            _csvUtilities = csvUtilities;
             _repository = repository;
             _cpmsImportSettings = cpmsImportSettings;
             _logger = logger;
@@ -54,7 +54,7 @@ namespace ScheduledJobs.JobHandlers
                 var totalRecords = 0;
                 foreach (var file in files)
                 {
-                    var batchedStudies = _csvFileReader.ParseStringCsvContent<CpmsStudyMap, CpmsStudy>(file.Content).GetByBatch(batchSize);
+                    var batchedStudies = _csvUtilities.ParseStringCsvContent<CpmsStudyMap, CpmsStudy>(file.Content).GetByBatch(batchSize);
 
                     var batchNumber = 1;
                     foreach (var studies in batchedStudies)
