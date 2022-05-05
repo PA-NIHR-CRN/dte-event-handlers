@@ -30,6 +30,7 @@ namespace ScheduledJobs.Models
         [DynamoDBProperty] public bool? Disability { get; set; }
         [DynamoDBProperty] public string DisabilityDescription { get; set; }
         [DynamoDBProperty] public List<string> HealthConditionInterests { get; set; }
+        public string HealthConditionInterestsFormatted => string.Join(", ", HealthConditionInterests ?? new List<string>());
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime CreatedAtUtc { get; set; }
         [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime? UpdatedAtUtc { get; set; }

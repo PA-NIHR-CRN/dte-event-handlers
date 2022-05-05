@@ -54,9 +54,6 @@ namespace ScheduledJobs.JobHandlers
 
                 await _s3Service.SaveStringContentAsync(_participantExportSettings.S3BucketName, fileName, csv);
 
-                var oldExistingFiles = await _s3Service.GetFilesNamesAsync(_participantExportSettings.S3BucketName, "participant-export");
-                await _s3Service.DeleteFilesAsync(_participantExportSettings.S3BucketName, oldExistingFiles.Except(new[] { fileName }));
-
                 _logger.LogInformation($"{nameof(ParticipantExportJobHandler)} FINISHED in {sw.Elapsed}");
 
                 return true;
