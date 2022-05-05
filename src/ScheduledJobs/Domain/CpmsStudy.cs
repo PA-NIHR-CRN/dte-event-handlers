@@ -1,7 +1,7 @@
 using Amazon.DynamoDBv2.DataModel;
 using CsvHelper.Configuration;
 
-namespace ScheduledJobs.Models
+namespace ScheduledJobs.Domain
 {
     public class CpmsStudy
     {

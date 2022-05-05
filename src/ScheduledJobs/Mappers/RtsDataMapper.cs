@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ScheduledJobs.Domain;
 using ScheduledJobs.Models;
 using ScheduledJobs.Responses;
 

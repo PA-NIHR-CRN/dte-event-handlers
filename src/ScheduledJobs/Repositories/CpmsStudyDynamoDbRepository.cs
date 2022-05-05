@@ -4,6 +4,7 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Dte.Common.Persistence;
 using ScheduledJobs.Contracts;
+using ScheduledJobs.Domain;
 using ScheduledJobs.Models;
 using ScheduledJobs.Settings;
 

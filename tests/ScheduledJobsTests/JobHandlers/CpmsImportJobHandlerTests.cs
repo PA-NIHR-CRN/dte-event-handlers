@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using ScheduledJobs.Contracts;
+using ScheduledJobs.Domain;
 using ScheduledJobs.JobHandlers;
 using ScheduledJobs.Models;
 using ScheduledJobs.Settings;
@@ -40,9 +41,9 @@ namespace ScheduledJobsTests.JobHandlers
         [Test]
         public async Task HandleAsync_Inserts_Batch()
         {
-            var expectedS3Files = new List<S3FileContent>
+            var expectedS3Files = new List<S3FileContentModel>
             {
-                new S3FileContent { Name = "File1", Content = "Content1" }
+                new S3FileContentModel { Name = "File1", Content = "Content1" }
             };
 
             var expectedStudies = new List<CpmsStudy>
@@ -70,9 +71,9 @@ namespace ScheduledJobsTests.JobHandlers
         {
             _cpmsImportSettings.GetRecordBatchSize = batchSize.ToString();
             
-            var expectedS3Files = new List<S3FileContent>
+            var expectedS3Files = new List<S3FileContentModel>
             {
-                new S3FileContent { Name = "File1", Content = "Content1" }
+                new S3FileContentModel { Name = "File1", Content = "Content1" }
             };
 
             var expectedStudies = new List<CpmsStudy>
@@ -98,11 +99,11 @@ namespace ScheduledJobsTests.JobHandlers
         [Test]
         public async Task HandleAsync_Inserts_Batch_For_Multiple_Files()
         {
-            var expectedS3Files = new List<S3FileContent>
+            var expectedS3Files = new List<S3FileContentModel>
             {
-                new S3FileContent { Name = "File1", Content = "Content1" },
-                new S3FileContent { Name = "File2", Content = "Content2" },
-                new S3FileContent { Name = "File3", Content = "Content3" }
+                new S3FileContentModel { Name = "File1", Content = "Content1" },
+                new S3FileContentModel { Name = "File2", Content = "Content2" },
+                new S3FileContentModel { Name = "File3", Content = "Content3" }
             };
 
             var expectedStudies = new List<CpmsStudy>

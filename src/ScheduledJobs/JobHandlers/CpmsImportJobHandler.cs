@@ -7,6 +7,7 @@ using Dte.Common.Lambda.Contracts;
 using Dte.Common.Lambda.Extensions;
 using Microsoft.Extensions.Logging;
 using ScheduledJobs.Contracts;
+using ScheduledJobs.Domain;
 using ScheduledJobs.Models;
 using ScheduledJobs.Settings;
 

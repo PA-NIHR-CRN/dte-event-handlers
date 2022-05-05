@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using Amazon.DynamoDBv2.DataModel;
 using Dte.Common.Converters;
+using ScheduledJobs.Models;
 
-namespace ScheduledJobs.Models
+namespace ScheduledJobs.Domain
 {
     public class Participant
     {
@@ -21,7 +22,7 @@ namespace ScheduledJobs.Models
         // Demographics
         [DynamoDBProperty] public string MobileNumber { get; set; }
         [DynamoDBProperty] public string LandlineNumber { get; set; }
-        [DynamoDBProperty] public ParticipantAddress Address { get; set; }
+        [DynamoDBProperty] public ParticipantAddressModel Address { get; set; }
         [DynamoDBProperty] public DateTime? DateOfBirth { get; set; }
         [DynamoDBProperty] public string SexRegisteredAtBirth { get; set; }
         [DynamoDBProperty] public bool? GenderIsSameAsSexRegisteredAtBirth { get; set; }
@@ -30,20 +31,8 @@ namespace ScheduledJobs.Models
         [DynamoDBProperty] public bool? Disability { get; set; }
         [DynamoDBProperty] public string DisabilityDescription { get; set; }
         [DynamoDBProperty] public List<string> HealthConditionInterests { get; set; }
-        public string HealthConditionInterestsFormatted => string.Join(", ", HealthConditionInterests ?? new List<string>());
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime CreatedAtUtc { get; set; }
         [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime? UpdatedAtUtc { get; set; }
-    }
-    
-    public class ParticipantAddress
-    {
-        public string NameNumber { get; set; }
-        public string Street { get; set; }
-        public string LocalityTown { get; set; }
-        public string PostTown { get; set; }
-        public string County { get; set; }
-        public string Postcode { get; set; }
-        public string Country { get; set; }
     }
 }

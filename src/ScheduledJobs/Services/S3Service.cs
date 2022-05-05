@@ -34,7 +34,7 @@ namespace ScheduledJobs.Services
             }
         }
 
-        public async Task<IEnumerable<S3FileContent>> GetFileContentsAsync(string bucketName, string prefix = "", int limit = 100)
+        public async Task<IEnumerable<S3FileContentModel>> GetFileContentsAsync(string bucketName, string prefix = "", int limit = 100)
         {
             var listObjects = await _client.ListObjectsAsync(new ListObjectsRequest
             {
@@ -77,7 +77,7 @@ namespace ScheduledJobs.Services
             }
         }
 
-        public async Task<S3FileContent> GetFileAsync(string bucketName, string key)
+        public async Task<S3FileContentModel> GetFileAsync(string bucketName, string key)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace ScheduledJobs.Services
                 await using var responseStream = response.ResponseStream;
                 using var reader = new StreamReader(responseStream);
 
-                return new S3FileContent { Name = key, Content = await reader.ReadToEndAsync()};
+                return new S3FileContentModel { Name = key, Content = await reader.ReadToEndAsync()};
             }
             catch (AmazonS3Exception ex)
             {

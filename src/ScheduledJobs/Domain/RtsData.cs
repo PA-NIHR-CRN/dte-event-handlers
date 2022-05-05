@@ -2,7 +2,7 @@ using System;
 using Amazon.DynamoDBv2.DataModel;
 using Dte.Common.Converters;
 
-namespace ScheduledJobs.Models
+namespace ScheduledJobs.Domain
 {
     public class RtsData
     {

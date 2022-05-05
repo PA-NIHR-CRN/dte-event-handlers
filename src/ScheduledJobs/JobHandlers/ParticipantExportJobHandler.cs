@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 using Dte.Common.Lambda.Contracts;
 using Microsoft.Extensions.Logging;
 using ScheduledJobs.Contracts;
+using ScheduledJobs.Mappers;
 using ScheduledJobs.Settings;
 
 namespace ScheduledJobs.JobHandlers
 {
     // Reference class for handler generic type param
-    public class ParticipantExport
-    {
-    }
+    public class ParticipantExport { }
 
     public class ParticipantExportJobHandler : IHandler<ParticipantExport, bool>
     {
@@ -23,8 +22,6 @@ namespace ScheduledJobs.JobHandlers
         private readonly AwsSettings _awsSettings;
         private readonly ParticipantExportSettings _participantExportSettings;
         private readonly ILogger<ParticipantExportJobHandler> _logger;
-
-        private const int DefaultBatchSize = 1000;
 
         public ParticipantExportJobHandler(IS3Service s3Service, ICsvUtilities csvUtilities, IParticipantRegistrationDynamoDbRepository repository, AwsSettings awsSettings, ParticipantExportSettings participantExportSettings, ILogger<ParticipantExportJobHandler> logger)
         {
@@ -45,11 +42,11 @@ namespace ScheduledJobs.JobHandlers
             try
             {
                 var participants = await _repository.GetAllAsync();
-                
-                var csv = _csvUtilities.WriteCsvString(participants);
-                
+
+                var csv = _csvUtilities.WriteCsvString(participants.Select(ParticipantMapper.MapTo));
+
                 _logger.LogInformation(csv);
-                
+
                 var fileName = $"participant-export-{DateTime.Now:yyyy-MM-dd--HH-mm-ss}.csv";
 
                 await _s3Service.SaveStringContentAsync(_participantExportSettings.S3BucketName, fileName, csv);
