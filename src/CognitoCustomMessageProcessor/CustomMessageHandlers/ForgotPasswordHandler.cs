@@ -36,7 +36,7 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
             source.Response.EmailMessage = CustomMessageEmail.GetCustomMessageHtml()
                 .Replace("###TITLE_REPLACE1###", "Password reset")
                 .Replace("###TEXT_REPLACE1###", "A request has been received to change the password for your Be Part of Research account, please ignore this email if you did not ask to reset your password.")
-                .Replace("###TEXT_REPLACE2###", "Reset your password by clicking the link. The link only lasts for 24 hours.")
+                .Replace("###TEXT_REPLACE2###", "Reset your password by clicking the link. The link only lasts for 1 hours.")
                 .Replace("###LINK_REPLACE###", link)
                 .Replace("###LINK_DISPLAY_VALUE_REPLACE###", "block")
                 .Replace("###TEXT_REPLACE3###", null);
