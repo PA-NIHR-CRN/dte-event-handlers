@@ -167,7 +167,7 @@ namespace CognitoCustomMessageProcessor.Content
                                 >
                                   <img
                                     alt=""Be Part of Research Logo""
-                                    src=""https://bepartofresearch-uat.nihr.ac.uk/dA/e300bee7b2/BPoR%20colour%20RGB.jpg""
+                                    src=""https://bepartofresearch.nihr.ac.uk/dA/67fb23bffd/BPoR%20colour%20RGB.jpg""
                                     style=""
                                       width: 150px;
                                       height: auto;
@@ -191,7 +191,7 @@ namespace CognitoCustomMessageProcessor.Content
                                 >
                                   <img
                                     alt
-                                    src=""https://bepartofresearch-uat.nihr.ac.uk/dA/84c0a77dd7/NHS.png""
+                                    src=""https://bepartofresearch.nihr.ac.uk/dA/84c0a77dd7/NHS.png""
                                     style=""
                                       width: 100px;
                                       height: auto;
@@ -435,7 +435,7 @@ namespace CognitoCustomMessageProcessor.Content
                                 Research account or taking part in research, see
                                 our
                                 <a
-                                  href=""https://bepartofresearch-uat.nihr.ac.uk/Taking-part/""
+                                  href=""https://bepartofresearch.nihr.ac.uk/Taking-part/""
                                   target=""_blank""
                                   rel=""noopener noreferrer""
                                 >
