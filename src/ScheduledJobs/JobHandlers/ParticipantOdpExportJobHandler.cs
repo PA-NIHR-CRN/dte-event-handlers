@@ -45,8 +45,6 @@ namespace ScheduledJobs.JobHandlers
 
                 var csv = _csvUtilities.WriteCsvString(participants.Select(ParticipantMapper.MapToParticipantOdpExportModel));
 
-                _logger.LogInformation(csv);
-
                 var fileName = $"participant-odp-export-{DateTime.Now:yyyy-MM-dd--HH-mm-ss}.csv";
 
                 await _s3Service.SaveStringContentAsync(_participantOdpExportSettings.S3BucketName, fileName, csv);
