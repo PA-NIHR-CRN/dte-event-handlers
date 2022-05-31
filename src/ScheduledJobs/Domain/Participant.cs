@@ -19,6 +19,8 @@ namespace ScheduledJobs.Domain
         [DynamoDBProperty] public bool ConsentRegistration { get; set; }
         [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime? ConsentRegistrationAtUtc { get; set; }
 
+        [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime? RemovalOfConsentRegistrationAtUtc { get; set; }
+
         // Demographics
         [DynamoDBProperty] public string MobileNumber { get; set; }
         [DynamoDBProperty] public string LandlineNumber { get; set; }
