@@ -8,6 +8,7 @@ namespace ScheduledJobs.Models
         public string ParticipantId { get; set; }
         public bool ConsentRegistration { get; set; }
         public DateTime? ConsentRegistrationAtUtc { get; set; }
+        public DateTime? RemovalOfConsentRegistrationAtUtc { get; set; }
 
         // Demographics
         public string MobileNumber { get; set; }
