@@ -2,12 +2,11 @@ namespace ScheduledJobs.Models
 {
     public class ParticipantAddressModel
     {
-        public string NameNumber { get; set; }
-        public string Street { get; set; }
-        public string LocalityTown { get; set; }
-        public string PostTown { get; set; }
-        public string County { get; set; }
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
+        public string AddressLine3 { get; set; }
+        public string AddressLine4 { get; set; }
+        public string Town { get; set; }
         public string Postcode { get; set; }
-        public string Country { get; set; }
     }
 }
