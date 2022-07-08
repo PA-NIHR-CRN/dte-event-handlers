@@ -435,7 +435,7 @@ namespace CognitoCustomMessageProcessor.Content
                                 Research account or taking part in research, see
                                 our
                                 <a
-                                  href=""https://bepartofresearch.nihr.ac.uk/Taking-part/""
+                                  href=""https://bepartofresearch.nihr.ac.uk/volunteer-service/""
                                   target=""_blank""
                                   rel=""noopener noreferrer""
                                 >
