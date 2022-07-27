@@ -11,35 +11,30 @@ namespace CognitoCustomMessageProcessor.Content
   xmlns:v=""urn:schemas-microsoft-com:vml""
   xmlns:o=""urn:schemas-microsoft-com:office:office""
 >
-  <head>
+<head>
     <title></title>
-    <!--[if !mso]><!-- -->
+    <!--[if !mso]>
     <meta http-equiv=""X-UA-Compatible"" content=""IE=edge"" />
-    <!--<![endif]-->
+    <![endif]-->
     <meta http-equiv=""Content-Type"" content=""text/html; charset=UTF-8"" />
     <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
 
-    <!--[if !mso]><!-->
-
-    <!--<![endif]-->
-    <!--[if mso
-      ]><xml>
+    <!--[if mso]>
+    <xml>
         <o:OfficeDocumentSettings>
-          <o:AllowPNG /> <o:PixelsPerInch>96</o:PixelsPerInch>
-        </o:OfficeDocumentSettings></xml
-      ><!
-    [endif]-->
-    <!--[if lte mso 11
-      ]><style type=""text/css"">
-        .outlook-group-fix {
-          width: 100% !important;
-        }
-      </style><!
-    [endif]-->
-    <!--[if !mso]><!-->
+            <o:AllowPNG /> <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+    </xml>
+    <![endif]-->
 
-    <!--<![endif]-->
-  </head>
+    <!--[if lte mso 11]>
+    <style type=""text/css"">
+    .outlook-group-fix {
+    width: 100% !important;
+    }
+    </style>
+    <![endif]-->
+</head>
   <body
     style=""
       background-color: #f5f5f5;
