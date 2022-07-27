@@ -76,7 +76,11 @@ namespace CognitoCustomMessageProcessor.Content
                   mso-table-rspace: 0pt;
                 ""
               >
-                <!--[if mso | IE]>      <table role=""presentation"" border=""0"" cellpadding=""0"" cellspacing=""0"">        <tr>          <td style=""vertical-align:middle;width:600px;"">      <![endif]-->
+                <!--[if mso | IE]>      
+                <table role=""presentation"" border=""0"" cellpadding=""0"" cellspacing=""0"">        
+                <tr>          
+                <td style=""vertical-align:middle;width:600px;"">      
+                <![endif]-->
                 <div
                   class=""mj-column-per-100 outlook-group-fix""
                   style=""
@@ -173,6 +177,7 @@ namespace CognitoCustomMessageProcessor.Content
                                       text-decoration: none;
                                       -ms-interpolation-mode: bicubic;
                                     ""
+                                    width=""150""
                                   />
                                 </td>
                                 <td
@@ -197,6 +202,7 @@ namespace CognitoCustomMessageProcessor.Content
                                       text-decoration: none;
                                       -ms-interpolation-mode: bicubic;
                                     ""
+                                    width=""100""
                                   />
                                 </td>
                               </tr>
@@ -207,13 +213,17 @@ namespace CognitoCustomMessageProcessor.Content
                     </tbody>
                   </table>
                 </div>
-                <!--[if mso | IE]>      </td></tr></table>      <![endif]-->
+                <!--[if mso | IE]>      
+                </td></tr></table>      
+                <![endif]-->
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <!--[if mso | IE]>      </td></tr></table>      <![endif]-->
+      <!--[if mso | IE]>      
+      </td></tr></table>      
+      <![endif]-->
       <!--[if mso | IE]>      <table role=""presentation"" border=""0"" cellpadding=""0"" cellspacing=""0"" width=""600"" align=""center"" style=""width:600px;"">        <tr>          <td style=""line-height:0px;font-size:0px;mso-line-height-rule:exactly;"">      <![endif]-->
       <div style=""margin: 0px auto; max-width: 600px; background: #ffffff"">
         <table
@@ -297,14 +307,22 @@ namespace CognitoCustomMessageProcessor.Content
                     </tbody>
                   </table>
                 </div>
-                <!--[if mso | IE]>      </td></tr></table>      <![endif]-->
+                <!--[if mso | IE]>      
+                </td></tr></table>      
+                <![endif]-->
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <!--[if mso | IE]>      </td></tr></table>      <![endif]-->
-      <!--[if mso | IE]>      <table role=""presentation"" border=""0"" cellpadding=""0"" cellspacing=""0"" width=""600"" align=""center"" style=""width:600px;"">        <tr>          <td style=""line-height:0px;font-size:0px;mso-line-height-rule:exactly;"">      <![endif]-->
+      <!--[if mso | IE]>      
+      </td></tr></table>      
+      <![endif]-->
+      <!--[if mso | IE]>      
+      <table role=""presentation"" border=""0"" cellpadding=""0"" cellspacing=""0"" width=""600"" align=""center"" style=""width:600px;"">        
+      <tr>          
+      <td style=""line-height:0px;font-size:0px;mso-line-height-rule:exactly;"">      
+      <![endif]-->
       <div style=""margin: 0px auto; max-width: 600px; background: #ffffff"">
         <table
           role=""presentation""
@@ -444,13 +462,17 @@ namespace CognitoCustomMessageProcessor.Content
                     </tbody>
                   </table>
                 </div>
-                <!--[if mso | IE]>      </td></tr></table>      <![endif]-->
+                <!--[if mso | IE]>      
+                </td></tr></table>      
+                <![endif]-->
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <!--[if mso | IE]>      </td></tr></table>      <![endif]-->
+      <!--[if mso | IE]>      
+      </td></tr></table>      
+      <![endif]-->
     </div>
   </body>
 </html>";
