@@ -42,6 +42,7 @@ namespace ScheduledJobs.Mappers
                 ConsentRegistrationAtUtc = source.ConsentRegistrationAtUtc,
                 RemovalOfConsentRegistrationAtUtc = source.RemovalOfConsentRegistrationAtUtc,
                 MobileNumber = source.MobileNumber,
+                DateOfBirth = source.DateOfBirth,
                 LandlineNumber = source.LandlineNumber,
                 Postcode = source.Address?.Postcode,
                 SexRegisteredAtBirth = source.SexRegisteredAtBirth,
