@@ -11,9 +11,7 @@ namespace ScheduledJobs.Models
         public DateTime? RemovalOfConsentRegistrationAtUtc { get; set; }
 
         // Demographics
-        public string MobileNumber { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public string LandlineNumber { get; set; }
         public string Postcode { get; set; }
         public string SexRegisteredAtBirth { get; set; }
         public bool? GenderIsSameAsSexRegisteredAtBirth { get; set; }
