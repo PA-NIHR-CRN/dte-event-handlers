@@ -42,7 +42,9 @@ namespace ScheduledJobs.Mappers
                 ConsentRegistrationAtUtc = source.ConsentRegistrationAtUtc,
                 RemovalOfConsentRegistrationAtUtc = source.RemovalOfConsentRegistrationAtUtc,
                 DateOfBirth = source.DateOfBirth,
-                Postcode = source.Address?.Postcode.Substring(0, (int)(source.Address?.Postcode.Length-3)),
+                Postcode =  (source.Address?.Postcode != null) 
+                    ? source.Address.Postcode[..(int)(source.Address.Postcode.Length-3)] 
+                    : string.Empty,
                 SexRegisteredAtBirth = source.SexRegisteredAtBirth,
                 GenderIsSameAsSexRegisteredAtBirth = source.GenderIsSameAsSexRegisteredAtBirth,
                 EthnicGroup = source.EthnicGroup,
