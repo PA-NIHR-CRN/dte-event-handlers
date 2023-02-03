@@ -6,6 +6,16 @@ namespace ScheduledJobs.Mappers
 {
     public static class ParticipantMapper
     {
+        private static string GetOutcodeFromPostcode(string postcode)
+        {
+           if (string.IsNullOrWhiteSpace(postcode))
+           {
+               return "";
+           }
+           var postcodeWithoutSpace = postcode.Replace(" ", "");
+           return postcodeWithoutSpace[..^3];
+
+        }
         public static ParticipantExportModel MapToParticipantExportModel(Participant source)
         {
             return new ParticipantExportModel
@@ -42,7 +52,7 @@ namespace ScheduledJobs.Mappers
                 ConsentRegistrationAtUtc = source.ConsentRegistrationAtUtc,
                 RemovalOfConsentRegistrationAtUtc = source.RemovalOfConsentRegistrationAtUtc,
                 DateOfBirth = source.DateOfBirth,
-                Postcode = source.Address?.Postcode.Substring(0, (int)(source.Address?.Postcode.Length-3)),
+                Postcode =  GetOutcodeFromPostcode(source.Address?.Postcode),
                 SexRegisteredAtBirth = source.SexRegisteredAtBirth,
                 GenderIsSameAsSexRegisteredAtBirth = source.GenderIsSameAsSexRegisteredAtBirth,
                 EthnicGroup = source.EthnicGroup,
