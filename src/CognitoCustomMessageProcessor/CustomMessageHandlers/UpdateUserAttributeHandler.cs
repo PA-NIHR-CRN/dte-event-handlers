@@ -26,7 +26,7 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
         public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageUpdateUserAttribute source)
         {
             var requestCodeParameter = source.Request.CodeParameter;
-            var userAttributesEmail = HttpUtility.UrlEncode(source.Request.UserAttributes.Email);
+            var userAttributesEmail = HttpUtility.UrlEncode(source.Request.UserAttributes.Sub.ToString());
 
             var link = _linkBuilder
                 .AddLink(null, $"{_appSettings.DteWebBaseUrl}verifyemail", requestCodeParameter, userAttributesEmail)
