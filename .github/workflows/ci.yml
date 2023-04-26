@@ -27,7 +27,7 @@ jobs:
           dotnet-version: 3.1.200
           
       - name: Add Nuget Source
-        run: dotnet nuget add source --username ${{ secrets.NUGET_DTE_USERNAME }} --password ${{ secrets.NUGET_DTE_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/nihr-interoperability-platform/index.json"
+        run: dotnet nuget add source --username ${{ secrets.NUGET_PACKAGE_USERNAME }} --password ${{ secrets.NUGET_PACKAGE_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/pa-nihr-crn/index.json"
 
       - name: Install dependencies
         run: dotnet restore
