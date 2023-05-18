@@ -26,10 +26,10 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
         public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageResendCode source)
         {
             var requestCodeParameter = source.Request.CodeParameter;
-            var userAttributesEmail = HttpUtility.UrlEncode(source.Request.UserAttributes.Email);
+            var userAttributesId = HttpUtility.UrlEncode(source.Request.UserAttributes.Sub.ToString());
 
             var link = _linkBuilder
-                .AddLink(null, $"{_appSettings.DteWebBaseUrl}verify", requestCodeParameter, userAttributesEmail)
+                .AddLink(null, $"{_appSettings.DteWebBaseUrl}verify", requestCodeParameter, userAttributesId)
                 .Build();
             
             source.Response.EmailSubject = "Be Part of Research email verification";

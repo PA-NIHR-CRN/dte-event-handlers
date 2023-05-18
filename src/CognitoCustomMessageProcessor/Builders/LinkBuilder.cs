@@ -9,11 +9,11 @@ namespace CognitoCustomMessageProcessor.Builders
     {
         private readonly List<Link> _links = new List<Link>();
         
-        public ILinkBuilder AddLink(string name, string baseUrl, string code, string email)
+        public ILinkBuilder AddLink(string name, string baseUrl, string code, string userId)
         {
             var link = new Link
             {
-                Name = name, BaseUrl = baseUrl, Code = code, Email = email
+                Name = name, BaseUrl = baseUrl, Code = code, UserId = userId
             };
 
             _links.Add(link);

@@ -16,18 +16,18 @@ jobs:
         # if: github.ref == 'refs/heads/main'
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_VS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_VS_ACCESS_KEY_SECRET }}
           # aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.200
+          dotnet-version: 6.0.x
           
       - name: Add Nuget Source
-        run: dotnet nuget add source --username ${{ secrets.NUGET_DTE_USERNAME }} --password ${{ secrets.NUGET_DTE_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/nihr-interoperability-platform/index.json"
+        run: dotnet nuget add source --username ${{ secrets.NUGET_PACKAGE_USERNAME }} --password ${{ secrets.NUGET_PACKAGE_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/pa-nihr-crn/index.json"
 
       - name: Install dependencies
         run: dotnet restore
