@@ -166,9 +166,9 @@ namespace CognitoCustomMessageProcessor.Content
                                 >
                                   <img
                                     alt=""Be Part of Research Logo""
-                                    src=""https://bepartofresearch.nihr.ac.uk/dA/67fb23bffd/BPoR%20colour%20RGB.jpg""
+                                    src=""https://bepartofresearch.nihr.ac.uk/dA/a85d705dda/BPoR_NIHR_colour-RGB.svg""
                                     style=""
-                                      width: 150px;
+                                      width: 230px;
                                       height: auto;
                                       margin: 0 18px;
                                       border: 0;
