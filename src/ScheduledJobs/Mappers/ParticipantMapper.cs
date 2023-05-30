@@ -6,16 +6,20 @@ namespace ScheduledJobs.Mappers
 {
     public static class ParticipantMapper
     {
-        private static string GetOutcodeFromPostcode(string postcode)
+        private static string GetOutcodeFromPostcode(string postcode, string sk)
         {
-           if (string.IsNullOrWhiteSpace(postcode))
-           {
-               return "";
-           }
-           var postcodeWithoutSpace = postcode.Replace(" ", "");
-           return postcodeWithoutSpace[..^3];
+            if (string.IsNullOrWhiteSpace(postcode))
+            {
+                return "";
+            }
 
+            var postcodeWithoutSpace = postcode.Replace(" ", "");
+
+            return sk == "DELETED#" || postcodeWithoutSpace.Length < 3
+                ? postcodeWithoutSpace
+                : postcodeWithoutSpace[..^3];
         }
+
         public static ParticipantExportModel MapToParticipantExportModel(Participant source)
         {
             return new ParticipantExportModel
@@ -42,7 +46,7 @@ namespace ScheduledJobs.Mappers
                 UpdatedAtUtc = source.UpdatedAtUtc
             };
         }
-        
+
         public static ParticipantOdpExportModel MapToParticipantOdpExportModel(Participant source)
         {
             return new ParticipantOdpExportModel
@@ -52,7 +56,7 @@ namespace ScheduledJobs.Mappers
                 ConsentRegistrationAtUtc = source.ConsentRegistrationAtUtc,
                 RemovalOfConsentRegistrationAtUtc = source.RemovalOfConsentRegistrationAtUtc,
                 DateOfBirth = source.DateOfBirth,
-                Postcode =  GetOutcodeFromPostcode(source.Address?.Postcode),
+                Postcode = GetOutcodeFromPostcode(source.Address?.Postcode, source.Sk),
                 SexRegisteredAtBirth = source.SexRegisteredAtBirth,
                 GenderIsSameAsSexRegisteredAtBirth = source.GenderIsSameAsSexRegisteredAtBirth,
                 EthnicGroup = source.EthnicGroup,
