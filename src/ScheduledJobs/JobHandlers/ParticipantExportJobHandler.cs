@@ -60,7 +60,7 @@ namespace ScheduledJobs.JobHandlers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"ERROR {nameof(ParticipantExportJobHandler)}: {ex.GetType().Name}: {ex.Message}: {ex.StackTrace}");
+                _logger.LogError(ex, $"PARTICIPANT EXPORT ERROR {nameof(ParticipantExportJobHandler)}: {ex.GetType().Name}: {ex.Message}: {ex.StackTrace}");
                 return false;
             }
         }
