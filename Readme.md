@@ -1,51 +1,31 @@
-# AWS Lambda Simple SQS Function Project
+# DTE Event Handlers
 
-This starter project consists of:
-* Function.cs - class file containing a class with a single function handler method
-* aws-lambda-tools-defaults.json - default argument settings for use with Visual Studio and command line deployment tools for AWS
+DTE Event Handlers is a project designed to handle scheduled tasks and provide custom Cognito message handling. The project is built with ASP.NET Core and provides functionality required to efficiently manage event-driven jobs.
 
-You may also have a test project depending on the options selected.
+## Table of Contents
+- [Project Description](#project-description)
+- [How to Install and Run the Project](#how-to-install-and-run-the-project)
+- [Usage](#usage)
 
-The generated function handler responds to events on an Amazon SQS queue.
+## Project Description
+DTE Event Handlers is a comprehensive system designed to handle specific scheduled tasks within the project ecosystem. It provides a custom Cognito message handler that allows for specific manipulation and management of Cognito-based messages. 
 
-After deploying your function you must configure an Amazon SQS queue as an event source to trigger your Lambda function.
+The scheduled jobs are designed to run at specified intervals, performing various tasks essential to the smooth functioning of the system. The custom Cognito message handler adds a layer of customization to the standard Cognito messages, allowing them to be tailored to specific project requirements.
 
-## Here are some steps to follow from Visual Studio:
+## How to Install and Run the Project
+To run the project, you will need to have the following installed on your machine:
 
-To deploy your function to AWS Lambda, right click the project in Solution Explorer and select *Publish to AWS Lambda*.
+- .NET Core 6 SDK or later
 
-To view your deployed function open its Function View window by double-clicking the function name shown beneath the AWS Lambda node in the AWS Explorer tree.
+To run the project, follow these steps:
+1. Clone the repository to your local machine.
+2. Update `appsettings.json` with the appropriate settings.
+3. Right click on the DTE Event Handlers project and select properties. When the modal pops up select run/configurations/default and set the environment variable ASPNETCORE_ENVIRONMENT to Development.
+4. Start the project from your chosen IDE or from the command line with `dotnet run`.
 
-To perform testing against your deployed function use the Test Invoke tab in the opened Function View window.
+## Usage
+To use the project, you can follow these steps:
 
-To configure event sources for your deployed function use the Event Sources tab in the opened Function View window.
-
-To update the runtime configuration of your deployed function use the Configuration tab in the opened Function View window.
-
-To view execution logs of invocations of your function use the Logs tab in the opened Function View window.
-
-## Here are some steps to follow to get started from the command line:
-
-Once you have edited your template and code you can deploy your application using the [Amazon.Lambda.Tools Global Tool](https://github.com/aws/aws-extensions-for-dotnet-cli#aws-lambda-amazonlambdatools) from the command line.
-
-Install Amazon.Lambda.Tools Global Tools if not already installed.
-```
-    dotnet tool install -g Amazon.Lambda.Tools
-```
-
-If already installed check if new version is available.
-```
-    dotnet tool update -g Amazon.Lambda.Tools
-```
-
-Execute unit tests
-```
-    cd "dte-message-listener/test/dte-message-listener.Tests"
-    dotnet test
-```
-
-Deploy function to AWS Lambda
-```
-    cd "dte-message-listener/src/dte-message-listener"
-    dotnet lambda deploy-function
-```
+1. Set the environment variable `ASPNETCORE_ENVIRONMENT` to `Development`.
+2. Start the project.
+3. Interact with the project through your chosen IDE, noting that scheduled jobs will run at their designated intervals and the Cognito message handler will process messages as they arrive.
