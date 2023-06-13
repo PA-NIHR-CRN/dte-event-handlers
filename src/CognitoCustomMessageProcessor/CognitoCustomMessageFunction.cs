@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
@@ -23,6 +24,17 @@ namespace CognitoCustomMessageProcessor
         // Needed to be able to run
         public async Task<JsonElement> FunctionHandler(CognitoCustomMessageEvent input, ILambdaContext context)
         {
+            // skip customization for MFA related messages
+            var mfaTriggers = new List<string> 
+            { 
+                "CustomMessage_VerifyUserAttribute",
+                "CustomMessage_Authentication"
+            };
+
+            if (mfaTriggers.Contains(input.TriggerSource))
+            {
+                return JsonDocument.Parse(JsonSerializer.Serialize(input)).RootElement.Clone();
+            }
             // Needs to be verification set to Code
             Logger.LogInformation($"{nameof(CognitoCustomMessageFunction)}:FunctionHandler called for event: {input.GetType().Name}");
             Logger.LogInformation($"LambdaContext: {JsonConvert.SerializeObject(context)}");
