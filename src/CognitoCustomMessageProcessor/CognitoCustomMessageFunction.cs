@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
@@ -16,6 +17,11 @@ namespace CognitoCustomMessageProcessor
 {
     public class CognitoCustomMessageFunction : EventFunctionBase<CognitoCustomMessageEvent>
     {
+        private static readonly HashSet<string> MfaTriggers = new()
+        { 
+            "CustomMessage_VerifyUserAttribute",
+            "CustomMessage_Authentication"
+        };
         protected override void Configure(IConfigurationBuilder builder) => builder.AddConfiguration();
         protected override void ConfigureLogging(ILoggingBuilder logging, IConfiguration configuration, IExecutionEnvironment executionEnvironment) => logging.AddLambdaLogger(configuration, "Logging");
         protected override void ConfigureServices(IServiceCollection services, IExecutionEnvironment executionEnvironment) => DependencyRegistration.RegisterServices(services, executionEnvironment, Configuration);
@@ -23,6 +29,10 @@ namespace CognitoCustomMessageProcessor
         // Needed to be able to run
         public async Task<JsonElement> FunctionHandler(CognitoCustomMessageEvent input, ILambdaContext context)
         {
+            if (MfaTriggers.Contains(input.TriggerSource))
+            {
+                return JsonSerializer.SerializeToElement(input);
+            }
             // Needs to be verification set to Code
             Logger.LogInformation($"{nameof(CognitoCustomMessageFunction)}:FunctionHandler called for event: {input.GetType().Name}");
             Logger.LogInformation($"LambdaContext: {JsonConvert.SerializeObject(context)}");
@@ -32,7 +42,7 @@ namespace CognitoCustomMessageProcessor
             
             await FunctionHandlerAsync(input);
             
-            return JsonDocument.Parse(JsonSerializer.Serialize(input)).RootElement.Clone();
+            return JsonSerializer.SerializeToElement(input);
         }
     }
 }
