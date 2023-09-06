@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Amazon.DynamoDBv2.DataModel;
 using Dte.Common.Converters;
 using ScheduledJobs.Models;
@@ -17,6 +18,7 @@ namespace ScheduledJobs.Domain
         [DynamoDBProperty] public string Firstname { get; set; }
         [DynamoDBProperty] public string Lastname { get; set; }
         [DynamoDBProperty] public bool ConsentRegistration { get; set; }
+        [DynamoDBProperty] public CultureInfo SelectedLocale { get; set; }
         [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime? ConsentRegistrationAtUtc { get; set; }
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime? RemovalOfConsentRegistrationAtUtc { get; set; }

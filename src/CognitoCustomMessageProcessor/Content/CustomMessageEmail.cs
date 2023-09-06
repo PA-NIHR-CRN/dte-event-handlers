@@ -403,33 +403,7 @@ namespace CognitoCustomMessageProcessor.Content
                               margin: 0 18px;
                             ""
                           >
-                            <p style=""display: block; margin: 13px 0"">
-                              <span style=""font-size: 24px; color: #193e72""
-                                ><strong
-                                  >###TITLE_REPLACE1###
-                                </strong></span
-                              >
-                            </p>
-                            <p style=""display: block; margin: 13px 0"">
-                              <span style=""font-size: 16px""
-                                >###TEXT_REPLACE1###
-                              </span>
-                            </p>
-                            <p style=""display: block; margin: 13px 0"">
-                              <span style=""font-size: 16px""
-                                >###TEXT_REPLACE2###
-                              </span>
-                            </p>
-                            <p style=""display: ###LINK_DISPLAY_VALUE_REPLACE###; margin: 13px 0"">
-                              <span style=""font-size: 16px""
-                                >###LINK_REPLACE###
-                              </span>
-                            </p>
-                            <p style=""display: block; margin: 13px 0"">
-                              <span style=""font-size: 16px""
-                                >###TEXT_REPLACE3###
-                              </span>
-                            </p>
+                            ###BODY_REPLACE###
                             <p style=""display: block; margin: 13px 0"">
                               <span style=""font-size: 16px""
                                 >The Be Part of Research team

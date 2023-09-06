@@ -28,5 +28,10 @@ namespace ScheduledJobs.Repositories
         {
             return await _context.ScanAsync<Participant>(null, _config).GetRemainingAsync();
         }
+
+        public async Task<Participant> GetParticipantAsync(string participantId)
+        {
+            return await _context.LoadAsync<Participant>(participantId, _config);
+        }
     }
 }

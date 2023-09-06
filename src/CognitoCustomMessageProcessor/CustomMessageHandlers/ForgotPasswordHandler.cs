@@ -2,11 +2,10 @@ using System.Threading.Tasks;
 using System.Web;
 using Dte.Common.Lambda.Contracts;
 using Dte.Common.Lambda.Events;
-using CognitoCustomMessageProcessor.Content;
 using CognitoCustomMessageProcessor.Contracts;
 using CognitoCustomMessageProcessor.CustomMessages;
 using CognitoCustomMessageProcessor.Settings;
-using Microsoft.Extensions.Logging;
+using ScheduledJobs.Contracts;
 
 namespace CognitoCustomMessageProcessor.CustomMessageHandlers
 {
@@ -14,15 +13,21 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
     {
         private readonly ILinkBuilder _linkBuilder;
         private readonly AppSettings _appSettings;
-        private readonly ILogger<ForgotPasswordHandler> _logger;
+        private readonly IContentfulService _contentfulService;
+        private readonly IParticipantRegistrationDynamoDbRepository _repository;
+        private readonly ContentfulSettings _contentfulSettings;
 
-        public ForgotPasswordHandler(ILinkBuilder linkBuilder, AppSettings appSettings, ILogger<ForgotPasswordHandler> logger)
+        public ForgotPasswordHandler(ILinkBuilder linkBuilder, AppSettings appSettings,
+            IContentfulService contentfulService, IParticipantRegistrationDynamoDbRepository repository,
+            ContentfulSettings contentfulSettings)
         {
             _linkBuilder = linkBuilder;
             _appSettings = appSettings;
-            _logger = logger;
+            _contentfulService = contentfulService;
+            _repository = repository;
+            _contentfulSettings = contentfulSettings;
         }
-        
+
         public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageForgotPassword source)
         {
             var requestCodeParameter = source.Request.CodeParameter;
@@ -31,15 +36,15 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
             var link = _linkBuilder
                 .AddLink(null, $"{_appSettings.DteWebBaseUrl}resetpassword", requestCodeParameter, userAttributesId)
                 .Build();
-            
-            source.Response.EmailSubject = "Be Part of Research password reset";
-            source.Response.EmailMessage = CustomMessageEmail.GetCustomMessageHtml()
-                .Replace("###TITLE_REPLACE1###", "Password reset")
-                .Replace("###TEXT_REPLACE1###", "A request has been received to change the password for your Be Part of Research account, please ignore this email if you did not ask to reset your password.")
-                .Replace("###TEXT_REPLACE2###", "Reset your password by clicking the link. The link only lasts for 1 hour.")
-                .Replace("###LINK_REPLACE###", link)
-                .Replace("###LINK_DISPLAY_VALUE_REPLACE###", "block")
-                .Replace("###TEXT_REPLACE3###", null);
+
+            var participant = await _repository.GetParticipantAsync(source.Request.UserAttributes.Sub.ToString());
+
+            var contentfulEmail =
+                await _contentfulService.GetEmailContentAsync(_contentfulSettings.EmailTemplates.ForgotPassword,
+                    participant.SelectedLocale, link);
+
+            source.Response.EmailSubject = contentfulEmail.EmailSubject;
+            source.Response.EmailMessage = contentfulEmail.EmailBody;
 
             return await Task.FromResult(source);
         }

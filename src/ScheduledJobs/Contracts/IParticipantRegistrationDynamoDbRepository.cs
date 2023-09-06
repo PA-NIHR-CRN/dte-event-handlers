@@ -8,5 +8,6 @@ namespace ScheduledJobs.Contracts
     public interface IParticipantRegistrationDynamoDbRepository
     {
         Task<IEnumerable<Participant>> GetAllAsync();
+        Task<Participant> GetParticipantAsync(string participantId);
     }
 }
