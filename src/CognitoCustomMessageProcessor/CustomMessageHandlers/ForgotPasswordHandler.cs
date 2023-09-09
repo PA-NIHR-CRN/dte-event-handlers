@@ -4,7 +4,9 @@ using Dte.Common.Lambda.Contracts;
 using Dte.Common.Lambda.Events;
 using CognitoCustomMessageProcessor.Contracts;
 using CognitoCustomMessageProcessor.CustomMessages;
-using CognitoCustomMessageProcessor.Settings;
+using Dte.Common;
+using Dte.Common.Contracts;
+using Dte.Common.Models;
 using ScheduledJobs.Contracts;
 
 namespace CognitoCustomMessageProcessor.CustomMessageHandlers
@@ -34,14 +36,19 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
             var userAttributesId = HttpUtility.UrlEncode(source.Request.UserAttributes.Sub.ToString());
 
             var link = _linkBuilder
-                .AddLink(null, $"{_appSettings.DteWebBaseUrl}resetpassword", requestCodeParameter, userAttributesId)
+                .AddLink(null, $"{_appSettings.WebAppBaseUrl}resetpassword", requestCodeParameter, userAttributesId)
                 .Build();
 
             var participant = await _repository.GetParticipantAsync(source.Request.UserAttributes.Sub.ToString());
 
-            var contentfulEmail =
-                await _contentfulService.GetEmailContentAsync(_contentfulSettings.EmailTemplates.ForgotPassword,
-                    participant.SelectedLocale, link);
+            var request = new EmailContentRequest
+            {
+                EmailName = _contentfulSettings.EmailTemplates.ForgotPassword,
+                Link = link,
+                SelectedLocale = participant.SelectedLocale
+            };
+
+            var contentfulEmail = await _contentfulService.GetEmailContentAsync(request);
 
             source.Response.EmailSubject = contentfulEmail.EmailSubject;
             source.Response.EmailMessage = contentfulEmail.EmailBody;

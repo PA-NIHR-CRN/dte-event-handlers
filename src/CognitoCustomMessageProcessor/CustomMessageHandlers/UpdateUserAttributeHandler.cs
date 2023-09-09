@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using Dte.Common.Lambda.Contracts;
 using Dte.Common.Lambda.Events;
-using CognitoCustomMessageProcessor.Contracts;
 using CognitoCustomMessageProcessor.CustomMessages;
-using CognitoCustomMessageProcessor.Settings;
+using Dte.Common;
+using Dte.Common.Contracts;
+using Dte.Common.Models;
 using ScheduledJobs.Contracts;
 
 namespace CognitoCustomMessageProcessor.CustomMessageHandlers
@@ -25,9 +26,14 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
         public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageUpdateUserAttribute source)
         {
             var participant = await _repository.GetParticipantAsync(source.Request.UserAttributes.Sub.ToString());
-            var contentfulEmail = await _contentfulService.GetEmailContentAsync(
-                _contentfulSettings.EmailTemplates.UpdateUserAttribute,
-                participant.SelectedLocale);
+            
+            var request = new EmailContentRequest
+            {
+                EmailName = _contentfulSettings.EmailTemplates.UpdateUserAttribute,
+                SelectedLocale = participant.SelectedLocale
+            };
+
+            var contentfulEmail = await _contentfulService.GetEmailContentAsync(request);
 
             source.Response.EmailSubject = contentfulEmail.EmailSubject;
             source.Response.EmailMessage = contentfulEmail.EmailBody;
