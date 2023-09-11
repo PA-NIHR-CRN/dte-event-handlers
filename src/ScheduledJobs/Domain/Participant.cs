@@ -18,7 +18,7 @@ namespace ScheduledJobs.Domain
         [DynamoDBProperty] public string Firstname { get; set; }
         [DynamoDBProperty] public string Lastname { get; set; }
         [DynamoDBProperty] public bool ConsentRegistration { get; set; }
-        [DynamoDBProperty] public CultureInfo SelectedLocale { get; set; }
+        [DynamoDBProperty] public string SelectedLocale { get; set; }
         [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime? ConsentRegistrationAtUtc { get; set; }
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime? RemovalOfConsentRegistrationAtUtc { get; set; }

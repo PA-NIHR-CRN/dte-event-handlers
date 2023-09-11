@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
@@ -31,7 +32,9 @@ namespace ScheduledJobs.Repositories
 
         public async Task<Participant> GetParticipantAsync(string participantId)
         {
-            return await _context.LoadAsync<Participant>(participantId, _config);
+            var participant = await _context.LoadAsync<Participant>(participantId, _config);
+            participant.SelectedLocale = new CultureInfo(participant.SelectedLocale).TwoLetterISOLanguageName;
+            return participant;
         }
     }
 }

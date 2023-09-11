@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Web;
 using Dte.Common.Lambda.Contracts;
@@ -44,7 +45,7 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
             {
                 EmailName = _contentfulSettings.EmailTemplates.SignUp,
                 Link = link,
-                SelectedLocale = participant.SelectedLocale
+                SelectedLocale = new CultureInfo(participant.SelectedLocale)
             };
 
             var contentfulEmail = await _contentfulService.GetEmailContentAsync(request);

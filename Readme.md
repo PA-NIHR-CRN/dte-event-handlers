@@ -29,3 +29,40 @@ To use the project, you can follow these steps:
 1. Set the environment variable `ASPNETCORE_ENVIRONMENT` to `Development`.
 2. Start the project.
 3. Interact with the project through your chosen IDE, noting that scheduled jobs will run at their designated intervals and the Cognito message handler will process messages as they arrive.
+
+## Harness
+To use the project, you can follow these steps:
+
+To run functions locally, you can use the harness provided in the project. To use the harness, follow these steps:
+
+1. Install [Docker](https://www.docker.com/products/docker-desktop) and [Docker Compose](https://docs.docker.com/compose/install/).
+2. Navigate to the Solution Items folder and run docker-compose up.
+3. Install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html).
+4. Create local buckets for the project by running the following commands:
+    - `aws --endpoint-url=http://localhost:4566 s3api create-bucket --bucket local-odp-export-bucket --region us-east-1`
+    - `aws --endpoint-url=http://localhost:4566 s3api create-bucket --bucket local-export-bucket --region us-east-1`
+5. Create a local DynamoDB table for the project by running the following command:
+    - `aws --endpoint-url=http://localhost:4566 dynamodb create-table \
+      --table-name local-participant \
+      --attribute-definitions \
+      AttributeName=Email,AttributeType=S \
+      AttributeName=NhsNumber,AttributeType=S \
+      AttributeName=PK,AttributeType=S \
+      AttributeName=ParticipantId,AttributeType=S \
+      AttributeName=ParticipantRegistrationStatus,AttributeType=N \
+      AttributeName=SK,AttributeType=S \
+      --key-schema AttributeName=PK,KeyType=HASH AttributeName=SK,KeyType=RANGE \
+      --billing-mode PAY_PER_REQUEST \
+      --global-secondary-indexes \
+      'IndexName=ParticipantRegistrationStatusIndex,KeySchema=[{AttributeName=ParticipantRegistrationStatus,KeyType=HASH},{AttributeName=SK,KeyType=RANGE}],Projection={ProjectionType=ALL}' \
+      'IndexName=EmailIndex,KeySchema=[{AttributeName=Email,KeyType=HASH}],Projection={ProjectionType=INCLUDE,NonKeyAttributes=[CreatedAtUtc]}' \
+      'IndexName=NhsNumberIndex,KeySchema=[{AttributeName=NhsNumber,KeyType=HASH}],Projection={ProjectionType=INCLUDE,NonKeyAttributes=[CreatedAtUtc]}' \
+      'IndexName=StudyStatusIndex,KeySchema=[{AttributeName=PK,KeyType=HASH},{AttributeName=ParticipantRegistrationStatus,KeyType=RANGE}],Projection={ProjectionType=ALL}' \
+      'IndexName=StudyParticipantIndex,KeySchema=[{AttributeName=PK,KeyType=HASH},{AttributeName=ParticipantId,KeyType=RANGE}],Projection={ProjectionType=ALL}'
+      `
+6. Update `appsettings.json` with the appropriate settings.
+7. Update aws credentials in `~/.aws/credentials` with the following:
+    - `[default]`
+    - `aws_access_key_id = test`
+    - `aws_secret_access_key = test`
+    - `region = us-east-1`
