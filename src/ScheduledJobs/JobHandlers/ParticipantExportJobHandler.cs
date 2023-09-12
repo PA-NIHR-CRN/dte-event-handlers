@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -42,12 +43,14 @@ namespace ScheduledJobs.JobHandlers
             try
             {
                 var participants = await _repository.GetAllAsync();
+                var ms = new MemoryStream();
 
-                var csv = _csvUtilities.WriteCsvString(participants.Select(ParticipantMapper.MapToParticipantExportModel));
+                _csvUtilities.WriteCsvToStream(participants.Select(ParticipantMapper.MapToParticipantExportModel), ms);
+                ms.Position = 0;
 
                 var fileName = $"participant-export-{DateTime.Now:yyyy-MM-dd--HH-mm-ss}.csv";
 
-                await _s3Service.SaveStringContentAsync(_participantExportSettings.S3BucketName, fileName, csv);
+                await _s3Service.SaveStreamContentAsync(_participantExportSettings.S3BucketName, fileName, ms);
 
                 _logger.LogInformation($"{nameof(ParticipantExportJobHandler)} FINISHED in {sw.Elapsed}");
 

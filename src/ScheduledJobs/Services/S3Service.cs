@@ -152,5 +152,17 @@ namespace ScheduledJobs.Services
                 _logger.LogError(ex, $"S3 Error encountered ***. Message:'{ex.Message}' when deleting objects");
             }
         }
+        
+        public async Task SaveStreamContentAsync(string bucketName, string key, MemoryStream ms)
+        {
+            var response = await _client.PutObjectAsync(new PutObjectRequest { BucketName = bucketName, InputStream = ms, Key = key});
+            
+            if(!(response.HttpStatusCode >= HttpStatusCode.OK && response.HttpStatusCode < HttpStatusCode.MultipleChoices))
+            {
+                var errorMessage = $"Could not add content to bucket {bucketName}/{key}";
+                _logger.LogError(errorMessage);
+                throw new ApplicationException(errorMessage);
+            }
+        }
     }
 }

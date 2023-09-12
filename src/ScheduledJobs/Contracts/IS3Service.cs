@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using ScheduledJobs.Models;
 
@@ -13,5 +14,6 @@ namespace ScheduledJobs.Contracts
         Task<IEnumerable<string>> GetFilesNamesAsync(string bucketName, string prefix);
         Task SaveStringContentAsync(string bucketName, string key, string content);
         Task DeleteFilesAsync(string bucketName, IEnumerable<string> fileNames);
+        Task SaveStreamContentAsync(string s3BucketName, string fileName, MemoryStream ms);
     }
 }

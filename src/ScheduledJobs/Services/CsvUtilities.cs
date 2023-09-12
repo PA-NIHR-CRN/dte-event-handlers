@@ -6,6 +6,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using ScheduledJobs.Contracts;
+using ScheduledJobs.Models;
 
 namespace ScheduledJobs.Services
 {
@@ -36,6 +37,26 @@ namespace ScheduledJobs.Services
             var csv = new CsvReader(new StringReader(content), CultureInfo.InvariantCulture);
             csv.Context.RegisterClassMap<TMapping>();
             return csv.GetRecords<TResult>();
+        }
+
+        public void WriteCsvToStream<T>(IEnumerable<T> records, MemoryStream stream)
+        {
+            using var sw = new StreamWriter(stream, leaveOpen: true);
+            using var csv = new CsvWriter(sw, CultureInfo.InvariantCulture);
+    
+            var options = new TypeConverterOptions { Formats = new[] { "s" } };
+            csv.Context.TypeConverterOptionsCache.AddOptions<DateTime>(options);
+            csv.Context.TypeConverterOptionsCache.AddOptions<DateTime?>(options);
+    
+            csv.WriteHeader<T>();
+            csv.NextRecord();
+            foreach (var record in records)
+            {
+                csv.WriteRecord(record);
+                csv.NextRecord();
+            }
+
+            sw.Flush();
         }
     }
 }
