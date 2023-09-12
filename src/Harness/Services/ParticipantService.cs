@@ -27,11 +27,11 @@ public class ParticipantService: IParticipantService
         }
     }
 
-    public Task<int> GetTotalParticipants()
+    public async Task<int> GetTotalParticipants()
     {
         try
         {
-            return _repository.GetTotalParticipants();
+            return await _repository.GetTotalParticipants();
         }
         catch (Exception e)
         {

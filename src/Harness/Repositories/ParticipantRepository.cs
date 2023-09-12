@@ -26,33 +26,44 @@ public class ParticipantRepository : BaseDynamoDbRepository, IParticipantReposit
             { OverrideTableName = awsSettings.ParticipantRegistrationDynamoDbTableName };
     }
 
-
     public async Task InsertAllAsync(IEnumerable<Participant> participants)
     {
+        _logger.LogInformation("Starting insertion of participants");
+
         const int batchSize = 25;
         var batch = new List<Participant>(batchSize);
-    
+        int counter = 0;
+
         foreach (var participant in participants)
         {
             batch.Add(participant);
-        
+
             if (batch.Count == batchSize)
             {
-                await WriteBatchAsync(batch);
+                await WriteBatchAsync(batch, counter);
+                counter += batchSize;
                 batch.Clear();
             }
         }
 
         if (batch.Any())
         {
-            await WriteBatchAsync(batch);
+            await WriteBatchAsync(batch, counter);
         }
+
+        _logger.LogInformation("Finished insertion of participants");
     }
 
-    private async Task WriteBatchAsync(List<Participant> batch)
+
+    private async Task WriteBatchAsync(List<Participant> batch, int startIndex)
     {
+        _logger.LogInformation("Writing batch {BatchNumber} of participants {StartIndex} to {EndIndex}",
+            (startIndex / batch.Count) + 1,
+            startIndex + 1,
+            startIndex + batch.Count);
+
         var batchWrite = _context.CreateBatchWrite<Participant>(_config);
-    
+
         foreach (var participant in batch)
         {
             batchWrite.AddPutItem(participant);
@@ -61,17 +72,28 @@ public class ParticipantRepository : BaseDynamoDbRepository, IParticipantReposit
         try
         {
             await batchWrite.ExecuteAsync();
+            _logger.LogInformation("Successfully written a batch of {BatchCount} participants", batch.Count);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error while writing batch");
+            _logger.LogError(ex, "Error while writing batch of {BatchCount} participants", batch.Count);
         }
     }
 
-
-    public Task<int> GetTotalParticipants()
+    public async Task<int> GetTotalParticipants()
     {
-        var scan = _context.ScanAsync<Participant>(new List<ScanCondition>(), _config);
-        return scan.GetRemainingAsync().ContinueWith(x => x.Result.Count);
+        _logger.LogInformation("Fetching total participants count...");
+
+        var search = _context.ScanAsync<Participant>(null, _config);
+        int totalCount = 0;
+
+        do
+        {
+            var batch = await search.GetNextSetAsync();
+            totalCount += batch.Count;
+        } while (!search.IsDone);
+
+        _logger.LogInformation("Total participants count: {TotalCount}", totalCount);
+        return totalCount;
     }
 }

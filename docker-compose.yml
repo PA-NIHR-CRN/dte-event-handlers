@@ -12,6 +12,7 @@ services:
       - SERVICES=s3,dynamodb
       - DEBUG=${DEBUG-}
       - DOCKER_HOST=unix:///var/run/docker.sock
+      - DYNAMODB_HEAP_SIZE=10G
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"

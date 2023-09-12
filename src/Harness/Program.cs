@@ -11,6 +11,8 @@ var executionEnvironment = new LambdaExecutionEnvironment
 
 // Register lambda-related services
 ScheduledJobs.DependencyRegistration.RegisterServices(builder.Services, executionEnvironment, builder.Configuration);
+CognitoCustomMessageProcessor.DependencyRegistration.RegisterServices(builder.Services, executionEnvironment,
+    builder.Configuration);
 
 // Register additional development services
 builder.Services.RegisterServices(builder.Environment, builder.Configuration);
