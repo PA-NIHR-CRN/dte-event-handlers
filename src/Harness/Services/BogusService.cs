@@ -30,7 +30,7 @@ public class BogusService: IBogusService
     {
         _logger.LogInformation("Generating {Count} fake users", count);
         
-        var fakeUsers = new Faker<Participant>()
+        var fakeUsers = new Faker<Participant>("en_GB")
             .CustomInstantiator(f =>
             {
                 var id = f.Random.Guid().ToString();

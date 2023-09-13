@@ -1,11 +1,13 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Dte.Common.Lambda.Contracts;
 using Microsoft.Extensions.Logging;
 using ScheduledJobs.Contracts;
+using ScheduledJobs.Domain;
 using ScheduledJobs.Mappers;
 using ScheduledJobs.Settings;
 
@@ -32,35 +34,49 @@ namespace ScheduledJobs.JobHandlers
             _participantOdpExportSettings = participantOdpExportSettings;
             _logger = logger;
         }
-
+        
         public async Task<bool> HandleAsync(ParticipantOdpExport source)
         {
             _logger.LogInformation($"**** Getting files names from bucket: {_participantOdpExportSettings.S3BucketName} with DynamoDB table name: {_awsSettings.ParticipantRegistrationDynamoDbTableName}");
 
+            return await HandleExport(
+                ParticipantMapper.MapToParticipantOdpExportModel,
+                "participant-odp-export",
+                _participantOdpExportSettings.S3BucketName
+            );
+        }
+
+        private async Task<bool> HandleExport<TModel>(Func<Participant, TModel> mapper, string exportType,
+            string bucketName)
+        {
             var sw = Stopwatch.StartNew();
 
             try
             {
-                var participants = await _repository.GetAllAsync();
+                var mappedParticipants = _repository.GetAllMappedAsync(mapper);
+                using var ms = new MemoryStream();
 
-                var csv = _csvUtilities.WriteCsvString(participants.Select(ParticipantMapper.MapToParticipantOdpExportModel));
+                await _csvUtilities.WriteCsvToStreamAsync(mappedParticipants, ms);
 
-                var fileName = $"participant-odp-export-{DateTime.Now:yyyy-MM-dd--HH-mm-ss}.csv";
+                ms.Position = 0;
 
-                await _s3Service.SaveStringContentAsync(_participantOdpExportSettings.S3BucketName, fileName, csv);
+                var fileName = $"{exportType}-{DateTime.Now:yyyy-MM-dd--HH-mm-ss}.csv";
 
-                _logger.LogInformation($"{nameof(ParticipantOdpExportJobHandler)} FINISHED in {sw.Elapsed}");
+                await _s3Service.SaveStreamContentAsync(bucketName, fileName, ms);
+
+                _logger.LogInformation($"Export {exportType} FINISHED in {sw.Elapsed}");
 
                 return true;
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, $"ERROR {nameof(ParticipantOdpExportJobHandler)}: {ex.GetType().Name}: {ex.Message}");
+                _logger.LogError(ex, $"ERROR {nameof(HandleExport)}: {ex.GetType().Name}: {ex.Message}");
                 return false;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"PARTICIPANT EXPORT ERROR {nameof(ParticipantOdpExportJobHandler)}: {ex.GetType().Name}: {ex.Message}: {ex.StackTrace}");
+                _logger.LogError(ex,
+                    $"EXPORT ERROR {nameof(HandleExport)}: {ex.GetType().Name}: {ex.Message}: {ex.StackTrace}");
                 return false;
             }
         }

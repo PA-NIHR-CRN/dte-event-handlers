@@ -23,7 +23,7 @@ public static class DependencyInjection
             
             var awsOptions = configuration.GetAWSOptions<AmazonS3Config>("AwsSettings");
             var s3Options = awsOptions.DefaultClientConfig as AmazonS3Config;
-            s3Options.ForcePathStyle = true;
+            // s3Options.ForcePathStyle = true; uncomment if working with localstack
             services.AddAWSService<IAmazonS3>(awsOptions);
             
             services.AddScoped<IBogusService, BogusService>();

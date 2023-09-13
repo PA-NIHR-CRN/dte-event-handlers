@@ -116,11 +116,6 @@ namespace ScheduledJobs.Services
         {
             var ms = new MemoryStream(Encoding.UTF8.GetBytes(content));
             
-            _logger.LogInformation(_client.Config.ServiceURL);
-            
-            var listBucketsResponse = await _client.ListBucketsAsync();
-            
-            
             var response = await _client.PutObjectAsync(new PutObjectRequest { BucketName = bucketName, InputStream = ms, Key = key});
             
             if(!(response.HttpStatusCode >= HttpStatusCode.OK && response.HttpStatusCode < HttpStatusCode.MultipleChoices))

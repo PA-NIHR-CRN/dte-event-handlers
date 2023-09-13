@@ -7,13 +7,16 @@ using System.Threading.Tasks;
 using Dte.Common.Lambda.Contracts;
 using Microsoft.Extensions.Logging;
 using ScheduledJobs.Contracts;
+using ScheduledJobs.Domain;
 using ScheduledJobs.Mappers;
 using ScheduledJobs.Settings;
 
 namespace ScheduledJobs.JobHandlers
 {
     // Reference class for handler generic type param
-    public class ParticipantExport { }
+    public class ParticipantExport
+    {
+    }
 
     public class ParticipantExportJobHandler : IHandler<ParticipantExport, bool>
     {
@@ -24,7 +27,9 @@ namespace ScheduledJobs.JobHandlers
         private readonly ParticipantExportSettings _participantExportSettings;
         private readonly ILogger<ParticipantExportJobHandler> _logger;
 
-        public ParticipantExportJobHandler(IS3Service s3Service, ICsvUtilities csvUtilities, IParticipantRegistrationDynamoDbRepository repository, AwsSettings awsSettings, ParticipantExportSettings participantExportSettings, ILogger<ParticipantExportJobHandler> logger)
+        public ParticipantExportJobHandler(IS3Service s3Service, ICsvUtilities csvUtilities,
+            IParticipantRegistrationDynamoDbRepository repository, AwsSettings awsSettings,
+            ParticipantExportSettings participantExportSettings, ILogger<ParticipantExportJobHandler> logger)
         {
             _s3Service = s3Service;
             _csvUtilities = csvUtilities;
@@ -36,34 +41,47 @@ namespace ScheduledJobs.JobHandlers
 
         public async Task<bool> HandleAsync(ParticipantExport source)
         {
-            _logger.LogInformation($"**** Getting files names from bucket: {_participantExportSettings.S3BucketName} with DynamoDB table name: {_awsSettings.ParticipantRegistrationDynamoDbTableName}");
+            _logger.LogInformation(
+                $"**** Getting files names from bucket: {_participantExportSettings.S3BucketName} with DynamoDB table name: {_awsSettings.ParticipantRegistrationDynamoDbTableName}");
 
+            return await HandleExport(
+                ParticipantMapper.MapToParticipantExportModel,
+                "participant-export",
+                _participantExportSettings.S3BucketName
+            );
+        }
+
+        private async Task<bool> HandleExport<TModel>(Func<Participant, TModel> mapper, string exportType,
+            string bucketName)
+        {
             var sw = Stopwatch.StartNew();
 
             try
             {
-                var participants = await _repository.GetAllAsync();
-                var ms = new MemoryStream();
+                var mappedParticipants = _repository.GetAllMappedAsync(mapper);
+                using var ms = new MemoryStream();
 
-                _csvUtilities.WriteCsvToStream(participants.Select(ParticipantMapper.MapToParticipantExportModel), ms);
+                await _csvUtilities.WriteCsvToStreamAsync(mappedParticipants, ms);
+
                 ms.Position = 0;
 
-                var fileName = $"participant-export-{DateTime.Now:yyyy-MM-dd--HH-mm-ss}.csv";
+                var fileName = $"{exportType}-{DateTime.Now:yyyy-MM-dd--HH-mm-ss}.csv";
 
-                await _s3Service.SaveStreamContentAsync(_participantExportSettings.S3BucketName, fileName, ms);
+                await _s3Service.SaveStreamContentAsync(bucketName, fileName, ms);
 
-                _logger.LogInformation($"{nameof(ParticipantExportJobHandler)} FINISHED in {sw.Elapsed}");
+                _logger.LogInformation($"Export {exportType} FINISHED in {sw.Elapsed}");
 
                 return true;
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, $"ERROR {nameof(ParticipantExportJobHandler)}: {ex.GetType().Name}: {ex.Message}");
+                _logger.LogError(ex, $"ERROR {nameof(HandleExport)}: {ex.GetType().Name}: {ex.Message}");
                 return false;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"PARTICIPANT EXPORT ERROR {nameof(ParticipantExportJobHandler)}: {ex.GetType().Name}: {ex.Message}: {ex.StackTrace}");
+                _logger.LogError(ex,
+                    $"EXPORT ERROR {nameof(HandleExport)}: {ex.GetType().Name}: {ex.Message}: {ex.StackTrace}");
                 return false;
             }
         }

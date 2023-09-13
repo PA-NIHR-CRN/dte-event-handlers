@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -6,7 +7,6 @@ using Amazon.DynamoDBv2.DataModel;
 using Dte.Common.Persistence;
 using ScheduledJobs.Contracts;
 using ScheduledJobs.Domain;
-using ScheduledJobs.Models;
 using ScheduledJobs.Settings;
 
 namespace ScheduledJobs.Repositories
@@ -25,10 +25,33 @@ namespace ScheduledJobs.Repositories
             _config = new DynamoDBOperationConfig { OverrideTableName = awsSettings.ParticipantRegistrationDynamoDbTableName };
         }
 
-        public async Task<IEnumerable<Participant>> GetAllAsync()
+        public Task<IAsyncEnumerable<Participant>> GetAllAsync()
         {
-            return await _context.ScanAsync<Participant>(null, _config).GetRemainingAsync();
+            return Task.FromResult(GetAllAsyncEnumerable());
         }
+
+        public async IAsyncEnumerable<TModel> GetAllMappedAsync<TModel>(Func<Participant, TModel> mapper)
+        {
+            await foreach (var participant in GetAllAsyncEnumerable())
+            {
+                yield return mapper(participant);
+            }
+        }
+
+        private async IAsyncEnumerable<Participant> GetAllAsyncEnumerable()
+        {
+            var search = _context.ScanAsync<Participant>(null, _config);
+
+            while (!search.IsDone)
+            {
+                var page = await search.GetNextSetAsync();
+                foreach (var item in page)
+                {
+                    yield return item;
+                }
+            }
+        }
+
 
         public async Task<Participant> GetParticipantAsync(string participantId)
         {
