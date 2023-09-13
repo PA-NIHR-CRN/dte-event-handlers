@@ -16,6 +16,8 @@
       <ProjectReference Include="..\CognitoCustomMessageProcessor\CognitoCustomMessageProcessor.csproj" />
       <ProjectReference Include="..\ScheduledJobs\ScheduledJobs.csproj" />
 
+
+
     </ItemGroup>
 
 

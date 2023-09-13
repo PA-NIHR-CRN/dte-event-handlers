@@ -8,7 +8,6 @@ using CognitoCustomMessageProcessor.CustomMessages;
 using Dte.Common;
 using Dte.Common.Contracts;
 using Dte.Common.Models;
-using ScheduledJobs.Contracts;
 
 namespace CognitoCustomMessageProcessor.CustomMessageHandlers
 {

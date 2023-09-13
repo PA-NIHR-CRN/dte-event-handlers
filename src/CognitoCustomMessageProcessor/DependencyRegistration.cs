@@ -1,6 +1,7 @@
 using System;
-using System.Net.Http;
 using System.Reflection;
+using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DataModel;
 using Dte.Common.Lambda;
 using Dte.Common.Lambda.Contracts;
 using Dte.Common.Lambda.EventHandlers.Cognito;
@@ -11,6 +12,7 @@ using Dte.Common.Lambda.Resolvers;
 using Dte.Common.Lambda.Settings;
 using CognitoCustomMessageProcessor.Builders;
 using CognitoCustomMessageProcessor.Contracts;
+using CognitoCustomMessageProcessor.Repository;
 using CognitoCustomMessageProcessor.Settings;
 using Dte.Common;
 using Dte.Common.Contracts;
@@ -18,8 +20,6 @@ using Dte.Common.Http;
 using Dte.Common.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ScheduledJobs.Contracts;
-using ScheduledJobs.Repositories;
 
 namespace CognitoCustomMessageProcessor
 {
@@ -39,6 +39,10 @@ namespace CognitoCustomMessageProcessor
                 configuration.GetSection(ContentfulSettings.SectionName).Get<ContentfulSettings>();
             services.AddSingleton(appSettings);
             services.AddSingleton(contentfulSettings);
+            
+            var amazonDynamoDbConfig = new AmazonDynamoDBConfig();
+            services.AddScoped<IAmazonDynamoDB>(_ => new AmazonDynamoDBClient(amazonDynamoDbConfig));
+            services.AddScoped<IDynamoDBContext>(_ => new DynamoDBContext(new AmazonDynamoDBClient(amazonDynamoDbConfig)));
             
             services
                 .AddTransient<ILambdaEventHandler<CognitoCustomMessageEvent>, CognitoCustomMessageEventLambdaHandler>();

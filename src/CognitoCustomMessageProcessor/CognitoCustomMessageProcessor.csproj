@@ -38,7 +38,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ScheduledJobs\ScheduledJobs.csproj" />
-  </ItemGroup>
 </Project>

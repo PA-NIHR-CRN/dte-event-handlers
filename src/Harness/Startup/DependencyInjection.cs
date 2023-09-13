@@ -1,3 +1,5 @@
+using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DataModel;
 using Amazon.S3;
 using Harness.Contracts;
 using Harness.Repositories;
@@ -25,6 +27,8 @@ public static class DependencyInjection
             var s3Options = awsOptions.DefaultClientConfig as AmazonS3Config;
             // s3Options.ForcePathStyle = true; uncomment if working with localstack
             services.AddAWSService<IAmazonS3>(awsOptions);
+            var amazonDynamoDbConfig = new AmazonDynamoDBConfig();
+            services.AddScoped<IDynamoDBContext>(_ => new DynamoDBContext(new AmazonDynamoDBClient(amazonDynamoDbConfig)));
             
             services.AddScoped<IBogusService, BogusService>();
             services.AddScoped<IParticipantRepository, ParticipantRepository>();
