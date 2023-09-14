@@ -53,11 +53,10 @@ namespace ScheduledJobs.JobHandlers
 
             try
             {
-                var participants = await _repository.GetAllAsync();
+                var participants = _repository.GetAllAsync();
                 using var ms = new MemoryStream();
-                participants.Select(ParticipantMapper.MapToParticipantExportModel);
 
-                await _csvUtilities.WriteCsvToStreamAsync(participants, ms);
+                await _csvUtilities.WriteCsvToStreamAsync(participants.Select(ParticipantMapper.MapToParticipantExportModel), ms);
 
                 ms.Position = 0;
 

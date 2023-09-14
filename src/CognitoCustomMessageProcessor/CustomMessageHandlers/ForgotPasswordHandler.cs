@@ -39,13 +39,13 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
                 .AddLink(null, $"{_appSettings.WebAppBaseUrl}resetpassword", requestCodeParameter, userAttributesId)
                 .Build();
 
-            var participant = await _repository.GetParticipantAsync(source.Request.UserAttributes.Sub.ToString());
+            var participantLocale = await _repository.GetParticipantLocaleAsync(source.Request.UserAttributes.Sub.ToString());
 
             var request = new EmailContentRequest
             {
                 EmailName = _contentfulSettings.EmailTemplates.ForgotPassword,
                 Link = link,
-                SelectedLocale = new CultureInfo(participant.SelectedLocale)
+                SelectedLocale = new CultureInfo(participantLocale)
             };
 
             var contentfulEmail = await _contentfulService.GetEmailContentAsync(request);
