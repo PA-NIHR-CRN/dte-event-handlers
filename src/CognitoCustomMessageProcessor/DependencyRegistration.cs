@@ -40,9 +40,9 @@ namespace CognitoCustomMessageProcessor
             services.AddSingleton(appSettings);
             services.AddSingleton(contentfulSettings);
             
-            var amazonDynamoDbConfig = new AmazonDynamoDBConfig();
-            services.AddScoped<IAmazonDynamoDB>(_ => new AmazonDynamoDBClient(amazonDynamoDbConfig));
-            services.AddScoped<IDynamoDBContext>(_ => new DynamoDBContext(new AmazonDynamoDBClient(amazonDynamoDbConfig)));
+            services.AddDefaultAWSOptions(configuration.GetAWSOptions());
+            services.AddAWSService<IAmazonDynamoDB>();
+            services.AddScoped<IDynamoDBContext, DynamoDBContext>();
             
             services
                 .AddTransient<ILambdaEventHandler<CognitoCustomMessageEvent>, CognitoCustomMessageEventLambdaHandler>();

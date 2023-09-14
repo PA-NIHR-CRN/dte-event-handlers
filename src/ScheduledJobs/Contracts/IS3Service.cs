@@ -14,6 +14,6 @@ namespace ScheduledJobs.Contracts
         Task<IEnumerable<string>> GetFilesNamesAsync(string bucketName, string prefix);
         Task SaveStringContentAsync(string bucketName, string key, string content);
         Task DeleteFilesAsync(string bucketName, IEnumerable<string> fileNames);
-        Task SaveStreamContentAsync(string s3BucketName, string fileName, MemoryStream ms);
+        Task SaveStreamContentAsync(string s3BucketName, string fileName, Stream ms);
     }
 }

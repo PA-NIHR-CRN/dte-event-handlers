@@ -44,24 +44,20 @@ namespace ScheduledJobs.JobHandlers
             _logger.LogInformation(
                 $"**** Getting files names from bucket: {_participantExportSettings.S3BucketName} with DynamoDB table name: {_awsSettings.ParticipantRegistrationDynamoDbTableName}");
 
-            return await HandleExport(
-                ParticipantMapper.MapToParticipantExportModel,
-                "participant-export",
-                _participantExportSettings.S3BucketName
-            );
+            return await HandleExport("participant-export", _participantExportSettings.S3BucketName);
         }
 
-        private async Task<bool> HandleExport<TModel>(Func<Participant, TModel> mapper, string exportType,
-            string bucketName)
+        private async Task<bool> HandleExport(string exportType, string bucketName)
         {
             var sw = Stopwatch.StartNew();
 
             try
             {
-                var mappedParticipants = _repository.GetAllMappedAsync(mapper);
+                var participants = await _repository.GetAllAsync();
                 using var ms = new MemoryStream();
+                participants.Select(ParticipantMapper.MapToParticipantExportModel);
 
-                await _csvUtilities.WriteCsvToStreamAsync(mappedParticipants, ms);
+                await _csvUtilities.WriteCsvToStreamAsync(participants, ms);
 
                 ms.Position = 0;
 

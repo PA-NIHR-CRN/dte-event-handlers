@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 using Dte.Common.Lambda.Contracts;
 using Microsoft.Extensions.Logging;
 using ScheduledJobs.Contracts;
-using ScheduledJobs.Domain;
 using ScheduledJobs.Mappers;
 using ScheduledJobs.Settings;
 
 namespace ScheduledJobs.JobHandlers
 {
     // Reference class for handler generic type param
-    public class ParticipantOdpExport { }
+    public class ParticipantOdpExport
+    {
+    }
 
     public class ParticipantOdpExportJobHandler : IHandler<ParticipantOdpExport, bool>
     {
@@ -25,7 +26,9 @@ namespace ScheduledJobs.JobHandlers
         private readonly ParticipantOdpExportSettings _participantOdpExportSettings;
         private readonly ILogger<ParticipantOdpExportJobHandler> _logger;
 
-        public ParticipantOdpExportJobHandler(IS3Service s3Service, ICsvUtilities csvUtilities, IParticipantRegistrationDynamoDbRepository repository, AwsSettings awsSettings, ParticipantOdpExportSettings participantOdpExportSettings, ILogger<ParticipantOdpExportJobHandler> logger)
+        public ParticipantOdpExportJobHandler(IS3Service s3Service, ICsvUtilities csvUtilities,
+            IParticipantRegistrationDynamoDbRepository repository, AwsSettings awsSettings,
+            ParticipantOdpExportSettings participantOdpExportSettings, ILogger<ParticipantOdpExportJobHandler> logger)
         {
             _s3Service = s3Service;
             _csvUtilities = csvUtilities;
@@ -34,29 +37,29 @@ namespace ScheduledJobs.JobHandlers
             _participantOdpExportSettings = participantOdpExportSettings;
             _logger = logger;
         }
-        
+
         public async Task<bool> HandleAsync(ParticipantOdpExport source)
         {
-            _logger.LogInformation($"**** Getting files names from bucket: {_participantOdpExportSettings.S3BucketName} with DynamoDB table name: {_awsSettings.ParticipantRegistrationDynamoDbTableName}");
+            _logger.LogInformation(
+                $"**** Getting files names from bucket: {_participantOdpExportSettings.S3BucketName} with DynamoDB table name: {_awsSettings.ParticipantRegistrationDynamoDbTableName}");
 
             return await HandleExport(
-                ParticipantMapper.MapToParticipantOdpExportModel,
                 "participant-odp-export",
                 _participantOdpExportSettings.S3BucketName
             );
         }
 
-        private async Task<bool> HandleExport<TModel>(Func<Participant, TModel> mapper, string exportType,
-            string bucketName)
+        private async Task<bool> HandleExport(string exportType, string bucketName)
         {
             var sw = Stopwatch.StartNew();
 
             try
             {
-                var mappedParticipants = _repository.GetAllMappedAsync(mapper);
+                var participants = await _repository.GetAllAsync();
                 using var ms = new MemoryStream();
 
-                await _csvUtilities.WriteCsvToStreamAsync(mappedParticipants, ms);
+                participants.Select(ParticipantMapper.MapToParticipantOdpExportModel);
+                await _csvUtilities.WriteCsvToStreamAsync(participants, ms);
 
                 ms.Position = 0;
 

@@ -30,14 +30,6 @@ namespace ScheduledJobs.Repositories
             return Task.FromResult(GetAllAsyncEnumerable());
         }
 
-        public async IAsyncEnumerable<TModel> GetAllMappedAsync<TModel>(Func<Participant, TModel> mapper)
-        {
-            await foreach (var participant in GetAllAsyncEnumerable())
-            {
-                yield return mapper(participant);
-            }
-        }
-
         private async IAsyncEnumerable<Participant> GetAllAsyncEnumerable()
         {
             var search = _context.ScanAsync<Participant>(null, _config);
@@ -51,7 +43,6 @@ namespace ScheduledJobs.Repositories
                 }
             }
         }
-
 
         public async Task<Participant> GetParticipantAsync(string participantId)
         {

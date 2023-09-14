@@ -114,17 +114,10 @@ namespace ScheduledJobs.Services
 
         public async Task SaveStringContentAsync(string bucketName, string key, string content)
         {
-            var ms = new MemoryStream(Encoding.UTF8.GetBytes(content));
-            
-            var response = await _client.PutObjectAsync(new PutObjectRequest { BucketName = bucketName, InputStream = ms, Key = key});
-            
-            if(!(response.HttpStatusCode >= HttpStatusCode.OK && response.HttpStatusCode < HttpStatusCode.MultipleChoices))
-            {
-                var errorMessage = $"Could not add content to bucket {bucketName}/{key}";
-                _logger.LogError(errorMessage);
-                throw new ApplicationException(errorMessage);
-            }
+            using var ms = new MemoryStream(Encoding.UTF8.GetBytes(content));
+            await SaveStreamContentAsync(bucketName, key, ms);
         }
+
 
         public async Task DeleteFilesAsync(string bucketName, IEnumerable<string> fileNames)
         {
@@ -148,7 +141,7 @@ namespace ScheduledJobs.Services
             }
         }
         
-        public async Task SaveStreamContentAsync(string bucketName, string key, MemoryStream ms)
+        public async Task SaveStreamContentAsync(string bucketName, string key, Stream ms)
         {
             var response = await _client.PutObjectAsync(new PutObjectRequest { BucketName = bucketName, InputStream = ms, Key = key});
             

@@ -16,21 +16,18 @@ public class CustomMessageControllerController : ControllerBase
     private readonly IHandler<CustomMessageResendCode, CognitoCustomMessageEvent> _resendCodeHandler;
     private readonly IHandler<CustomMessageUpdateUserAttribute, CognitoCustomMessageEvent> _updateAttributeHandler;
     private readonly IHandler<CustomMessageSignUp, CognitoCustomMessageEvent> _handler;
-    private readonly IParticipantService _participantService;
 
     public CustomMessageControllerController(ILogger<CustomMessageControllerController> logger,
         IHandler<CustomMessageSignUp, CognitoCustomMessageEvent> signUpHandler,
         IHandler<CustomMessageForgotPassword, CognitoCustomMessageEvent> forgotPasswordHandler,
         IHandler<CustomMessageResendCode, CognitoCustomMessageEvent> resendCodeHandler, 
-        IHandler<CustomMessageUpdateUserAttribute, CognitoCustomMessageEvent> updateAttributeHandler,
-        IParticipantService participantService)
+        IHandler<CustomMessageUpdateUserAttribute, CognitoCustomMessageEvent> updateAttributeHandler)
     {
         _logger = logger;
         _signUpHandler = signUpHandler;
         _forgotPasswordHandler = forgotPasswordHandler;
         _resendCodeHandler = resendCodeHandler;
         _updateAttributeHandler = updateAttributeHandler;
-        _participantService = participantService;
     }
 
     [HttpPost("SendSignUpEmail")]

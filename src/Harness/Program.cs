@@ -4,7 +4,7 @@ using Harness.Startup;
 var builder = WebApplication.CreateBuilder(args);
 var executionEnvironment = new LambdaExecutionEnvironment
 {
-    EnvironmentName = "Harness",
+    EnvironmentName = "Development",
     IsLambda = false,
     RunAsQueueListener = false
 };

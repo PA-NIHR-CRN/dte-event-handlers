@@ -13,18 +13,18 @@ public class ScheduledJobsController : ControllerBase
     private readonly IHandler<ParticipantExport, bool> _participantExportHandler;
     private readonly IHandler<ParticipantOdpExport, bool> _participantOdpExportHandler;
     private readonly IBogusService _bogusService;
-    private readonly IParticipantService _participantService;
+    private readonly IParticipantRepository _participantRepository;
 
     public ScheduledJobsController(ILogger<ScheduledJobsController> logger,
         IHandler<ParticipantExport, bool> participantExportHandler,
         IHandler<ParticipantOdpExport, bool> participantOdpExportHandler,
-        IBogusService bogusService, IParticipantService participantService)
+        IBogusService bogusService, IParticipantRepository participantRepository)
     {
         _logger = logger;
         _participantExportHandler = participantExportHandler;
         _participantOdpExportHandler = participantOdpExportHandler;
         _bogusService = bogusService;
-        _participantService = participantService;
+        _participantRepository = participantRepository;
     }
 
     [HttpPost("ScheduledJobsDailyExport")]
@@ -45,7 +45,7 @@ public class ScheduledJobsController : ControllerBase
     public async Task<IActionResult> AddFakeUsers([FromBody] int count)
     {
         var fakeUsers = _bogusService.GenerateFakeUsers(count);
-        await _participantService.InsertAllAsync(fakeUsers);
+        await _participantRepository.InsertAllAsync(fakeUsers);
         _logger.LogInformation("Added {Count} fake users", count);
         return Ok();
     }
@@ -53,7 +53,7 @@ public class ScheduledJobsController : ControllerBase
     [HttpGet("GetTotalParticipants")]
     public async Task<IActionResult> GetTotalParticipants()
     {
-        var totalParticipants = await _participantService.GetTotalParticipants();
+        var totalParticipants = await _participantRepository.GetTotalParticipants();
         _logger.LogInformation("Total participants: {TotalParticipants}", totalParticipants);
         return Ok(totalParticipants);
     }
