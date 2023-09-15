@@ -9,7 +9,6 @@ namespace Harness.Repositories;
 
 public class ParticipantRepository : BaseDynamoDbRepository, IParticipantRepository
 {
-    private readonly IAmazonDynamoDB _client;
     private readonly IDynamoDBContext _context;
     private readonly ILogger<ParticipantRepository> _logger;
     private readonly DynamoDBOperationConfig _config;
@@ -18,7 +17,6 @@ public class ParticipantRepository : BaseDynamoDbRepository, IParticipantReposit
         ILogger<ParticipantRepository> logger) : base(
         client, context)
     {
-        _client = client;
         _context = context;
         _logger = logger;
         _config = new DynamoDBOperationConfig
@@ -86,11 +84,12 @@ public class ParticipantRepository : BaseDynamoDbRepository, IParticipantReposit
         var search = _context.ScanAsync<Participant>(null, _config);
         int totalCount = 0;
 
-        do
+        var batch = await search.GetNextSetAsync();
+        while (!search.IsDone)
         {
-            var batch = await search.GetNextSetAsync();
             totalCount += batch.Count;
-        } while (!search.IsDone);
+            batch = await search.GetNextSetAsync();
+        }
 
         _logger.LogInformation("Total participants count: {TotalCount}", totalCount);
         return totalCount;

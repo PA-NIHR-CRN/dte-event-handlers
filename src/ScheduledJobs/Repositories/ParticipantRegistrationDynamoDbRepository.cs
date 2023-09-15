@@ -16,7 +16,6 @@ namespace ScheduledJobs.Repositories
     public class ParticipantRegistrationDynamoDbRepository : BaseDynamoDbRepository,
         IParticipantRegistrationDynamoDbRepository
     {
-        private readonly IAmazonDynamoDB _client;
         private readonly IDynamoDBContext _context;
         private readonly DynamoDBOperationConfig _config;
 
@@ -24,7 +23,6 @@ namespace ScheduledJobs.Repositories
             AwsSettings awsSettings)
             : base(client, context)
         {
-            _client = client;
             _context = context;
             _config = new DynamoDBOperationConfig
                 { OverrideTableName = awsSettings.ParticipantRegistrationDynamoDbTableName };
@@ -40,14 +38,16 @@ namespace ScheduledJobs.Repositories
                 var page = await search.GetNextSetAsync(cancellationToken);
                 foreach (var item in page)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     yield return item;
                 }
             }
         }
 
-        public async Task<Participant> GetParticipantAsync(string participantId)
+        public async Task<Participant> GetParticipantAsync(string participantId,
+            [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            var participant = await _context.LoadAsync<Participant>(participantId, _config);
+            var participant = await _context.LoadAsync<Participant>(participantId, _config, cancellationToken);
             participant.SelectedLocale = new CultureInfo(participant.SelectedLocale).TwoLetterISOLanguageName;
             return participant;
         }

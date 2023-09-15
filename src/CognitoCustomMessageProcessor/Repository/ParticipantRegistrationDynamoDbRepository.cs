@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
@@ -13,7 +15,6 @@ namespace CognitoCustomMessageProcessor.Repository
         IParticipantRegistrationDynamoDbRepository
     {
         private readonly IAmazonDynamoDB _client;
-        private readonly IDynamoDBContext _context;
         private readonly DynamoDBOperationConfig _config;
 
         public ParticipantRegistrationDynamoDbRepository(IAmazonDynamoDB client, IDynamoDBContext context,
@@ -21,12 +22,11 @@ namespace CognitoCustomMessageProcessor.Repository
             : base(client, context)
         {
             _client = client;
-            _context = context;
             _config = new DynamoDBOperationConfig
                 { OverrideTableName = awsSettings.ParticipantRegistrationDynamoDbTableName };
         }
 
-        public async Task<string> GetParticipantLocaleAsync(string participantId)
+        public async Task<string> GetParticipantLocaleAsync(string participantId, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             // query dynamodb for participant locale
             var request = new QueryRequest
