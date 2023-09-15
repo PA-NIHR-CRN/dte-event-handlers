@@ -8,7 +8,6 @@ using ScheduledJobs.Settings;
 namespace Harness.Repositories;
 
 public class ParticipantRepository : BaseDynamoDbRepository, IParticipantRepository
-
 {
     private readonly IAmazonDynamoDB _client;
     private readonly IDynamoDBContext _context;

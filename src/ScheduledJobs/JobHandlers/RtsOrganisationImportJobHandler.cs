@@ -11,7 +11,6 @@ using ScheduledJobs.Clients;
 using ScheduledJobs.Contracts;
 using ScheduledJobs.Domain;
 using ScheduledJobs.Mappers;
-using ScheduledJobs.Models;
 using ScheduledJobs.Responses;
 
 namespace ScheduledJobs.JobHandlers

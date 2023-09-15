@@ -11,6 +11,6 @@ namespace ScheduledJobs.Contracts
     {
         string WriteCsvString<T>(IEnumerable<T> records);
         IEnumerable<TResult> ParseStringCsvContent<TMapping, TResult>(string content) where TMapping : ClassMap;
-        Task WriteCsvToStreamAsync<T>(IAsyncEnumerable<T> participants, MemoryStream ms);
+        Task WriteCsvToStreamAsync<T>(IAsyncEnumerable<T> participants, Stream ms);
     }
 }

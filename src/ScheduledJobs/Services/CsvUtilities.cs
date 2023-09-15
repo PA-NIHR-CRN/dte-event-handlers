@@ -41,7 +41,7 @@ namespace ScheduledJobs.Services
             return csv.GetRecords<TResult>();
         }
 
-        public async Task WriteCsvToStreamAsync<T>(IAsyncEnumerable<T> records, MemoryStream stream)
+        public async Task WriteCsvToStreamAsync<T>(IAsyncEnumerable<T> records, Stream stream)
         {
             using var sw = new StreamWriter(stream, leaveOpen: true);
             using var csv = new CsvWriter(sw, CultureInfo.InvariantCulture);

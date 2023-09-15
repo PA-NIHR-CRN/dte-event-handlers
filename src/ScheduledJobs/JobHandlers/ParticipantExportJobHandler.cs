@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Dte.Common.Lambda.Contracts;
 using Microsoft.Extensions.Logging;
 using ScheduledJobs.Contracts;
-using ScheduledJobs.Domain;
 using ScheduledJobs.Mappers;
 using ScheduledJobs.Settings;
 
