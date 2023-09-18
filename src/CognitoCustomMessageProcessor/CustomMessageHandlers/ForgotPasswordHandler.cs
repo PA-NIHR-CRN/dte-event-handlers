@@ -35,8 +35,9 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
             var requestCodeParameter = source.Request.CodeParameter;
             var userAttributesId = HttpUtility.UrlEncode(source.Request.UserAttributes.Sub.ToString());
 
-            var link =
-                $"{_appSettings.WebAppBaseUrl}resetpassword?code={requestCodeParameter}&userId={userAttributesId}";
+            var link = _linkBuilder
+                .AddLink(null, $"{_appSettings.WebAppBaseUrl}resetpassword", requestCodeParameter, userAttributesId)
+                .Build();
 
             var participantLocale =
                 await _repository.GetParticipantLocaleAsync(source.Request.UserAttributes.Sub.ToString());
@@ -44,7 +45,7 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
             var request = new EmailContentRequest
             {
                 EmailName = _contentfulSettings.EmailTemplates.ForgotPassword,
-                Link = $"<a href={link}>{link}</a>",
+                Link = link,
                 SelectedLocale = new CultureInfo(participantLocale)
             };
 
