@@ -44,7 +44,7 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
             var request = new EmailContentRequest
             {
                 EmailName = _contentfulSettings.EmailTemplates.ForgotPassword,
-                Link = $"<a href={link}>{link}</a>",
+                Link = $"<a href='{link}'>{link}</a>",
                 SelectedLocale = new CultureInfo(participantLocale)
             };
 
