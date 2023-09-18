@@ -6,5 +6,5 @@ namespace CognitoCustomMessageProcessor.Contracts;
 
 public interface IParticipantRegistrationDynamoDbRepository
 {
-    Task<string> GetParticipantLocaleAsync(string participantId, [EnumeratorCancellation] CancellationToken cancellationToken = default);
+    Task<string> GetParticipantLocaleAsync(string participantId, CancellationToken cancellationToken = default);
 }

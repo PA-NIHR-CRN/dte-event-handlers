@@ -23,7 +23,8 @@ public class ParticipantRepository : BaseDynamoDbRepository, IParticipantReposit
             { OverrideTableName = awsSettings.ParticipantRegistrationDynamoDbTableName };
     }
 
-    public async Task InsertAllAsync(IEnumerable<Participant> participants)
+    public async Task InsertAllAsync(IEnumerable<Participant> participants,
+        CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Starting insertion of participants");
 
@@ -37,7 +38,7 @@ public class ParticipantRepository : BaseDynamoDbRepository, IParticipantReposit
 
             if (batch.Count == batchSize)
             {
-                await WriteBatchAsync(batch, counter);
+                await WriteBatchAsync(batch, counter, cancellationToken);
                 counter += batchSize;
                 batch.Clear();
             }
@@ -45,14 +46,15 @@ public class ParticipantRepository : BaseDynamoDbRepository, IParticipantReposit
 
         if (batch.Any())
         {
-            await WriteBatchAsync(batch, counter);
+            await WriteBatchAsync(batch, counter, cancellationToken);
         }
 
         _logger.LogInformation("Finished insertion of participants");
     }
 
 
-    private async Task WriteBatchAsync(List<Participant> batch, int startIndex)
+    private async Task WriteBatchAsync(List<Participant> batch, int startIndex,
+        CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Writing batch {BatchNumber} of participants {StartIndex} to {EndIndex}",
             (startIndex / batch.Count) + 1,
@@ -68,7 +70,7 @@ public class ParticipantRepository : BaseDynamoDbRepository, IParticipantReposit
 
         try
         {
-            await batchWrite.ExecuteAsync();
+            await batchWrite.ExecuteAsync(cancellationToken);
             _logger.LogInformation("Successfully written a batch of {BatchCount} participants", batch.Count);
         }
         catch (Exception ex)
@@ -77,18 +79,18 @@ public class ParticipantRepository : BaseDynamoDbRepository, IParticipantReposit
         }
     }
 
-    public async Task<int> GetTotalParticipants()
+    public async Task<int> GetTotalParticipants(CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Fetching total participants count...");
 
         var search = _context.ScanAsync<Participant>(null, _config);
         int totalCount = 0;
 
-        var batch = await search.GetNextSetAsync();
+        var batch = await search.GetNextSetAsync(cancellationToken);
         while (!search.IsDone)
         {
             totalCount += batch.Count;
-            batch = await search.GetNextSetAsync();
+            batch = await search.GetNextSetAsync(cancellationToken);
         }
 
         _logger.LogInformation("Total participants count: {TotalCount}", totalCount);

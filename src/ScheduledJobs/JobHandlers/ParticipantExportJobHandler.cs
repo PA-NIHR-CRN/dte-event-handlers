@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Dte.Common.Lambda.Contracts;
 using Microsoft.Extensions.Logging;
@@ -38,44 +39,48 @@ namespace ScheduledJobs.JobHandlers
             _logger = logger;
         }
 
-        public async Task<bool> HandleAsync(ParticipantExport source)
+        public async Task<bool> HandleAsync(ParticipantExport source, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation(
-                $"**** Getting files names from bucket: {_participantExportSettings.S3BucketName} with DynamoDB table name: {_awsSettings.ParticipantRegistrationDynamoDbTableName}");
+                "**** Getting files names from bucket: {S3BucketName} with DynamoDB table name: {AwsSettingsParticipantRegistrationDynamoDbTableName}",
+                _participantExportSettings.S3BucketName, _awsSettings.ParticipantRegistrationDynamoDbTableName);
 
-            return await HandleExport("participant-export", _participantExportSettings.S3BucketName);
+            return await HandleExport("participant-export", _participantExportSettings.S3BucketName, cancellationToken);
         }
 
-        private async Task<bool> HandleExport(string exportType, string bucketName)
+        private async Task<bool> HandleExport(string exportType, string bucketName,
+            CancellationToken cancellationToken = default)
         {
             var sw = Stopwatch.StartNew();
 
             try
             {
-                var participants = _repository.GetAllAsync();
+                var participants = _repository.GetAllAsync(cancellationToken);
                 using var ms = new MemoryStream();
 
-                await _csvUtilities.WriteCsvToStreamAsync(participants.Select(ParticipantMapper.MapToParticipantExportModel), ms);
+                await _csvUtilities.WriteCsvToStreamAsync(
+                    participants.Select(ParticipantMapper.MapToParticipantExportModel), ms, cancellationToken);
 
                 ms.Position = 0;
 
                 var fileName = $"{exportType}-{DateTime.Now:yyyy-MM-dd--HH-mm-ss}.csv";
 
-                await _s3Service.SaveStreamContentAsync(bucketName, fileName, ms);
+                await _s3Service.SaveStreamContentAsync(bucketName, fileName, ms, cancellationToken);
 
-                _logger.LogInformation($"Export {exportType} FINISHED in {sw.Elapsed}");
+                _logger.LogInformation("Export {ExportType} FINISHED in {SwElapsed}", exportType, sw.Elapsed);
 
                 return true;
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, $"ERROR {nameof(HandleExport)}: {ex.GetType().Name}: {ex.Message}");
+                _logger.LogError(ex, "ERROR {HandleExportName}: {Name}: {ExMessage}", nameof(HandleExport),
+                    ex.GetType().Name, ex.Message);
                 return false;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    $"EXPORT ERROR {nameof(HandleExport)}: {ex.GetType().Name}: {ex.Message}: {ex.StackTrace}");
+                _logger.LogError(ex, "EXPORT ERROR {HandleExportName}: {Name}: {ExMessage}: {ExStackTrace}",
+                    nameof(HandleExport), ex.GetType().Name, ex.Message, ex.StackTrace);
                 return false;
             }
         }

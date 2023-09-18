@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Dte.Common.Lambda.Contracts;
 using Dte.Common.Lambda.Extensions;
@@ -37,7 +38,7 @@ namespace ScheduledJobs.JobHandlers
             _archiveFolderName= $"{DateTime.Now:yyyy-MM-dd--HH-mm-ss}";
         }
         
-        public async Task<bool> HandleAsync(CpmsImport source)
+        public async Task<bool> HandleAsync(CpmsImport source, CancellationToken cancellationToken = default)
         {
             var sw = Stopwatch.StartNew();
 

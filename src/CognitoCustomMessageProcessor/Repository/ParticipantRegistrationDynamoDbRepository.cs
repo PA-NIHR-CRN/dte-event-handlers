@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
@@ -26,7 +25,7 @@ namespace CognitoCustomMessageProcessor.Repository
                 { OverrideTableName = awsSettings.ParticipantRegistrationDynamoDbTableName };
         }
 
-        public async Task<string> GetParticipantLocaleAsync(string participantId, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public async Task<string> GetParticipantLocaleAsync(string participantId, CancellationToken cancellationToken = default)
         {
             // query dynamodb for participant locale
             var request = new QueryRequest
@@ -40,7 +39,7 @@ namespace CognitoCustomMessageProcessor.Repository
                 ProjectionExpression = "SelectedLocale"
             };
 
-            var response = await _client.QueryAsync(request);
+            var response = await _client.QueryAsync(request, cancellationToken);
 
             // return participant locale if found otherwise return default locale
             return response.Items.Count > 0 ? response.Items[0]["SelectedLocale"].S : "en-GB";

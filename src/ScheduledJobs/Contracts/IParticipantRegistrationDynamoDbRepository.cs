@@ -11,7 +11,6 @@ namespace ScheduledJobs.Contracts
         IAsyncEnumerable<Participant> GetAllAsync(
             [EnumeratorCancellation] CancellationToken cancellationToken = default);
 
-        Task<Participant> GetParticipantAsync(string participantId,
-            [EnumeratorCancellation] CancellationToken cancellationToken = default);
+        Task<Participant> GetParticipantAsync(string participantId, CancellationToken cancellationToken = default);
     }
 }

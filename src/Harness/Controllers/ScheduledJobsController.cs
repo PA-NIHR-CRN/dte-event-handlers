@@ -28,32 +28,32 @@ public class ScheduledJobsController : ControllerBase
     }
 
     [HttpPost("ScheduledJobsDailyExport")]
-    public async Task<IActionResult> ScheduledJobsDailyExport()
+    public async Task<IActionResult> ScheduledJobsDailyExport(CancellationToken cancellationToken)
     {
-        var result = await _participantExportHandler.HandleAsync(new ParticipantExport());
+        var result = await _participantExportHandler.HandleAsync(new ParticipantExport(), cancellationToken);
         return Ok(result);
     }
 
     [HttpPost("ScheduledJobsOdpDailyExport")]
-    public async Task<IActionResult> ScheduledJobsOdpDailyExport()
+    public async Task<IActionResult> ScheduledJobsOdpDailyExport(CancellationToken cancellationToken)
     {
-        var result = await _participantOdpExportHandler.HandleAsync(new ParticipantOdpExport());
+        var result = await _participantOdpExportHandler.HandleAsync(new ParticipantOdpExport(), cancellationToken);
         return Ok(result);
     }
 
     [HttpPost("AddFakeUsers")]
-    public async Task<IActionResult> AddFakeUsers([FromBody] int count)
+    public async Task<IActionResult> AddFakeUsers([FromBody] int count, CancellationToken cancellationToken)
     {
         var fakeUsers = _bogusService.GenerateFakeUsers(count);
-        await _participantRepository.InsertAllAsync(fakeUsers);
+        await _participantRepository.InsertAllAsync(fakeUsers, cancellationToken);
         _logger.LogInformation("Added {Count} fake users", count);
         return Ok();
     }
 
     [HttpGet("GetTotalParticipants")]
-    public async Task<IActionResult> GetTotalParticipants()
+    public async Task<IActionResult> GetTotalParticipants(CancellationToken cancellationToken)
     {
-        var totalParticipants = await _participantRepository.GetTotalParticipants();
+        var totalParticipants = await _participantRepository.GetTotalParticipants(cancellationToken);
         _logger.LogInformation("Total participants: {TotalParticipants}", totalParticipants);
         return Ok(totalParticipants);
     }

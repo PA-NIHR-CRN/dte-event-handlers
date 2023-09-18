@@ -4,6 +4,6 @@ namespace Harness.Contracts;
 
 public interface IParticipantRepository
 {
-    Task InsertAllAsync(IEnumerable<Participant> participants);
-    Task<int> GetTotalParticipants();
+    Task InsertAllAsync(IEnumerable<Participant> participants, CancellationToken cancellationToken = default);
+    Task<int> GetTotalParticipants(CancellationToken cancellationToken = default);
 }

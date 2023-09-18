@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -45,7 +44,7 @@ namespace ScheduledJobs.Repositories
         }
 
         public async Task<Participant> GetParticipantAsync(string participantId,
-            [EnumeratorCancellation] CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default)
         {
             var participant = await _context.LoadAsync<Participant>(participantId, _config, cancellationToken);
             participant.SelectedLocale = new CultureInfo(participant.SelectedLocale).TwoLetterISOLanguageName;

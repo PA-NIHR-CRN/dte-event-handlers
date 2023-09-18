@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Dte.Common.Lambda.Contracts;
@@ -31,7 +32,8 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
             _contentfulSettings = contentfulSettings;
         }
 
-        public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageResendCode source)
+        public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageResendCode source,
+            CancellationToken cancellationToken = default)
         {
             var requestCodeParameter = source.Request.CodeParameter;
             var userAttributesId = HttpUtility.UrlEncode(source.Request.UserAttributes.Sub.ToString());
@@ -40,7 +42,9 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
                 .AddLink(null, $"{_appSettings.WebAppBaseUrl}verify", requestCodeParameter, userAttributesId)
                 .Build();
 
-            var participantLocale = await _repository.GetParticipantLocaleAsync(source.Request.UserAttributes.Sub.ToString());
+            var participantLocale =
+                await _repository.GetParticipantLocaleAsync(source.Request.UserAttributes.Sub.ToString(),
+                    cancellationToken);
 
             var request = new EmailContentRequest
             {
