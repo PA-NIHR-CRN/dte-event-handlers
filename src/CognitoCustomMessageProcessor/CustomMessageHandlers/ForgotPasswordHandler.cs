@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Dte.Common.Lambda.Contracts;
@@ -7,7 +9,6 @@ using CognitoCustomMessageProcessor.CustomMessages;
 using Dte.Common;
 using Dte.Common.Contracts;
 using Dte.Common.Models;
-using ScheduledJobs.Contracts;
 
 namespace CognitoCustomMessageProcessor.CustomMessageHandlers
 {
@@ -30,7 +31,8 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
             _contentfulSettings = contentfulSettings;
         }
 
-        public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageForgotPassword source)
+        public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageForgotPassword source,
+            CancellationToken cancellationToken = default)
         {
             var requestCodeParameter = source.Request.CodeParameter;
             var userAttributesId = HttpUtility.UrlEncode(source.Request.UserAttributes.Sub.ToString());
@@ -39,13 +41,15 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
                 .AddLink(null, $"{_appSettings.WebAppBaseUrl}resetpassword", requestCodeParameter, userAttributesId)
                 .Build();
 
-            var participant = await _repository.GetParticipantAsync(source.Request.UserAttributes.Sub.ToString());
+            var participantLocale =
+                await _repository.GetParticipantLocaleAsync(source.Request.UserAttributes.Sub.ToString(),
+                    cancellationToken);
 
             var request = new EmailContentRequest
             {
                 EmailName = _contentfulSettings.EmailTemplates.ForgotPassword,
                 Link = link,
-                SelectedLocale = participant.SelectedLocale
+                SelectedLocale = new CultureInfo(participantLocale)
             };
 
             var contentfulEmail = await _contentfulService.GetEmailContentAsync(request);

@@ -1,11 +1,13 @@
+using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
-using Dte.Common.Lambda.Contracts;
-using Dte.Common.Lambda.Events;
+using CognitoCustomMessageProcessor.Contracts;
 using CognitoCustomMessageProcessor.CustomMessages;
 using Dte.Common;
 using Dte.Common.Contracts;
+using Dte.Common.Lambda.Contracts;
+using Dte.Common.Lambda.Events;
 using Dte.Common.Models;
-using ScheduledJobs.Contracts;
 
 namespace CognitoCustomMessageProcessor.CustomMessageHandlers
 {
@@ -23,14 +25,17 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
             _contentfulSettings = contentfulSettings;
         }
 
-        public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageUpdateUserAttribute source)
+        public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageUpdateUserAttribute source,
+            CancellationToken cancellationToken = default)
         {
-            var participant = await _repository.GetParticipantAsync(source.Request.UserAttributes.Sub.ToString());
-            
+            var participantLocale =
+                await _repository.GetParticipantLocaleAsync(source.Request.UserAttributes.Sub.ToString(),
+                    cancellationToken);
+
             var request = new EmailContentRequest
             {
                 EmailName = _contentfulSettings.EmailTemplates.UpdateUserAttribute,
-                SelectedLocale = participant.SelectedLocale
+                SelectedLocale = new CultureInfo(participantLocale)
             };
 
             var contentfulEmail = await _contentfulService.GetEmailContentAsync(request);

@@ -1,7 +1,9 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Dte.Common.Lambda.Contracts;
 using Microsoft.Extensions.Logging;
@@ -12,7 +14,9 @@ using ScheduledJobs.Settings;
 namespace ScheduledJobs.JobHandlers
 {
     // Reference class for handler generic type param
-    public class ParticipantOdpExport { }
+    public class ParticipantOdpExport
+    {
+    }
 
     public class ParticipantOdpExportJobHandler : IHandler<ParticipantOdpExport, bool>
     {
@@ -23,7 +27,9 @@ namespace ScheduledJobs.JobHandlers
         private readonly ParticipantOdpExportSettings _participantOdpExportSettings;
         private readonly ILogger<ParticipantOdpExportJobHandler> _logger;
 
-        public ParticipantOdpExportJobHandler(IS3Service s3Service, ICsvUtilities csvUtilities, IParticipantRegistrationDynamoDbRepository repository, AwsSettings awsSettings, ParticipantOdpExportSettings participantOdpExportSettings, ILogger<ParticipantOdpExportJobHandler> logger)
+        public ParticipantOdpExportJobHandler(IS3Service s3Service, ICsvUtilities csvUtilities,
+            IParticipantRegistrationDynamoDbRepository repository, AwsSettings awsSettings,
+            ParticipantOdpExportSettings participantOdpExportSettings, ILogger<ParticipantOdpExportJobHandler> logger)
         {
             _s3Service = s3Service;
             _csvUtilities = csvUtilities;
@@ -33,34 +39,51 @@ namespace ScheduledJobs.JobHandlers
             _logger = logger;
         }
 
-        public async Task<bool> HandleAsync(ParticipantOdpExport source)
+        public async Task<bool> HandleAsync(ParticipantOdpExport source, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation($"**** Getting files names from bucket: {_participantOdpExportSettings.S3BucketName} with DynamoDB table name: {_awsSettings.ParticipantRegistrationDynamoDbTableName}");
+            _logger.LogInformation(
+                "**** Getting files names from bucket: {S3BucketName} with DynamoDB table name: {AwsSettingsParticipantRegistrationDynamoDbTableName}",
+                _participantOdpExportSettings.S3BucketName, _awsSettings.ParticipantRegistrationDynamoDbTableName);
 
+            return await HandleExport(
+                "participant-odp-export",
+                _participantOdpExportSettings.S3BucketName, cancellationToken
+            );
+        }
+
+        private async Task<bool> HandleExport(string exportType, string bucketName,
+            CancellationToken cancellationToken = default)
+        {
             var sw = Stopwatch.StartNew();
 
             try
             {
-                var participants = await _repository.GetAllAsync();
+                var participants = _repository.GetAllAsync(cancellationToken);
+                using var ms = new MemoryStream();
 
-                var csv = _csvUtilities.WriteCsvString(participants.Select(ParticipantMapper.MapToParticipantOdpExportModel));
+                await _csvUtilities.WriteCsvToStreamAsync(
+                    participants.Select(ParticipantMapper.MapToParticipantOdpExportModel), ms, cancellationToken);
 
-                var fileName = $"participant-odp-export-{DateTime.Now:yyyy-MM-dd--HH-mm-ss}.csv";
+                ms.Position = 0;
 
-                await _s3Service.SaveStringContentAsync(_participantOdpExportSettings.S3BucketName, fileName, csv);
+                var fileName = $"{exportType}-{DateTime.Now:yyyy-MM-dd--HH-mm-ss}.csv";
 
-                _logger.LogInformation($"{nameof(ParticipantOdpExportJobHandler)} FINISHED in {sw.Elapsed}");
+                await _s3Service.SaveStreamContentAsync(bucketName, fileName, ms, cancellationToken);
+
+                _logger.LogInformation("Export {ExportType} FINISHED in {SwElapsed}", exportType, sw.Elapsed);
 
                 return true;
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, $"ERROR {nameof(ParticipantOdpExportJobHandler)}: {ex.GetType().Name}: {ex.Message}");
+                _logger.LogError(ex, "ERROR {HandleExportName}: {Name}: {ExMessage}", nameof(HandleExport),
+                    ex.GetType().Name, ex.Message);
                 return false;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"PARTICIPANT EXPORT ERROR {nameof(ParticipantOdpExportJobHandler)}: {ex.GetType().Name}: {ex.Message}: {ex.StackTrace}");
+                _logger.LogError(ex, "EXPORT ERROR {HandleExportName}: {Name}: {ExMessage}: {ExStackTrace}",
+                    nameof(HandleExport), ex.GetType().Name, ex.Message, ex.StackTrace);
                 return false;
             }
         }

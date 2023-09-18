@@ -6,5 +6,6 @@ namespace CognitoCustomMessageProcessor.Settings
     {
         public override string SectionName => "AwsSettings";
         public string ServiceUrl { get; set; }
+        public string ParticipantRegistrationDynamoDbTableName { get; set; }
     }
 }
