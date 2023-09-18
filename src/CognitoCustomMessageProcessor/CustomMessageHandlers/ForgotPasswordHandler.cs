@@ -32,12 +32,11 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
 
         public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageForgotPassword source)
         {
-            var requestCodeParameter = source.Request.CodeParameter;
-            var userAttributesId = HttpUtility.UrlEncode(source.Request.UserAttributes.Sub.ToString());
+            var requestCodeParameter = "100";
+            var userAttributesId = "555";
 
-            var link = _linkBuilder
-                .AddLink(null, $"{_appSettings.WebAppBaseUrl}resetpassword", requestCodeParameter, userAttributesId)
-                .Build();
+            var link =
+                $"{_appSettings.WebAppBaseUrl}resetpassword?code={requestCodeParameter}&userId={userAttributesId}";
 
             var participantLocale =
                 await _repository.GetParticipantLocaleAsync(source.Request.UserAttributes.Sub.ToString());
@@ -45,7 +44,7 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
             var request = new EmailContentRequest
             {
                 EmailName = _contentfulSettings.EmailTemplates.ForgotPassword,
-                Link = link,
+                Link = $"<a href={link}>{link}</a>",
                 SelectedLocale = new CultureInfo(participantLocale)
             };
 
