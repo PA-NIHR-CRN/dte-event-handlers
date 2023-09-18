@@ -32,8 +32,8 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
 
         public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageForgotPassword source)
         {
-            var requestCodeParameter = "100";
-            var userAttributesId = "555";
+            var requestCodeParameter = source.Request.CodeParameter;
+            var userAttributesId = HttpUtility.UrlEncode(source.Request.UserAttributes.Sub.ToString());
 
             var link =
                 $"{_appSettings.WebAppBaseUrl}resetpassword?code={requestCodeParameter}&userId={userAttributesId}";

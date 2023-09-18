@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
@@ -42,14 +43,7 @@ namespace CognitoCustomMessageProcessor.Repository
             var response = await _client.QueryAsync(request, cancellationToken);
 
             // Check if the key 'SelectedLocale' exists in the dictionary before accessing it
-            if (response.Items.Count > 0 && response.Items[0].ContainsKey("SelectedLocale"))
-            {
-                return response.Items[0]["SelectedLocale"].S;
-            }
-            else
-            {
-                return "en-GB";  // return default locale if 'SelectedLocale' not found
-            }
+            return response?.Items?.FirstOrDefault()?.GetValueOrDefault("SelectedLocale")?.S ?? "en-GB";
         }
     }
 }
