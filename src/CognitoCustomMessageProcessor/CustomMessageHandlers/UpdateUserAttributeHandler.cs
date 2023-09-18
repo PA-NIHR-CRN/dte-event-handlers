@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Threading;
 using System.Threading.Tasks;
 using CognitoCustomMessageProcessor.Contracts;
 using CognitoCustomMessageProcessor.CustomMessages;
@@ -25,12 +24,10 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
             _contentfulSettings = contentfulSettings;
         }
 
-        public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageUpdateUserAttribute source,
-            CancellationToken cancellationToken = default)
+        public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageUpdateUserAttribute source)
         {
             var participantLocale =
-                await _repository.GetParticipantLocaleAsync(source.Request.UserAttributes.Sub.ToString(),
-                    cancellationToken);
+                await _repository.GetParticipantLocaleAsync(source.Request.UserAttributes.Sub.ToString());
 
             var request = new EmailContentRequest
             {

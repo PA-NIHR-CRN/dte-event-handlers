@@ -1,4 +1,3 @@
-using System.Threading;
 using System.Threading.Tasks;
 using MessageListener.Messages;
 using Dte.Common.Lambda.Contracts;
@@ -16,10 +15,10 @@ namespace MessageListener.MessageHandlers
             _logger = logger;
         }
 
-        public async Task<bool> HandleAsync(SendNotificationV1 source, CancellationToken cancellationToken = default)
+        public async Task<bool> HandleAsync(SendNotificationV1 source)
         {
             _logger.LogInformation(JsonConvert.SerializeObject(source));
-            await Task.Delay(1000, cancellationToken);
+            await Task.Delay(1000);
 
             return true;
         }

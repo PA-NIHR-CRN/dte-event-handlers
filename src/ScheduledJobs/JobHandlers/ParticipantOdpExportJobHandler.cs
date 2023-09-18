@@ -39,7 +39,7 @@ namespace ScheduledJobs.JobHandlers
             _logger = logger;
         }
 
-        public async Task<bool> HandleAsync(ParticipantOdpExport source, CancellationToken cancellationToken = default)
+        public async Task<bool> HandleAsync(ParticipantOdpExport source)
         {
             _logger.LogInformation(
                 "**** Getting files names from bucket: {S3BucketName} with DynamoDB table name: {AwsSettingsParticipantRegistrationDynamoDbTableName}",
@@ -47,7 +47,7 @@ namespace ScheduledJobs.JobHandlers
 
             return await HandleExport(
                 "participant-odp-export",
-                _participantOdpExportSettings.S3BucketName, cancellationToken
+                _participantOdpExportSettings.S3BucketName
             );
         }
 

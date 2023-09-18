@@ -39,13 +39,13 @@ namespace ScheduledJobs.JobHandlers
             _logger = logger;
         }
 
-        public async Task<bool> HandleAsync(ParticipantExport source, CancellationToken cancellationToken = default)
+        public async Task<bool> HandleAsync(ParticipantExport source)
         {
             _logger.LogInformation(
                 "**** Getting files names from bucket: {S3BucketName} with DynamoDB table name: {AwsSettingsParticipantRegistrationDynamoDbTableName}",
                 _participantExportSettings.S3BucketName, _awsSettings.ParticipantRegistrationDynamoDbTableName);
 
-            return await HandleExport("participant-export", _participantExportSettings.S3BucketName, cancellationToken);
+            return await HandleExport("participant-export", _participantExportSettings.S3BucketName);
         }
 
         private async Task<bool> HandleExport(string exportType, string bucketName,

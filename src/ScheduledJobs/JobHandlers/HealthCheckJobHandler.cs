@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using Dte.Common.Lambda.Contracts;
 using Microsoft.Extensions.Logging;
@@ -22,7 +21,7 @@ namespace ScheduledJobs.JobHandlers
             _logger = logger;
         }
         
-        public async Task<bool> HandleAsync(HealthCheck source, CancellationToken cancellationToken = default)
+        public async Task<bool> HandleAsync(HealthCheck source)
         {
             var sw = Stopwatch.StartNew();
             try

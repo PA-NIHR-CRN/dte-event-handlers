@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using Dte.Common.Contracts;
 using Dte.Common.Lambda.Contracts;
@@ -41,7 +40,7 @@ namespace ScheduledJobs.JobHandlers
             _logger = logger;
         }
 
-        public async Task<bool> HandleAsync(RtsSiteImport source, CancellationToken cancellationToken = default)
+        public async Task<bool> HandleAsync(RtsSiteImport source)
         {
             var pageNumber = 1;
             const int pageSize = 50000;
@@ -76,8 +75,7 @@ namespace ScheduledJobs.JobHandlers
                     );
 
                     var result =
-                        JsonConvert.DeserializeObject<RtsDataResponse>(
-                            await response.Content.ReadAsStringAsync(cancellationToken));
+                        JsonConvert.DeserializeObject<RtsDataResponse>(await response.Content.ReadAsStringAsync());
 
                     if (result?.Result?.RtsOrganisationSites == null)
                     {
@@ -100,7 +98,7 @@ namespace ScheduledJobs.JobHandlers
                         list.Count);
 
                     pageNumber++;
-                    await Task.Delay(50, cancellationToken);
+                    await Task.Delay(50);
                 } while (true);
 
                 return true;

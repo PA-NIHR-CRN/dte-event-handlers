@@ -27,34 +27,34 @@ public class CustomMessageControllerController : ControllerBase
     }
 
     [HttpPost("SendSignUpEmail")]
-    public async Task<IActionResult> SendSignUpEmail(CancellationToken cancellationToken)
+    public async Task<IActionResult> SendSignUpEmail()
     {
-        var result = await _signUpHandler.HandleAsync(new CustomMessageSignUp(), cancellationToken);
+        var result = await _signUpHandler.HandleAsync(new CustomMessageSignUp());
 
         return Ok(result);
     }
 
     [HttpPost("SendForgotPasswordEmail")]
-    public async Task<IActionResult> SendForgotPasswordEmail(CancellationToken cancellationToken)
+    public async Task<IActionResult> SendForgotPasswordEmail()
     {
-        var result = await _forgotPasswordHandler.HandleAsync(new CustomMessageForgotPassword(), cancellationToken);
+        var result = await _forgotPasswordHandler.HandleAsync(new CustomMessageForgotPassword());
 
         return Ok(result);
     }
 
     [HttpPost("SendResendCodeEmail")]
-    public async Task<IActionResult> SendResendCodeEmail(CancellationToken cancellationToken)
+    public async Task<IActionResult> SendResendCodeEmail()
     {
-        var result = await _resendCodeHandler.HandleAsync(new CustomMessageResendCode(), cancellationToken);
+        var result = await _resendCodeHandler.HandleAsync(new CustomMessageResendCode());
 
         return Ok(result);
     }
 
     [HttpPost("SendUpdateUserEmail")]
-    public async Task<IActionResult> SendUpdateUserEmail(CancellationToken cancellationToken)
+    public async Task<IActionResult> SendUpdateUserEmail()
     {
         var result =
-            await _updateAttributeHandler.HandleAsync(new CustomMessageUpdateUserAttribute(), cancellationToken);
+            await _updateAttributeHandler.HandleAsync(new CustomMessageUpdateUserAttribute());
 
         return Ok(result);
     }

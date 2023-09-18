@@ -28,16 +28,16 @@ public class ScheduledJobsController : ControllerBase
     }
 
     [HttpPost("ScheduledJobsDailyExport")]
-    public async Task<IActionResult> ScheduledJobsDailyExport(CancellationToken cancellationToken)
+    public async Task<IActionResult> ScheduledJobsDailyExport()
     {
-        var result = await _participantExportHandler.HandleAsync(new ParticipantExport(), cancellationToken);
+        var result = await _participantExportHandler.HandleAsync(new ParticipantExport());
         return Ok(result);
     }
 
     [HttpPost("ScheduledJobsOdpDailyExport")]
-    public async Task<IActionResult> ScheduledJobsOdpDailyExport(CancellationToken cancellationToken)
+    public async Task<IActionResult> ScheduledJobsOdpDailyExport()
     {
-        var result = await _participantOdpExportHandler.HandleAsync(new ParticipantOdpExport(), cancellationToken);
+        var result = await _participantOdpExportHandler.HandleAsync(new ParticipantOdpExport());
         return Ok(result);
     }
 

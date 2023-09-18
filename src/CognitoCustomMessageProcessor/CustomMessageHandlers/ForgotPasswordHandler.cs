@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Dte.Common.Lambda.Contracts;
@@ -31,8 +30,7 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
             _contentfulSettings = contentfulSettings;
         }
 
-        public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageForgotPassword source,
-            CancellationToken cancellationToken = default)
+        public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageForgotPassword source)
         {
             var requestCodeParameter = source.Request.CodeParameter;
             var userAttributesId = HttpUtility.UrlEncode(source.Request.UserAttributes.Sub.ToString());
@@ -42,8 +40,7 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
                 .Build();
 
             var participantLocale =
-                await _repository.GetParticipantLocaleAsync(source.Request.UserAttributes.Sub.ToString(),
-                    cancellationToken);
+                await _repository.GetParticipantLocaleAsync(source.Request.UserAttributes.Sub.ToString());
 
             var request = new EmailContentRequest
             {
