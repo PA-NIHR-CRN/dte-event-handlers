@@ -11,12 +11,13 @@ using ScheduledJobs.Clients;
 using ScheduledJobs.Contracts;
 using ScheduledJobs.Domain;
 using ScheduledJobs.Mappers;
-using ScheduledJobs.Models;
 using ScheduledJobs.Responses;
 
 namespace ScheduledJobs.JobHandlers
 {
-    public class RtsOrganisationImport { }
+    public class RtsOrganisationImport
+    {
+    }
 
     public class RtsOrganisationImportJobHandler : IHandler<RtsOrganisationImport, bool>
     {
@@ -45,15 +46,16 @@ namespace ScheduledJobs.JobHandlers
             const int pageSize = 50000;
             const int stopPage = 20;
 
-            _logger.LogInformation($"**** Ip: {await _ipAddressServiceClient.GetExternalIpAddressAsync()}");
-            
+            _logger.LogInformation("**** Ip: {ExternalIpAddressAsync}",
+                await _ipAddressServiceClient.GetExternalIpAddressAsync());
+
             try
             {
                 do
                 {
                     if (pageNumber > stopPage)
                     {
-                        _logger.LogInformation($"Stop Page: {stopPage} hit");
+                        _logger.LogInformation("Stop Page: {StopPage} hit", stopPage);
                         break;
                     }
 
@@ -61,19 +63,23 @@ namespace ScheduledJobs.JobHandlers
                     (
                         3,
                         currentRetryAttempt => TimeSpan.FromSeconds(5),
-                        currentRetryAttempt => _logger.LogWarning($"Retry attempt: {currentRetryAttempt}"),
+                        currentRetryAttempt =>
+                            _logger.LogWarning("Retry attempt: {CurrentRetryAttempt}", currentRetryAttempt),
                         () =>
                         {
-                            _logger.LogInformation($"Attempting Page: {pageNumber}");
+                            _logger.LogInformation("Attempting Page: {PageNumber}", pageNumber);
                             return _client.GetOrganisationsAsync(pageSize, pageNumber);
                         }
                     );
 
-                    var result = JsonConvert.DeserializeObject<RtsDataResponse>(await response.Content.ReadAsStringAsync());
+                    var result =
+                        JsonConvert.DeserializeObject<RtsDataResponse>(
+                            await response.Content.ReadAsStringAsync());
 
                     if (result?.Result?.RtsOrganisations == null)
                     {
-                        _logger.LogInformation($"Result RtsOrganisations is null, break on page: {pageNumber}");
+                        _logger.LogInformation("Result RtsOrganisations is null, break on page: {PageNumber}",
+                            pageNumber);
                         break;
                     }
 
@@ -82,7 +88,8 @@ namespace ScheduledJobs.JobHandlers
                     list.AddRange(results.Select(RtsDataMapper.MapTo));
                     list = list.GroupBy(l => l.Pk).Select(l => l.First()).ToList();
                     await _repository.BatchInsertAsync(list);
-                    _logger.LogInformation($"Page {pageNumber} saved {list.Count} items to the DB");
+                    _logger.LogInformation("Page {PageNumber} saved {ListCount} items to the DB", pageNumber,
+                        list.Count);
 
                     pageNumber++;
                     await Task.Delay(50);
@@ -92,7 +99,7 @@ namespace ScheduledJobs.JobHandlers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error occurred on page: {pageNumber}: {ex.Message}");
+                _logger.LogError(ex, "Error occurred on page: {PageNumber}: {ExMessage}", pageNumber, ex.Message);
             }
 
             return false;
