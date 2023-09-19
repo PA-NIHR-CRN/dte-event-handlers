@@ -4,6 +4,7 @@ namespace ScheduledJobs.Models
 {
     public class ParticipantOdpExportModel
     {
+        public string Pk { get; set; }
         // Details
         public string ParticipantId { get; set; }
         public bool ConsentRegistration { get; set; }

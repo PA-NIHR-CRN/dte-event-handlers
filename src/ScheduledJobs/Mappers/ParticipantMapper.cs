@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using ScheduledJobs.Domain;
 using ScheduledJobs.Models;
 
@@ -20,10 +21,16 @@ namespace ScheduledJobs.Mappers
                 : postcodeWithoutSpace[..^3];
         }
 
+        private static string SanitizeHealthInterest(string input)
+        {
+            return input.Replace("\r", string.Empty);
+        }
+
         public static ParticipantExportModel MapToParticipantExportModel(Participant source)
         {
             return new ParticipantExportModel
             {
+                Pk = source.Pk,
                 ParticipantId = source.ParticipantId,
                 Email = source.Email,
                 Firstname = source.Firstname,
@@ -41,7 +48,8 @@ namespace ScheduledJobs.Mappers
                 EthnicBackground = source.EthnicBackground,
                 Disability = source.Disability,
                 DisabilityDescription = source.DisabilityDescription,
-                HealthConditionInterests = string.Join(", ", source.HealthConditionInterests ?? new List<string>()),
+                HealthConditionInterests = string.Join(", ",
+                    source.HealthConditionInterests?.Select(SanitizeHealthInterest) ?? new List<string>()),
                 CreatedAtUtc = source.CreatedAtUtc,
                 UpdatedAtUtc = source.UpdatedAtUtc
             };
@@ -51,6 +59,7 @@ namespace ScheduledJobs.Mappers
         {
             return new ParticipantOdpExportModel
             {
+                Pk = source.Pk,
                 ParticipantId = source.ParticipantId,
                 ConsentRegistration = source.ConsentRegistration,
                 ConsentRegistrationAtUtc = source.ConsentRegistrationAtUtc,
@@ -63,7 +72,8 @@ namespace ScheduledJobs.Mappers
                 EthnicBackground = source.EthnicBackground,
                 Disability = source.Disability,
                 DisabilityDescription = source.DisabilityDescription,
-                HealthConditionInterests = string.Join(", ", source.HealthConditionInterests ?? new List<string>()),
+                HealthConditionInterests = string.Join(", ",
+                    source.HealthConditionInterests?.Select(SanitizeHealthInterest) ?? new List<string>()),
                 CreatedAtUtc = source.CreatedAtUtc,
                 UpdatedAtUtc = source.UpdatedAtUtc
             };
