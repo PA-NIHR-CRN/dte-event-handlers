@@ -16,16 +16,14 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
         private readonly ILinkBuilder _linkBuilder;
         private readonly AppSettings _appSettings;
         private readonly IContentfulService _contentfulService;
-        private readonly IParticipantRegistrationDynamoDbRepository _repository;
         private readonly ContentfulSettings _contentfulSettings;
 
         public SignUpHandler(ILinkBuilder linkBuilder, AppSettings appSettings, IContentfulService contentfulService,
-            IParticipantRegistrationDynamoDbRepository repository, ContentfulSettings contentfulSettings)
+            ContentfulSettings contentfulSettings)
         {
             _linkBuilder = linkBuilder;
             _appSettings = appSettings;
             _contentfulService = contentfulService;
-            _repository = repository;
             _contentfulSettings = contentfulSettings;
         }
 
@@ -38,14 +36,13 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
                 .AddLink(null, $"{_appSettings.WebAppBaseUrl}verify", requestCodeParameter, userAttributesId)
                 .Build();
 
-            var participantLocale =
-                await _repository.GetParticipantLocaleAsync(source.Request.UserAttributes.Sub.ToString());
+            var selectedLocale = source.Request.ClientMetadata["selectedLocale"] ?? "en-GB";
 
             var request = new EmailContentRequest
             {
                 EmailName = _contentfulSettings.EmailTemplates.SignUp,
                 Link = link,
-                SelectedLocale = new CultureInfo(participantLocale)
+                SelectedLocale = new CultureInfo(selectedLocale)
             };
 
             var contentfulEmail = await _contentfulService.GetEmailContentAsync(request);
