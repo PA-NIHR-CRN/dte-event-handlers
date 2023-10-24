@@ -1,12 +1,13 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using ScheduledJobs.Domain;
-using ScheduledJobs.Models;
 
 namespace ScheduledJobs.Contracts
 {
     public interface IParticipantRegistrationDynamoDbRepository
     {
-        Task<IEnumerable<Participant>> GetAllAsync();
+        IAsyncEnumerable<Participant> GetAllAsync(
+            [EnumeratorCancellation] CancellationToken cancellationToken = default);
     }
 }

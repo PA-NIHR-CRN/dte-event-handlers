@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
@@ -144,6 +145,21 @@ namespace ScheduledJobs.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"S3 Error encountered ***. Message:'{ex.Message}' when deleting objects");
+            }
+        }
+        
+        public async Task SaveStreamContentAsync(string bucketName, string key, Stream ms,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await _client.PutObjectAsync(
+                new PutObjectRequest { BucketName = bucketName, InputStream = ms, Key = key }, cancellationToken);
+
+            if (!(response.HttpStatusCode >= HttpStatusCode.OK &&
+                  response.HttpStatusCode < HttpStatusCode.MultipleChoices))
+            {
+                var errorMessage = $"Could not add content to bucket {bucketName}/{key}";
+                _logger.LogError(errorMessage);
+                throw new ApplicationException(errorMessage);
             }
         }
     }
