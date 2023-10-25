@@ -29,3 +29,19 @@ To use the project, you can follow these steps:
 1. Set the environment variable `ASPNETCORE_ENVIRONMENT` to `Development`.
 2. Start the project.
 3. Interact with the project through your chosen IDE, noting that scheduled jobs will run at their designated intervals and the Cognito message handler will process messages as they arrive.
+
+## Testing Scheduled jobs on AWS
+```
+{
+  "id": "sampleEventId",
+  "detail-type": "Scheduled Event",
+  "source": "aws.events",
+  "account": <AccountNumber>,
+  "time": "2023-10-24T12:28:59Z",
+  "region": <AccountRegion>,
+  "resources": [
+    <ARN from EventBridge>
+  ],
+  "detail": {}
+}
+```
