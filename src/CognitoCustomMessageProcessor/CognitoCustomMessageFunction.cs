@@ -19,6 +19,7 @@ namespace CognitoCustomMessageProcessor
     {
         private static readonly HashSet<string> MfaTriggers = new()
         { 
+            "CustomMessage_VerifyUserAttribute",
             "CustomMessage_Authentication"
         };
         protected override void Configure(IConfigurationBuilder builder) => builder.AddConfiguration();
@@ -28,10 +29,8 @@ namespace CognitoCustomMessageProcessor
         // Needed to be able to run
         public async Task<JsonElement> FunctionHandler(CognitoCustomMessageEvent input, ILambdaContext context)
         {
-            Logger.LogInformation(input.TriggerSource);
             if (MfaTriggers.Contains(input.TriggerSource))
             {
-                Logger.LogInformation(input.TriggerSource);
                 Logger.LogInformation("Inside the MFA trigger");
                 return JsonSerializer.SerializeToElement(input);
             }
@@ -43,6 +42,7 @@ namespace CognitoCustomMessageProcessor
             Logger.LogInformation(serialize);
             
             await FunctionHandlerAsync(input);
+            Logger.LogInformation("**** Response: {Response}", JsonConvert.SerializeObject(input));
             
             return JsonSerializer.SerializeToElement(input);
         }
