@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Web;
 using CognitoCustomMessageProcessor.Contracts;
 using CognitoCustomMessageProcessor.CustomMessages;
 using Dte.Common;
@@ -17,14 +18,20 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
         private readonly IParticipantRegistrationDynamoDbRepository _repository;
         private readonly ContentfulSettings _contentfulSettings;
         private readonly ILogger<UpdateUserAttributeHandler> _logger;
+        private readonly ILinkBuilder _linkBuilder;
+        private readonly AppSettings _appSettings;
 
         public UpdateUserAttributeHandler(IContentfulService contentfulService,
-            IParticipantRegistrationDynamoDbRepository repository, ContentfulSettings contentfulSettings, ILogger<UpdateUserAttributeHandler> logger)
+            IParticipantRegistrationDynamoDbRepository repository, ContentfulSettings contentfulSettings,
+            ILogger<UpdateUserAttributeHandler> logger,
+            ILinkBuilder linkBuilder, AppSettings appSettings)
         {
             _contentfulService = contentfulService;
             _repository = repository;
             _contentfulSettings = contentfulSettings;
             _logger = logger;
+            _linkBuilder = linkBuilder;
+            _appSettings = appSettings;
         }
 
         public async Task<CognitoCustomMessageEvent> HandleAsync(CustomMessageUpdateUserAttribute source)
@@ -35,10 +42,19 @@ namespace CognitoCustomMessageProcessor.CustomMessageHandlers
                 await _repository.GetParticipantLocaleAsync(source.Request.UserAttributes.Sub.ToString());
             _logger.LogInformation("**** Participant locale: {ParticipantLocale}", participantLocale);
 
-            _logger.LogInformation("**** Getting email content from Contentful with email name: {EmailName} and locale: {SelectedLocale}",
+            _logger.LogInformation(
+                "**** Getting email content from Contentful with email name: {EmailName} and locale: {SelectedLocale}",
                 _contentfulSettings.EmailTemplates.UpdateUserAttribute, participantLocale);
+
+            var requestCodeParameter = source.Request.CodeParameter;
+            var userAttributesEmail = HttpUtility.UrlEncode(source.Request.UserAttributes.Sub.ToString());
+
+            var link = _linkBuilder
+                .AddLink(null, $"{_appSettings.WebAppBaseUrl}verifyemail", requestCodeParameter, userAttributesEmail)
+                .Build();
             var request = new EmailContentRequest
             {
+                Link = link,
                 EmailName = _contentfulSettings.EmailTemplates.UpdateUserAttribute,
                 SelectedLocale = new CultureInfo(participantLocale)
             };
