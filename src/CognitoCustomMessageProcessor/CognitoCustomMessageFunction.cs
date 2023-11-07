@@ -31,6 +31,7 @@ namespace CognitoCustomMessageProcessor
         {
             if (MfaTriggers.Contains(input.TriggerSource))
             {
+                Logger.LogInformation("Inside the MFA trigger");
                 return JsonSerializer.SerializeToElement(input);
             }
             // Needs to be verification set to Code
