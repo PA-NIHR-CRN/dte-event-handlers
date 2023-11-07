@@ -41,6 +41,7 @@ namespace CognitoCustomMessageProcessor
             Logger.LogInformation(serialize);
             
             await FunctionHandlerAsync(input);
+            Logger.LogInformation("*** Response:  {Input}", JsonConvert.SerializeObject(input));
             
             return JsonSerializer.SerializeToElement(input);
         }
