@@ -7,7 +7,7 @@ namespace CognitoCustomMessageProcessor.Builders
 {
     public class LinkBuilder : ILinkBuilder
     {
-        private readonly List<Link> _links = new List<Link>();
+        private readonly List<Link> _links = new ();
         
         public ILinkBuilder AddLink(string name, string baseUrl, string code, string userId)
         {

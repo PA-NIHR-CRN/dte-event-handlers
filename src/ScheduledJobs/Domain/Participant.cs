@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Amazon.DynamoDBv2.DataModel;
 using Dte.Common.Converters;
 using ScheduledJobs.Models;
