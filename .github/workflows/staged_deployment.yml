@@ -1,0 +1,162 @@
+name: Staged Deployment
+on:
+  push:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  dev_build_test_deploy:
+    runs-on: ubuntu-latest
+    environment: DEV
+    steps:
+      - uses: actions/checkout@v2
+      - name: Configure AWS credentials - All
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_VS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_VS_ACCESS_KEY_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Build Run Number and Build Id
+        run: echo ${{ github.run_number }}-${{ github.run_id }}
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Add Nuget Source
+        run: dotnet nuget add source --username ${{ secrets.NUGET_PACKAGE_USERNAME }} --password ${{ secrets.NUGET_PACKAGE_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/pa-nihr-crn/index.json"
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+
+      - name: Deploy
+        run: |
+          dotnet tool install -g Amazon.Lambda.Tools
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor crnccd-lambda-dev-dte-cognito-custom-message-processor --function-role crnccd-iam-dev-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-dev-dte-cognito-custom-message-processor"
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs crnccd-lambda-dev-dte-scheduled-jobs --function-role crnccd-iam-dev-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-dev-dte-scheduled-jobs"
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: crnccd-lambda-dev-dte-cognito-custom-message-processor
+          path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
+          
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: crnccd-lambda-dev-dte-scheduled-jobs
+          path: ./src/ScheduledJobs/bin/Release/net6.0/publish/
+          
+  test_deploy: 
+    needs: dev_build_test_deploy
+    runs-on: ubuntu-latest
+    environment: QA
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: crnccd-lambda-dev-dte-cognito-custom-message-processor
+          path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
+      - name: Configure AWS credentials - All
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_VS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_VS_ACCESS_KEY_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          
+      - name: Add Nuget Source
+        run: dotnet nuget add source --username ${{ secrets.NUGET_PACKAGE_USERNAME }} --password ${{ secrets.NUGET_PACKAGE_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/pa-nihr-crn/index.json"
+        
+      - name: Deploy
+        run: |
+          dotnet tool install -g Amazon.Lambda.Tools
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor crnccd-lambda-test-dte-cognito-custom-message-processor --function-role crnccd-iam-test-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-test-dte-cognito-custom-message-processor"
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs crnccd-lambda-test-dte-scheduled-jobs --function-role crnccd-iam-test-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-test-dte-scheduled-jobs"
+    
+  UAT Deploy:
+    needs: test_deploy
+    runs-on: ubuntu-latest
+    environment: UAT
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: crnccd-lambda-dev-dte-cognito-custom-message-processor
+          path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
+      - name: Configure AWS credentials - All
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_VS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_VS_ACCESS_KEY_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          
+      - name: Add Nuget Source
+        run: dotnet nuget add source --username ${{ secrets.NUGET_PACKAGE_USERNAME }} --password ${{ secrets.NUGET_PACKAGE_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/pa-nihr-crn/index.json"
+        
+      - name: Deploy
+        run: |
+          dotnet tool install -g Amazon.Lambda.Tools
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor crnccd-lambda-uat-dte-cognito-custom-message-processor --function-role crnccd-iam-uat-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-uat-dte-cognito-custom-message-processor"
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs crnccd-lambda-uat-dte-scheduled-jobs --function-role crnccd-iam-uat-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-uat-dte-scheduled-jobs"
+  
+  OAT Deploy: 
+    needs: UAT Deploy
+    runs-on: ubuntu-latest
+    environment: OAT
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: crnccd-lambda-dev-dte-cognito-custom-message-processor
+          path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
+      - name: Configure AWS credentials - All
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_VS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_VS_ACCESS_KEY_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          
+      - name: Add Nuget Source
+        run: dotnet nuget add source --username ${{ secrets.NUGET_PACKAGE_USERNAME }} --password ${{ secrets.NUGET_PACKAGE_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/pa-nihr-crn/index.json"
+        
+      - name: Deploy
+        run: |
+          dotnet tool install -g Amazon.Lambda.Tools
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor crnccd-lambda-oat-dte-cognito-custom-message-processor --function-role crnccd-iam-oat-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-oat-dte-cognito-custom-message-processor"
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs crnccd-lambda-oat-dte-scheduled-jobs --function-role crnccd-iam-oat-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-oat-dte-scheduled-jobs"
+          
+  PROD Deploy:
+    needs: OAT Deploy
+    runs-on: ubuntu-latest
+    environment: PROD
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: crnccd-lambda-dev-dte-cognito-custom-message-processor
+          path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
+      - name: Configure AWS credentials - All
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.CRNCC_PROD_IAM_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.CRNCC_PROD_IAM_ACCESS_KEY_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          
+      - name: Add Nuget Source
+        run: dotnet nuget add source --username ${{ secrets.NUGET_PACKAGE_USERNAME }} --password ${{ secrets.NUGET_PACKAGE_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/pa-nihr-crn/index.json"
+        
+      - name: Deploy
+        run: |
+          dotnet tool install -g Amazon.Lambda.Tools
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor crnccd-lambda-prod-dte-cognito-custom-message-processor --function-role crnccd-iam-prod-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-prod-dte-cognito-custom-message-processor"
+          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs crnccd-lambda-prod-dte-scheduled-jobs --function-role crnccd-iam-prod-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-prod-dte-scheduled-jobs"
