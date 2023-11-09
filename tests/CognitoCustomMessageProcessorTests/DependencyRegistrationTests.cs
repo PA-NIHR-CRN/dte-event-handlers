@@ -1,18 +1,18 @@
-using NUnit.Framework;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Moq;
 using System.Collections.Generic;
-using System.Reflection;
 using Amazon.DynamoDBv2.DataModel;
+using CognitoCustomMessageProcessor;
 using CognitoCustomMessageProcessor.CustomMessages;
 using CognitoCustomMessageProcessor.Settings;
 using Dte.Common;
 using Dte.Common.Lambda;
 using Dte.Common.Lambda.Contracts;
 using Dte.Common.Lambda.Events;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using NUnit.Framework;
 
-namespace CognitoCustomMessageProcessor.Tests;
+namespace CognitoCustomMessageProcessorTests;
 
 [TestFixture]
 public class DependencyRegistrationTests

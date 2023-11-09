@@ -11,6 +11,7 @@ using ScheduledJobs.Domain;
 using ScheduledJobs.JobHandlers;
 using ScheduledJobs.Models;
 using ScheduledJobs.Settings;
+using ScheduledJobsTests.Extensions;
 
 namespace ScheduledJobsTests.JobHandlers;
 
@@ -78,12 +79,7 @@ public class ParticipantOdpExportJobHandlerTests
 
         // Assert
         Assert.IsFalse(result);
-        _mockLogger.Verify(
-            x => x.LogError(
-                It.IsAny<Exception>(),
-                It.IsAny<string>(),
-                It.IsAny<object[]>()),
-            Times.Once);
+        _mockLogger.VerifyMessageLogged(LogLevel.Error, msg => msg.Contains("Test exception"));
     }
 
     private void VerifyAllDependenciesCalledOnce(CancellationToken cancellationToken)
