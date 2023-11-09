@@ -79,7 +79,7 @@ public class ParticipantOdpExportJobHandlerTests
 
         // Assert
         Assert.IsFalse(result);
-        _mockLogger.VerifyMessageLogged(LogLevel.Error, msg => msg.Contains("Test exception"));
+        _mockLogger.VerifyMessageLogged(LogLevel.Error, "Test exception");
     }
 
     private void VerifyAllDependenciesCalledOnce(CancellationToken cancellationToken)

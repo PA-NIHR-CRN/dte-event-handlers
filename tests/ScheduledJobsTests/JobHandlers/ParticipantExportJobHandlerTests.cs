@@ -11,6 +11,7 @@ using ScheduledJobs.Domain;
 using ScheduledJobs.JobHandlers;
 using ScheduledJobs.Models;
 using ScheduledJobs.Settings;
+using ScheduledJobsTests.Extensions;
 
 namespace ScheduledJobsTests.JobHandlers;
 
@@ -78,6 +79,7 @@ public class ParticipantExportJobHandlerTests
 
         // Assert
         Assert.IsFalse(result);
+        _mockLogger.VerifyMessageLogged(LogLevel.Error, "Test exception");
     }
 
     private void VerifyAllDependenciesCalledOnce(CancellationToken cancellationToken)
