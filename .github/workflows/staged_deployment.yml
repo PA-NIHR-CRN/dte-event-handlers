@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  dev_build_test_deploy:
+  Built_Test_Package_and_deploy_dev:
     runs-on: ubuntu-latest
     environment: DEV
     steps:
@@ -83,7 +83,7 @@ jobs:
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor crnccd-lambda-test-dte-cognito-custom-message-processor --function-role crnccd-iam-test-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-test-dte-cognito-custom-message-processor"
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs crnccd-lambda-test-dte-scheduled-jobs --function-role crnccd-iam-test-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-test-dte-scheduled-jobs"
     
-  UAT Deploy:
+  UAT_Deploy:
     needs: test_deploy
     runs-on: ubuntu-latest
     environment: UAT
@@ -109,7 +109,7 @@ jobs:
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor crnccd-lambda-uat-dte-cognito-custom-message-processor --function-role crnccd-iam-uat-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-uat-dte-cognito-custom-message-processor"
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs crnccd-lambda-uat-dte-scheduled-jobs --function-role crnccd-iam-uat-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-uat-dte-scheduled-jobs"
   
-  OAT Deploy: 
+  OAT_Deploy: 
     needs: UAT Deploy
     runs-on: ubuntu-latest
     environment: OAT
@@ -135,7 +135,7 @@ jobs:
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor crnccd-lambda-oat-dte-cognito-custom-message-processor --function-role crnccd-iam-oat-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-oat-dte-cognito-custom-message-processor"
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs crnccd-lambda-oat-dte-scheduled-jobs --function-role crnccd-iam-oat-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-oat-dte-scheduled-jobs"
           
-  PROD Deploy:
+  PROD_Deploy:
     needs: OAT Deploy
     runs-on: ubuntu-latest
     environment: PROD
