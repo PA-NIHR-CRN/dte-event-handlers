@@ -4,26 +4,35 @@ on:
     branches: [ main ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
 jobs:
+
   build_and_test:
     runs-on: ubuntu-latest
     name: 'Build and Test'
     steps:
       - uses: actions/checkout@v3
+
       - name: Build Run Number and Build Id
         run: echo ${{ github.run_number }}-${{ github.run_id }}
+
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '6.0.x'
+
       - name: Add Nuget Source
         run: dotnet nuget add source --username ${{ secrets.NUGET_PACKAGE_USERNAME }} --password ${{ secrets.NUGET_PACKAGE_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/pa-nihr-crn/index.json"
+     
       - name: Install dependencies
         run: dotnet restore
+
       - name: Build
         run: dotnet build --configuration Release --no-restore
+
       - name: Test
         run: dotnet test --no-restore --verbosity normal
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -35,6 +44,7 @@ jobs:
         with:
           name: scheduled-jobs
           path: ./src/ScheduledJobs/bin/Release/net6.0/publish/
+
   deploy_dev: 
     needs: build_and_test
     runs-on: ubuntu-latest
@@ -46,11 +56,13 @@ jobs:
         with:
           name: cognito-custom-message-processor
           path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
+
       - uses: actions/download-artifact@v2
         with:
           name: scheduled-jobs
           path: ./src/ScheduledJobs/bin/Release/net6.0/publish/
       - name: Configure AWS credentials - (Dev/Test)
+
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_VS_ACCESS_KEY_ID }}
@@ -62,6 +74,7 @@ jobs:
           dotnet tool install -g Amazon.Lambda.Tools
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor crnccd-lambda-dev-dte-cognito-custom-message-processor --function-role crnccd-iam-dev-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-dev-dte-cognito-custom-message-processor"
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs crnccd-lambda-dev-dte-scheduled-jobs --function-role crnccd-iam-dev-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-dev-dte-scheduled-jobs"
+  
   deploy_test: 
     needs: deply_dev
     runs-on: ubuntu-latest
@@ -73,10 +86,12 @@ jobs:
         with:
           name: cognito-custom-message-processor
           path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
+
       - uses: actions/download-artifact@v2
         with:
           name: scheduled-jobs
           path: ./src/ScheduledJobs/bin/Release/net6.0/publish/
+
       - name: Configure AWS credentials - (Dev/Test)
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -104,10 +119,12 @@ jobs:
         with:
           name: cognito-custom-message-processor
           path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
+
       - uses: actions/download-artifact@v2
         with:
           name: scheduled-jobs
           path: ./src/ScheduledJobs/bin/Release/net6.0/publish/
+
       - name: Configure AWS credentials - (Uat)
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -131,10 +148,12 @@ jobs:
         with:
           name: cognito-custom-message-processor
           path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
+
       - uses: actions/download-artifact@v2
         with:
           name: scheduled-jobs
           path: ./src/ScheduledJobs/bin/Release/net6.0/publish/
+
       - name: Configure AWS credentials - (Oat)
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -158,10 +177,12 @@ jobs:
         with:
           name: cognito-custom-message-processor
           path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
+
       - uses: actions/download-artifact@v2
         with:
           name: scheduled-jobs
           path: ./src/ScheduledJobs/bin/Release/net6.0/publish/
+          
       - name: Configure AWS credentials - (Prod)
         uses: aws-actions/configure-aws-credentials@v2
         with:
