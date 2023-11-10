@@ -70,7 +70,6 @@ jobs:
           path: ./src/ScheduledJobs/bin/Release/net6.0/publish/
 
       - name: Configure AWS credentials - (Dev/Test)
-
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_VS_ACCESS_KEY_ID }}
@@ -83,7 +82,7 @@ jobs:
           dotnet tool install -g Amazon.Lambda.Tools
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor crnccd-lambda-dev-dte-cognito-custom-message-processor --function-role crnccd-iam-dev-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-dev-dte-cognito-custom-message-processor"
 
-     - name: Deploy crnccd-lambda-dev-dte-scheduled-jobs
+      - name: Deploy crnccd-lambda-dev-dte-scheduled-jobs
         if: ${{ github.event.inputs.appname }} == 'scheduled-jobs' 
         run: |
           dotnet tool install -g Amazon.Lambda.Tools
@@ -125,7 +124,7 @@ jobs:
           dotnet tool install -g Amazon.Lambda.Tools
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor crnccd-lambda-test-dte-cognito-custom-message-processor --function-role crnccd-iam-test-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-test-dte-cognito-custom-message-processor"
 
-     - name: Deploy crnccd-lambda-test-dte-scheduled-jobs
+      - name: Deploy crnccd-lambda-test-dte-scheduled-jobs
         if: ${{ github.event.inputs.appname }} == 'scheduled-jobs' 
         run: |
           dotnet tool install -g Amazon.Lambda.Tools
@@ -163,7 +162,7 @@ jobs:
           dotnet tool install -g Amazon.Lambda.Tools
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor crnccs-lambda-uat-dte-cognito-custom-message-processor --function-role crnccs-iam-uat-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccs-secret-uat-dte-cognito-custom-message-processor"
 
-     - name: Deploy crnccs-lambda-uat-dte-scheduled-jobs
+      - name: Deploy crnccs-lambda-uat-dte-scheduled-jobs
         if: ${{ github.event.inputs.appname }} == 'scheduled-jobs' 
         run: |
           dotnet tool install -g Amazon.Lambda.Tools
@@ -200,7 +199,7 @@ jobs:
           dotnet tool install -g Amazon.Lambda.Tools
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor crnccp-lambda-oat-dte-cognito-custom-message-processor --function-role crnccp-iam-oat-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccp-secret-oat-dte-cognito-custom-message-processor"
 
-     - name: Deploy crnccp-lambda-oat-dte-scheduled-jobs
+      - name: Deploy crnccp-lambda-oat-dte-scheduled-jobs
         if: ${{ github.event.inputs.appname }} == 'scheduled-jobs' 
         run: |
           dotnet tool install -g Amazon.Lambda.Tools
@@ -237,7 +236,7 @@ jobs:
           dotnet tool install -g Amazon.Lambda.Tools
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor crnccp-lambda-prod-dte-cognito-custom-message-processor --function-role crnccp-iam-prod-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccp-secret-prod-dte-cognito-custom-message-processor"
 
-     - name: Deploy crnccp-lambda-prod-dte-scheduled-jobs
+      - name: Deploy crnccp-lambda-prod-dte-scheduled-jobs
         if: ${{ github.event.inputs.appname }} == 'scheduled-jobs' 
         run: |
           dotnet tool install -g Amazon.Lambda.Tools
