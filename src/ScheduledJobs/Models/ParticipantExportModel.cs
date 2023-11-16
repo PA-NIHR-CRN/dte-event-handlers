@@ -4,6 +4,7 @@ namespace ScheduledJobs.Models
 {
     public class ParticipantExportModel
     {
+        public string Pk { get; set; }
         // Details
         public string ParticipantId { get; set; }
         public string Email { get; set; }
