@@ -44,7 +44,8 @@ namespace ScheduledJobs.Mappers
                 DisabilityDescription = source.DisabilityDescription,
                 HealthConditionInterests = string.Join(", ", source.HealthConditionInterests ?? new List<string>()),
                 CreatedAtUtc = source.CreatedAtUtc,
-                UpdatedAtUtc = source.UpdatedAtUtc
+                UpdatedAtUtc = source.UpdatedAtUtc,
+                Stage2CompleteUtc = source.Stage2CompleteUtc
             };
         }
 
@@ -65,7 +66,8 @@ namespace ScheduledJobs.Mappers
                 Disability = source.Disability,
                 HealthConditionInterests = string.Join(", ", source.HealthConditionInterests ?? new List<string>()),
                 CreatedAtUtc = source.CreatedAtUtc,
-                UpdatedAtUtc = source.UpdatedAtUtc
+                UpdatedAtUtc = source.UpdatedAtUtc,
+                Stage2CompleteUtc = source.Stage2CompleteUtc
             };
         }
     }

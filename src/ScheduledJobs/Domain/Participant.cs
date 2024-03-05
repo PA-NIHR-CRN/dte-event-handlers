@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Amazon.DynamoDBv2.DataModel;
 using Dte.Common.Converters;
 using ScheduledJobs.Models;
@@ -38,5 +37,6 @@ namespace ScheduledJobs.Domain
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime CreatedAtUtc { get; set; }
         [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime? UpdatedAtUtc { get; set; }
+        [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime? Stage2CompleteUtc { get; set; }
     }
 }
