@@ -90,7 +90,7 @@ jobs:
 
 
   deploy_test: 
-    needs: deply_dev
+    needs: deploy_dev
     runs-on: ubuntu-latest
     environment: QA
     name: 'Deploy TEST'
@@ -130,7 +130,7 @@ jobs:
           dotnet tool install -g Amazon.Lambda.Tools
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs crnccd-lambda-test-dte-scheduled-jobs --function-role crnccd-iam-test-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccd-secret-test-dte-scheduled-jobs"
 
-  deply_uat:
+  deploy_uat:
     needs: deploy_test
     runs-on: ubuntu-latest
     environment: UAT
