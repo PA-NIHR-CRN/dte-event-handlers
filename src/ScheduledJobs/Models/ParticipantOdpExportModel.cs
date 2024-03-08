@@ -22,5 +22,6 @@ namespace ScheduledJobs.Models
 
         public DateTime CreatedAtUtc { get; set; }
         public DateTime? UpdatedAtUtc { get; set; }
+        public DateTime? Stage2CompleteUtc { get; set; }
     }
 }
