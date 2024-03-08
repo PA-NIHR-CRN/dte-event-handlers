@@ -16,13 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     name: 'Build and Test'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Build Run Number and Build Id
         run: echo ${{ github.run_number }}-${{ github.run_id }}
 
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '6.0.x'
 
@@ -39,13 +39,13 @@ jobs:
         run: dotnet test --no-restore --verbosity normal
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: cognito-custom-message-processor
           path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
           
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: scheduled-jobs
           path: ./src/ScheduledJobs/bin/Release/net6.0/publish/
@@ -56,21 +56,21 @@ jobs:
     environment: DEV
     name: 'Deploy DEV'
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v2
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         if:  ${{ github.event.inputs.appname }} == 'cognito-custom-message-processor' 
         with:
           name: cognito-custom-message-processor
           path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         if:  ${{ github.event.inputs.appname }} == 'scheduled-jobs'
         with:
           name: scheduled-jobs
           path: ./src/ScheduledJobs/bin/Release/net6.0/publish/
 
       - name: Configure AWS credentials - (Dev/Test)
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_VS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_VS_ACCESS_KEY_SECRET }}
@@ -95,21 +95,21 @@ jobs:
     environment: QA
     name: 'Deploy TEST'
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v2
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         if:  ${{ github.event.inputs.appname }} == 'cognito-custom-message-processor' 
         with:
           name: cognito-custom-message-processor
           path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         if:  ${{ github.event.inputs.appname }} == 'scheduled-jobs'
         with:
           name: scheduled-jobs
           path: ./src/ScheduledJobs/bin/Release/net6.0/publish/
 
       - name: Configure AWS credentials - (Dev/Test)
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_VS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_VS_ACCESS_KEY_SECRET }}
@@ -136,21 +136,21 @@ jobs:
     environment: UAT
     name: 'Deploy UAT'
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v2
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         if:  ${{ github.event.inputs.appname }} == 'cognito-custom-message-processor' 
         with:
           name: cognito-custom-message-processor
           path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         if:  ${{ github.event.inputs.appname }} == 'scheduled-jobs'
         with:
           name: scheduled-jobs
           path: ./src/ScheduledJobs/bin/Release/net6.0/publish/
 
       - name: Configure AWS credentials - (Uat)
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.CRNCC_STAGING_IAM_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.CRNCC_STAGING_IAM_ACCESS_KEY_SECRET }}
@@ -173,21 +173,21 @@ jobs:
     runs-on: ubuntu-latest
     environment: OAT
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v2
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         if:  ${{ github.event.inputs.appname }} == 'cognito-custom-message-processor' 
         with:
           name: cognito-custom-message-processor
           path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         if:  ${{ github.event.inputs.appname }} == 'scheduled-jobs'
         with:
           name: scheduled-jobs
           path: ./src/ScheduledJobs/bin/Release/net6.0/publish/
 
       - name: Configure AWS credentials - (Oat)
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.CRNCC_PROD_IAM_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.CRNCC_PROD_IAM_ACCESS_KEY_SECRET }}
@@ -210,21 +210,21 @@ jobs:
     runs-on: ubuntu-latest
     environment: PROD
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v2
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         if:  ${{ github.event.inputs.appname }} == 'cognito-custom-message-processor' 
         with:
           name: cognito-custom-message-processor
           path: ./src/CognitoCustomMessageProcessor/bin/Release/net6.0/publish/
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         if:  ${{ github.event.inputs.appname }} == 'scheduled-jobs'
         with:
           name: scheduled-jobs
           path: ./src/ScheduledJobs/bin/Release/net6.0/publish/
 
       - name: Configure AWS credentials - (Prod)
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.CRNCC_PROD_IAM_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.CRNCC_PROD_IAM_ACCESS_KEY_SECRET }}
