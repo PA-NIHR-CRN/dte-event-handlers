@@ -1,5 +1,4 @@
 using System;
-using System.Net.Http;
 using System.Reflection;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
@@ -15,10 +14,8 @@ using Dte.Common.Lambda.Extensions;
 using Dte.Common.Lambda.Resolvers;
 using Dte.Common.Lambda.Settings;
 using Dte.Common.Services;
-using Functions.Common.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ScheduledJobs.Clients;
 using ScheduledJobs.Contracts;
 using ScheduledJobs.Repositories;
 using ScheduledJobs.Services;
@@ -30,13 +27,11 @@ namespace ScheduledJobs
     {
         public static IServiceCollection RegisterServices(IServiceCollection services, IExecutionEnvironment executionEnvironment, IConfigurationRoot configuration)
         {
-            var requiredSettings = new SettingsBase[] { new CpmsImportSettings(), new AwsSettings(), new DteClientsSettings(), new ParticipantExportSettings(), new ParticipantOdpExportSettings() };
+            var requiredSettings = new SettingsBase[] { new AwsSettings(), new ParticipantExportSettings(), new ParticipantOdpExportSettings() };
             services.ConfigureServices(executionEnvironment, configuration, requiredSettings);
 
             var awsSettings = services.BuildServiceProvider().GetService<AwsSettings>();
             if (awsSettings == null) throw new Exception("Can not find AwsSettings in ServiceCollection");
-            var dteClientsSettings = services.BuildServiceProvider().GetService<DteClientsSettings>();
-            if (dteClientsSettings == null) throw new Exception("Can not find DteClientsSettings in ServiceCollection");
 
             // AWS
             var awsOptions = new AWSOptions();
@@ -63,38 +58,10 @@ namespace ScheduledJobs
                 .AddClasses(c => c.AssignableTo(typeof(IHandler<,>)))
                 .AsImplementedInterfaces()
                 .WithTransientLifetime());
-
-            // HTTP
             
-            // Study Service
-            services.AddTransient<StudyServiceClientMessageHandler>();
-            var studyServiceHttpClientBuilder = services.AddHttpClient<IStudyServiceClient, StudyServiceClient>(client => { client.BaseAddress = new Uri(dteClientsSettings.StudyService.BaseUrl); });
-            if (executionEnvironment.IsDevelopment()) studyServiceHttpClientBuilder.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true });
-            studyServiceHttpClientBuilder.AddHttpMessageHandler<StudyServiceClientMessageHandler>();
-            
-            // Rts Service
-            services.AddTransient<RtsServiceClientMessageHandler>();
-            var rtsServiceHttpClientBuilder = services.AddHttpClient<IRtsServiceClient, RtsServiceClient>(client =>
-            {
-                client.BaseAddress = new Uri(dteClientsSettings.RtsService.BaseUrl); 
-                client.Timeout = dteClientsSettings.RtsService.DefaultTimeout;
-                client.DefaultRequestHeaders.Add("username", dteClientsSettings.RtsService.UserName);
-                client.DefaultRequestHeaders.Add("password", dteClientsSettings.RtsService.Password);
-            });
-            if (executionEnvironment.IsDevelopment()) rtsServiceHttpClientBuilder.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true });
-            rtsServiceHttpClientBuilder.AddHttpMessageHandler<RtsServiceClientMessageHandler>();
-            
-            // Ip Address Service
-            services.AddTransient<IpAddressServiceClientMessageHandler>();
-            var ipAddressServiceHttpClientBuilder = services.AddHttpClient<IIpAddressServiceClient, IpAddressServiceClient>(client => { client.BaseAddress = new Uri(dteClientsSettings.IpAddressService.BaseUrl); });
-            if (executionEnvironment.IsDevelopment()) ipAddressServiceHttpClientBuilder.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true });
-            ipAddressServiceHttpClientBuilder.AddHttpMessageHandler<IpAddressServiceClientMessageHandler>();
-
             // Others
             services.AddTransient<IS3Service, S3Service>();
             services.AddTransient<ICsvUtilities, CsvUtilities>();
-            services.AddTransient<ICpmsStudyDynamoDbRepository, CpmsStudyDynamoDbRepository>();
-            services.AddTransient<IRtsDataDynamoDbRepository, RtsDataDynamoDbRepository>();
             services.AddTransient<IParticipantRegistrationDynamoDbRepository, ParticipantRegistrationDynamoDbRepository>();
             services.AddTransient<IPollyRetryService, PollyRetryService>();
 

@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
-using ScheduledJobs.Models;
 using ScheduledJobs.Services;
 
 namespace ScheduledJobsTests.Services

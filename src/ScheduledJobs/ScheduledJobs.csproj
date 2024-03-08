@@ -14,6 +14,7 @@
     <PackageReference Include="AWSSDK.S3" Version="3.7.7.19" />
     <PackageReference Include="CsvHelper" Version="27.2.1" />
     <PackageReference Include="Dte.Common" Version="1.7.9" />
+    <PackageReference Include="Dte.Common.Lambda" Version="1.1.6" />
     <PackageReference Include="Scrutor" Version="4.0.0" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
   </ItemGroup>
@@ -22,9 +23,5 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Functions.Common\Functions.Common.csproj" />
   </ItemGroup>
 </Project>
