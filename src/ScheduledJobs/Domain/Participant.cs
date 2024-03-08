@@ -37,5 +37,6 @@ namespace ScheduledJobs.Domain
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime CreatedAtUtc { get; set; }
         [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime? UpdatedAtUtc { get; set; }
+        [DynamoDBProperty(typeof(DateTimeUtcConverter))] public DateTime? Stage2CompleteUtc { get; set; }
     }
 }

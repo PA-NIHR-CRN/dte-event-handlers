@@ -24,6 +24,7 @@ namespace ScheduledJobs.Mappers
         {
             return new ParticipantExportModel
             {
+                Pk = source.Pk,
                 ParticipantId = source.ParticipantId,
                 Email = source.Email,
                 Firstname = source.Firstname,
@@ -43,7 +44,8 @@ namespace ScheduledJobs.Mappers
                 DisabilityDescription = source.DisabilityDescription,
                 HealthConditionInterests = string.Join(", ", source.HealthConditionInterests ?? new List<string>()),
                 CreatedAtUtc = source.CreatedAtUtc,
-                UpdatedAtUtc = source.UpdatedAtUtc
+                UpdatedAtUtc = source.UpdatedAtUtc,
+                Stage2CompleteUtc = source.Stage2CompleteUtc
             };
         }
 
@@ -51,21 +53,21 @@ namespace ScheduledJobs.Mappers
         {
             return new ParticipantOdpExportModel
             {
+                Pk = source.Pk,
                 ParticipantId = source.ParticipantId,
                 ConsentRegistration = source.ConsentRegistration,
                 ConsentRegistrationAtUtc = source.ConsentRegistrationAtUtc,
                 RemovalOfConsentRegistrationAtUtc = source.RemovalOfConsentRegistrationAtUtc,
                 DateOfBirth = source.DateOfBirth,
                 Postcode = GetOutcodeFromPostcode(source.Address?.Postcode, source.Sk),
+                Town = source.Address?.Town,
                 SexRegisteredAtBirth = source.SexRegisteredAtBirth,
-                GenderIsSameAsSexRegisteredAtBirth = source.GenderIsSameAsSexRegisteredAtBirth,
                 EthnicGroup = source.EthnicGroup,
-                EthnicBackground = source.EthnicBackground,
                 Disability = source.Disability,
-                DisabilityDescription = source.DisabilityDescription,
                 HealthConditionInterests = string.Join(", ", source.HealthConditionInterests ?? new List<string>()),
                 CreatedAtUtc = source.CreatedAtUtc,
-                UpdatedAtUtc = source.UpdatedAtUtc
+                UpdatedAtUtc = source.UpdatedAtUtc,
+                Stage2CompleteUtc = source.Stage2CompleteUtc
             };
         }
     }

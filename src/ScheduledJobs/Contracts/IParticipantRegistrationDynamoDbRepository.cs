@@ -7,5 +7,7 @@ namespace ScheduledJobs.Contracts
     public interface IParticipantRegistrationDynamoDbRepository
     {
         IAsyncEnumerable<Participant> GetAllAsync(CancellationToken cancellationToken = default);
+
+        Task<Participant> GetParticipantAsync(string participantId, CancellationToken cancellationToken = default);
     }
 }

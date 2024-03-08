@@ -4,6 +4,7 @@ namespace ScheduledJobs.Models
 {
     public class ParticipantExportModel
     {
+        public string Pk { get; set; }
         // Details
         public string ParticipantId { get; set; }
         public string Email { get; set; }
@@ -29,5 +30,6 @@ namespace ScheduledJobs.Models
 
         public DateTime CreatedAtUtc { get; set; }
         public DateTime? UpdatedAtUtc { get; set; }
+        public DateTime? Stage2CompleteUtc { get; set; }
     }
 }
