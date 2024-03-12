@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using ScheduledJobs.Domain;
 
 namespace ScheduledJobs.Contracts
@@ -7,7 +8,6 @@ namespace ScheduledJobs.Contracts
     public interface IParticipantRegistrationDynamoDbRepository
     {
         IAsyncEnumerable<Participant> GetAllAsync(CancellationToken cancellationToken = default);
-
         Task<Participant> GetParticipantAsync(string participantId, CancellationToken cancellationToken = default);
     }
 }
