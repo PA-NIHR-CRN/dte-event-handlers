@@ -10,12 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Configure AWS credentials - All
-        # if: github.ref == 'refs/heads/main'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.CRNCC_PROD_IAM_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.CRNCC_PROD_IAM_ACCESS_KEY_SECRET }}
-          # aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Setup .NET Core
@@ -38,6 +36,5 @@ jobs:
       - name: Deploy
         run: |
           dotnet tool install -g Amazon.Lambda.Tools
-          dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/MessageListener crnccp-lambda-prod-dte-message-listener --function-role crnccp-iam-prod-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccp-secret-prod-dte-message-listener"
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/CognitoCustomMessageProcessor crnccp-lambda-prod-dte-cognito-custom-message-processor --function-role crnccp-iam-prod-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccp-secret-prod-dte-cognito-custom-message-processor"
           dotnet lambda deploy-function --region ${{ secrets.AWS_REGION }} -pl ./src/ScheduledJobs crnccp-lambda-prod-dte-scheduled-jobs --function-role crnccp-iam-prod-dte-role -ev "Environment=Production;AWS_SECRET_MANAGER_SECRET_NAME=crnccp-secret-prod-dte-scheduled-jobs"
