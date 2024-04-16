@@ -4,5 +4,5 @@ namespace Harness.Contracts;
 
 public interface IBogusService
 {
-    IEnumerable<Participant> GenerateFakeUsers(int count);
+    IEnumerable<Participant> GenerateFakeUsers(int participantRecords, int deletedRecords);
 }

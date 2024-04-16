@@ -1,5 +1,6 @@
 using Dte.Common.Lambda.Contracts;
 using Harness.Contracts;
+using Harness.Requests;
 using Microsoft.AspNetCore.Mvc;
 using ScheduledJobs.JobHandlers;
 
@@ -42,11 +43,12 @@ public class ScheduledJobsController : ControllerBase
     }
 
     [HttpPost("AddFakeUsers")]
-    public async Task<IActionResult> AddFakeUsers([FromBody] int count, CancellationToken cancellationToken)
+    public async Task<IActionResult> AddFakeUsers([FromBody] AddFakeUsersRequest request,
+        CancellationToken cancellationToken)
     {
-        var fakeUsers = _bogusService.GenerateFakeUsers(count);
+        var fakeUsers = _bogusService.GenerateFakeUsers(request.ParticipantRecords, request.DeletedRecords);
         await _participantRepository.InsertAllAsync(fakeUsers, cancellationToken);
-        _logger.LogInformation("Added {Count} fake users", count);
+        _logger.LogInformation("Added {Count} fake users", request.ParticipantRecords + request.DeletedRecords);
         return Ok();
     }
 

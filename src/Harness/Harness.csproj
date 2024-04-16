@@ -20,6 +20,11 @@
 
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Services\HealthConditions.txt" />
+      <EmbeddedResource Include="Services\HealthConditions.txt" />
+    </ItemGroup>
+
 
 
 
