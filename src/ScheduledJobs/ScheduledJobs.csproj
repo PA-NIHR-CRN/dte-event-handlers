@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
   </PropertyGroup>
 
@@ -16,7 +16,7 @@
     <PackageReference Include="Dte.Common" Version="1.7.9" />
     <PackageReference Include="Dte.Common.Lambda" Version="1.1.6" />
     <PackageReference Include="Scrutor" Version="4.0.0" />
-    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+    <PackageReference Include="System.Linq.AsyncEnumerable" Version="10.0.6" />
   </ItemGroup>
 
   <ItemGroup>
